@@ -1,18 +1,48 @@
 <!DOCTYPE html>
 <html>
 <head>
+
   <title>dragend.js</title>
+
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
 
+  <style type="text/css">
+
+    * {
+      padding: 0;
+      margin: 0;
+      border: 0;
+    }
+
+    #swipe-container {
+      
+    }
+
+  </style>
 
 </head>
-<body class="loading">
-  <header class="texture-light"></header>
-  <div id="page"></div>
+<body>
+
+  <div id="swipe-container">
+    <ul>
+      <li class="page">1</li>
+      <li class="page">2</li>
+      <li class="page">3</li>
+    </ul>
+  </div>
 
   <script type="text/javascript" src="./../src/lib/jquery-1.7.2.js"></script>
-  <script type="text/javascript" src="./../src/lib/jquery-1.7.2.js"></script>
+  <script type="text/javascript" src="./../src/lib/hammer-0.6.1.js"></script>
   <script type="text/javascript" src="./../src/lib/jquery.hammer-0.9.0.js"></script>
-  <script type="text/javascript" src="./../src/dragend/jquery.dragend.js"></script>
+  <script type="text/javascript" src="./../jquery.dragend.js"></script>
+
+  <script>
+
+    $(function() {
+      $("#swipe-container").dragend();
+    });
+
+  </script>
+
 </body>
 </html>
