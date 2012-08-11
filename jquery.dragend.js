@@ -29,31 +29,34 @@
 
   var WINDOW = $(window),
       BODY = $(document.body),
-      settings;
-
-  var dragend = (function() {
-
-    var minTouchDistance = 40,
-        scrollBorder = { x: 0, y: 0 },
-        page = 0,
-        keycodes = {
+      defaultSettings = {
+          "pageElements": "li",
+          "pageContainer": "ul",
+          "minTouchDistance": "40",
+          "fullscreen": true
+      },
+      keycodes = {
           "37": "left",
           "38": "up",
           "39": "right",
           "40": "down"
-        },
-        container,
-        pageDimentions;
+      },
+      containerStyles = {
+        "overflow": "hidden",
+        "padding" : 0
+      }
 
+  var dragend = function(container, options) {
 
-    function _calcPageDimentions() {
-      if (settings.fullscreen) {
-        var width  = WINDOW.width(),
-            height = WINDOW.height();
-      } else {
-        var width  = container.width(),
-            height = container.height();
-      };
+    var scrollBorder = { x: 0, y: 0 },
+        page = 0,
+        settings,
+        pageDimentions,
+        settings,
+
+    _calcPageDimentions = function() {
+      var width  = container.width(),
+          height = container.height();
 
       pageDimentions = {
         "width"  : width,
@@ -65,15 +68,14 @@
         y: height * page
       };
 
-    }
+    },
 
-    function _sizePages() {
+    _sizePages = function() {
       var pages = container.find(settings.pageElements);
 
       _calcPageDimentions();
 
-      container.css({"overflow": "hidden"})
-               .find(settings.pageContainer).css({"width": pageDimentions.width * pages.length  + "px"});
+      container.find(settings.pageContainer).css({"width": pageDimentions.width * pages.length  + "px"});
 
       pages.each(function(index, element) {
         $(this).css({"height" : pageDimentions.height + "px", "width": pageDimentions.width  + "px", "display": "table-cell" });
@@ -81,13 +83,13 @@
 
       container.scrollTop(scrollBorder.y)
                .scrollLeft(scrollBorder.x);
-    }
+    },
 
-    function _observe() {
+    _observeDrag = function() {
       scrollBorder.x = container.scrollLeft();
       scrollBorder.y = container.scrollTop();
 
-      BODY.on("drag", {"drag_min_distance": 0 }, function(event) {
+      container.on("drag", {"drag_min_distance": 0 }, function(event) {
         event.stopPropagation();
 
         container.scrollTop( - event.distanceY + scrollBorder.y)
@@ -100,29 +102,32 @@
           };
 
           _scrollToPage(scrollBorder.x, scrollBorder.y);
-      }).on("keydown", function() {
+      });
+    },
+
+    _observeBody = function() {
+      BODY.on("keydown", function() {
         var direction = keycodes[event.keyCode];
-        console.log(event.keyCode, event.keycodes, event.which);
 
         if (direction) {
-          $(this).trigger("page-swipe", direction);
+          _calcNewPage(direction);
+          _scrollToPage(scrollBorder.x, scrollBorder.y);
         };
-      }).on("page-swipe", function(event, direction) {
-        _calcNewPage(direction);
-        _scrollToPage(scrollBorder.x, scrollBorder.y);
       });
-    };
 
-    function _scrollToPage() {
-      _stopObserving();
-      container.animate({ scrollLeft: scrollBorder.x, scrollTop: scrollBorder.y}, 200, "linear", _observe);
-    };
+      WINDOW.on("resize", _sizePages);
+    },
 
-    function _stopObserving() {
-      BODY.off("drag dragend keydown page-swipe");
-    };
+    _stopDragObserving = function() {
+      container.off("drag dragend");
+    },
 
-    function _calcNewPage(direction) {
+    _scrollToPage = function() {
+      _stopDragObserving();
+      container.animate({ scrollLeft: scrollBorder.x, scrollTop: scrollBorder.y}, 200, "linear", _observeDrag);
+    },
+
+    _calcNewPage = function(direction) {
       var scroll = {
         "up" : function() {
           scrollBorder.y = scrollBorder.y + pageDimentions.height;
@@ -143,27 +148,45 @@
       };
 
       scroll[direction]();
-    }
+    },
 
-    return {
-      init: function(element, options) {
-        container = element;
-        _sizePages();
-        WINDOW.on("resize", _sizePages);
-        _observe();
-      }
+    init = function(options) {
+      if (!options || typeof options === "object") {
+        settings = $.extend(defaultSettings, options);
+      };
+
+      container.css(containerStyles);
+      _sizePages();
+      _observeDrag();
+      _observeBody();
+
+    },
+
+    swipe = function(direction) {
+      _calcNewPage(direction);
+      _scrollToPage(scrollBorder.x, scrollBorder.y);
     };
-  })();
+
+    init();
+    
+    return {
+      "swipe": swipe
+    }
+  };
   
   $.fn.dragend = function(options) {
-    settings = $.extend( {
-      "pageElements": "li",
-      "pageContainer": "ul",
-      "minTouchDistance": "40",
-      "fullscreen": true
-    }, options);
+    var instance = this.data("dragend")
 
-    new dragend.init(this);
+    if (!instance) {
+      instance = new dragend(this, options);
+      this.data("dragend", instance);
+    };
+
+    if (typeof options === "string") {
+      instance.swipe(options);
+    };
+
+    return this;
   };
 
 })(jQuery, window);

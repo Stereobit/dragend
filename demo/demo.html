@@ -14,8 +14,16 @@
       border: 0;
     }
 
-    #swipe-container {
-      
+    .swipe-container {
+      width: 50%;
+      height: 20%;
+      margin: 20px;
+      background: #444;
+      color: #fff;
+    }
+
+    .swipe-container li {
+      padding: 20px;
     }
 
   </style>
@@ -23,7 +31,15 @@
 </head>
 <body>
 
-  <div id="swipe-container">
+  <div id="swipe-container" class="swipe-container">
+    <ul>
+      <li class="page">1</li>
+      <li class="page">2</li>
+      <li class="page">3</li>
+    </ul>
+  </div>
+
+    <div id="swipe-container-2" class="swipe-container">
     <ul>
       <li class="page">1</li>
       <li class="page">2</li>
@@ -40,7 +56,13 @@
 
     $(function() {
       $("#swipe-container").dragend();
+      $("#swipe-container-2").dragend();
+      $("body").on("click", function() {
+        // $("#swipe-container-2").dragend("left");
+      })
     });
+
+
 
   </script>
 
