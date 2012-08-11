@@ -24,7 +24,7 @@
  *
  */
 
- ;(function($) {
+ ;(function($, window) {
   "use strict";
 
   var WINDOW = $(window),
@@ -34,8 +34,7 @@
   var dragend = (function() {
 
     var minTouchDistance = 40,
-        scrollBorderY = 0,
-        scrollBorderX = 0,
+        scrollBorder = { x: 0, y: 0 },
         page = 0,
         keycodes = {
           "37": "left",
@@ -43,75 +42,102 @@
           "39": "right",
           "40": "down"
         },
-        container;
+        container,
+        pageDimentions;
+
 
     function _calcPageDimentions() {
-      return {
+      if (settings.fullscreen) {
+        var width  = WINDOW.width(),
+            height = WINDOW.height();
+      } else {
+        var width  = container.width(),
+            height = container.height();
+      };
+
+      pageDimentions = {
         "width"  : width,
         "height" : height
-      }
+      };
+
+      scrollBorder = {
+        x: width * page,
+        y: height * page
+      };
+
     }
 
     function _sizePages() {
       var pages = container.find(settings.pageElements);
 
+      _calcPageDimentions();
+
       container.css({"overflow": "hidden"})
-               .find(settings.pageContainer).css({"width": WINDOW.width() * pages.length + "px"});
+               .find(settings.pageContainer).css({"width": pageDimentions.width * pages.length  + "px"});
 
       pages.each(function(index, element) {
-        $(this).css({"height" : WINDOW.height(), "width": WINDOW.width(), "display": "table-cell" });
+        $(this).css({"height" : pageDimentions.height + "px", "width": pageDimentions.width  + "px", "display": "table-cell" });
       });
+
+      container.scrollTop(scrollBorder.y)
+               .scrollLeft(scrollBorder.x);
     }
 
     function _observe() {
-      scrollBorderX = container.scrollLeft() || 0;
-      scrollBorderY = container.scrollTop() || 0;
+      scrollBorder.x = container.scrollLeft();
+      scrollBorder.y = container.scrollTop();
 
       BODY.on("drag", {"drag_min_distance": 0 }, function(event) {
-        container.scrollTop( - event.distanceY + scrollBorderY)
-               .scrollLeft( - event.distanceX + scrollBorderX);
+        event.stopPropagation();
+
+        container.scrollTop( - event.distanceY + scrollBorder.y)
+                 .scrollLeft( - event.distanceX + scrollBorder.x);
       }).on("dragend", {"drag_min_distance": 0 }, function(event) {
+          event.stopPropagation();
+
           if (event.distance > settings.minTouchDistance) {
             _calcNewPage(event.direction);
-          }
-          _scrollToPage(scrollBorderX, scrollBorderY);
+          };
+
+          _scrollToPage(scrollBorder.x, scrollBorder.y);
       }).on("keydown", function() {
         var direction = keycodes[event.keyCode];
+        console.log(event.keyCode, event.keycodes, event.which);
 
         if (direction) {
           $(this).trigger("page-swipe", direction);
-        }
+        };
       }).on("page-swipe", function(event, direction) {
         _calcNewPage(direction);
-        _scrollToPage(scrollBorderX, scrollBorderY);
+        _scrollToPage(scrollBorder.x, scrollBorder.y);
       });
     };
 
     function _scrollToPage() {
       _stopObserving();
-      container.animate({ scrollLeft: scrollBorderX, scrollTop: scrollBorderY}, 200, "linear", _observe);
-    }
+      container.animate({ scrollLeft: scrollBorder.x, scrollTop: scrollBorder.y}, 200, "linear", _observe);
+    };
 
     function _stopObserving() {
       BODY.off("drag dragend keydown page-swipe");
-    }
+    };
 
     function _calcNewPage(direction) {
       var scroll = {
         "up" : function() {
-          scrollBorderY = scrollBorderY + WINDOW.height();
+          scrollBorder.y = scrollBorder.y + pageDimentions.height;
           page++;
         },
         "down" : function() {
-          scrollBorderY = scrollBorderY - WINDOW.height();
+          scrollBorder.y = scrollBorder.y - pageDimentions.height;
           page--;
         },
         "left" : function() {
-          scrollBorderX = scrollBorderX + WINDOW.width();
+          scrollBorder.x = scrollBorder.x + pageDimentions.width;
           page++;
         },
         "right" : function() {
-          scrollBorderX = scrollBorderX - WINDOW.width();
+          scrollBorder.x = scrollBorder.x - pageDimentions.width;
           page--;
         }
       };
@@ -140,4 +166,4 @@
     new dragend.init(this);
   };
 
-})(jQuery);
+})(jQuery, window);
