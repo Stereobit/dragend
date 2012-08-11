@@ -14,15 +14,24 @@
       border: 0;
     }
 
-    .swipe-container {
-      width: 50%;
-      height: 200px;
-      margin: 20px;
-      background: #444;
+    #swipe-container {
+      width: 100%;
+      height: 100%;
       color: #fff;
+      position: absolute;
+      top: 0;
+      left: 0;
     }
 
-    .swipe-container li {
+    #swipe-container li {
+      background: #444;
+    }
+
+    #navigation {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      margin-left: -50%;
     }
 
   </style>
@@ -30,7 +39,7 @@
 </head>
 <body>
 
-  <div id="swipe-container" class="swipe-container">
+  <div id="swipe-container">
     <ul>
       <li class="page">1</li>
       <li class="page">2</li>
@@ -38,13 +47,10 @@
     </ul>
   </div>
 
-    <div id="swipe-container-2" class="swipe-container">
-    <ul>
-      <li class="page">1</li>
-      <li class="page">2</li>
-      <li class="page">3</li>
-    </ul>
-  </div>
+  <ul id ="navigation">
+    <li id="left">left</li>
+    <li id="right">right</li>
+  </ul>
 
   <script type="text/javascript" src="./../src/lib/jquery-1.8.0.js"></script>
   <script type="text/javascript" src="./../src/lib/hammer-0.6.1.js"></script>
@@ -54,14 +60,16 @@
   <script>
 
     $(function() {
-      $("#swipe-container").dragend();
-      $("#swipe-container-2").dragend({"cursorNavigation": true, "direction": "vertical"});
-      $("body").on("click", function() {
-        // $("#swipe-container-2").dragend("left");
-      })
+      $("#swipe-container").dragend({"keyboardNavigation": true});
+
+      $("#left").on("click", function() {
+        $("#swipe-container").dragend("left");
+      });
+
+      $("#right").on("click", function() {
+        $("#swipe-container").dragend("right");
+      });
     });
-
-
 
   </script>
 

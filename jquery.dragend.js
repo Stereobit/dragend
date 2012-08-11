@@ -30,11 +30,11 @@
   var WINDOW = $(window),
       BODY = $(document.body),
       defaultSettings = {
-          "pageElements"    : "li",
-          "direction"       : "horizontal",
-          "pageContainer"   : "ul",
-          "minTouchDistance": "40",
-          "cursorNavigation": false
+          "pageElements"      : "li",
+          "direction"         : "horizontal",
+          "pageContainer"     : "ul",
+          "minTouchDistance"  : "40",
+          "keyboardNavigation": false
       },
       keycodes = {
           "37": "left",
@@ -47,21 +47,22 @@
         "padding" : 0
       }
 
-  var dragend = function(container, options) {
+  var dragend = function(container, options, callback) {
 
     var scrollBorder = { x: 0, y: 0 },
         page = 0,
         settings,
         pageDimentions,
         settings,
+        pages,
 
     _calcPageDimentions = function() {
       var width  = container.width(),
           height = container.height();
 
       pageDimentions = {
-        "width"  : width,
-        "height" : height
+        "width" : width,
+        "height": height
       };
 
       scrollBorder = {
@@ -71,63 +72,42 @@
 
     },
 
-    _sizePages = function() {
-      _calcPageDimentions();
-
-      var pages = container.find(settings.pageElements),
-          pageCssProperties = {
-            "height"  : pageDimentions.height + "px",
-            "width"   : pageDimentions.width  + "px",
-            "padding" : 0
-          };
-
-      if (settings.direction === "horizontal") {
-        $.extend(pageCssProperties, {"display": "table-cell"});
-
-        container.find(settings.pageContainer).css({"width": pageDimentions.width * pages.length + "px"});
-      } else if (settings.direction === "vertical") {
-        container.css({"height": pageDimentions.height + "px"});
-      };
-
-      pages.each(function() {
-        $(this).css(pageCssProperties);
-      });
-
-      container.scrollTop(scrollBorder.y)
-               .scrollLeft(scrollBorder.x);
-    },
-
     _observeDrag = function() {
+      var activeElement = $(pages[page])
+
       scrollBorder.x = container.scrollLeft();
       scrollBorder.y = container.scrollTop();
+
+      callback && callback(container, activeElement);
+      activeElement.trigger("active");
 
       container.on("drag", {"drag_min_distance": 0 }, function(event) {
         event.stopPropagation();
 
-        container.scrollTop( - event.distanceY + scrollBorder.y)
-                 .scrollLeft( - event.distanceX + scrollBorder.x);
+        _scrollTo( - event.distanceY + scrollBorder.y, - event.distanceX + scrollBorder.x)
+
       }).on("dragend", {"drag_min_distance": 0 }, function(event) {
           event.stopPropagation();
 
           if (event.distance > settings.minTouchDistance) {
-            _calcNewPage(event.direction);
+            swipe(event.direction);
+          } else {
+            container.animate({ scrollLeft: scrollBorder.x, scrollTop: scrollBorder.y}, 200, "linear");
           };
-
-          _scrollToPage(scrollBorder.x, scrollBorder.y);
       });
     },
 
     _observeBody = function() {
-      WINDOW.on("resize", _sizePages);
+      WINDOW.on("resize", sizePages);
 
-      if (!settings.cursorNavigation) return;
+      if (!settings.keyboardNavigation) return;
 
       BODY.on("keydown", function() {
         var direction = keycodes[event.keyCode];
 
         if (direction) {
           _calcNewPage(direction);
-          _scrollToPage(scrollBorder.x, scrollBorder.y);
+          _scrollToNextPage(scrollBorder.x, scrollBorder.y);
         };
       });
     },
@@ -136,7 +116,15 @@
       container.off("drag dragend");
     },
 
-    _scrollToPage = function() {
+    _scrollTo = function(x, y) {
+      var y = y || scrollBorder.y,
+          x = x || scrollBorder.x;
+
+      container.scrollTop(x)
+               .scrollLeft(y);
+    },
+
+    _scrollToNextPage = function() {
       _stopDragObserving();
       container.animate({ scrollLeft: scrollBorder.x, scrollTop: scrollBorder.y}, 200, "linear", _observeDrag);
     },
@@ -164,34 +152,62 @@
       scroll[direction]();
     },
 
-    init = function() {
+    _init = function() {
       if (!options || typeof options === "object") {
         settings = $.extend(defaultSettings, options);
       };
 
+      pages = container.find(settings.pageElements);
+
       container.css(containerStyles);
-      _sizePages();
+      sizePages();
       _observeDrag();
       _observeBody();
     },
 
     swipe = function(direction) {
       _calcNewPage(direction);
-      _scrollToPage(scrollBorder.x, scrollBorder.y);
+      _scrollToNextPage(scrollBorder.x, scrollBorder.y);
+    },
+
+    sizePages = function() {
+      var pageCssProperties = { "padding" : 0 };
+
+      _calcPageDimentions();
+
+      $.extend(pageCssProperties, {
+        "height" : pageDimentions.height + "px",
+        "width"  : pageDimentions.width  + "px",
+      });
+
+      if (settings.direction === "horizontal") {
+        $.extend(pageCssProperties, {"display": "table-cell"});
+
+        container.find(settings.pageContainer).css({"width": pageDimentions.width * pages.length + "px"});
+      } else if (settings.direction === "vertical") {
+        container.css({"height": pageDimentions.height + "px"});
+      };
+
+      pages.each(function() {
+        $(this).css(pageCssProperties);
+      });
+
+      _scrollTo();
     };
 
-    init();
+    _init();
     
     return {
-      "swipe": swipe
+      "swipe"    : swipe,
+      "sizePages": sizePages
     }
   };
   
-  $.fn.dragend = function(options) {
-    var instance = this.data("dragend")
+  $.fn.dragend = function(options, callback) {
+    var instance = this.data("dragend");
 
     if (!instance) {
-      instance = new dragend(this, options);
+      instance = new dragend(this, options, callback);
       this.data("dragend", instance);
     };
 
