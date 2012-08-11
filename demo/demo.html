@@ -16,14 +16,13 @@
 
     .swipe-container {
       width: 50%;
-      height: 20%;
+      height: 200px;
       margin: 20px;
       background: #444;
       color: #fff;
     }
 
     .swipe-container li {
-      padding: 20px;
     }
 
   </style>
@@ -56,7 +55,7 @@
 
     $(function() {
       $("#swipe-container").dragend();
-      $("#swipe-container-2").dragend();
+      $("#swipe-container-2").dragend({"cursorNavigation": true, "direction": "vertical"});
       $("body").on("click", function() {
         // $("#swipe-container-2").dragend("left");
       })

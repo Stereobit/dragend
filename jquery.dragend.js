@@ -30,10 +30,11 @@
   var WINDOW = $(window),
       BODY = $(document.body),
       defaultSettings = {
-          "pageElements": "li",
-          "pageContainer": "ul",
+          "pageElements"    : "li",
+          "direction"       : "horizontal",
+          "pageContainer"   : "ul",
           "minTouchDistance": "40",
-          "fullscreen": true
+          "cursorNavigation": false
       },
       keycodes = {
           "37": "left",
@@ -71,14 +72,25 @@
     },
 
     _sizePages = function() {
-      var pages = container.find(settings.pageElements);
-
       _calcPageDimentions();
 
-      container.find(settings.pageContainer).css({"width": pageDimentions.width * pages.length  + "px"});
+      var pages = container.find(settings.pageElements),
+          pageCssProperties = {
+            "height"  : pageDimentions.height + "px",
+            "width"   : pageDimentions.width  + "px",
+            "padding" : 0
+          };
 
-      pages.each(function(index, element) {
-        $(this).css({"height" : pageDimentions.height + "px", "width": pageDimentions.width  + "px", "display": "table-cell" });
+      if (settings.direction === "horizontal") {
+        $.extend(pageCssProperties, {"display": "table-cell"});
+
+        container.find(settings.pageContainer).css({"width": pageDimentions.width * pages.length + "px"});
+      } else if (settings.direction === "vertical") {
+        container.css({"height": pageDimentions.height + "px"});
+      };
+
+      pages.each(function() {
+        $(this).css(pageCssProperties);
       });
 
       container.scrollTop(scrollBorder.y)
@@ -106,6 +118,10 @@
     },
 
     _observeBody = function() {
+      WINDOW.on("resize", _sizePages);
+
+      if (!settings.cursorNavigation) return;
+
       BODY.on("keydown", function() {
         var direction = keycodes[event.keyCode];
 
@@ -114,8 +130,6 @@
           _scrollToPage(scrollBorder.x, scrollBorder.y);
         };
       });
-
-      WINDOW.on("resize", _sizePages);
     },
 
     _stopDragObserving = function() {
@@ -150,7 +164,7 @@
       scroll[direction]();
     },
 
-    init = function(options) {
+    init = function() {
       if (!options || typeof options === "object") {
         settings = $.extend(defaultSettings, options);
       };
@@ -159,7 +173,6 @@
       _sizePages();
       _observeDrag();
       _observeBody();
-
     },
 
     swipe = function(direction) {
