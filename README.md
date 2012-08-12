@@ -6,9 +6,11 @@ dragend.js, Readme File:
 
 dragend.js is a swipe plugin for [jQuery](https://github.com/jquery/jquery/). It's uses [hammer.js](http://eightmedia.github.com/hammer.js/) for observing multi-touch gestures.
 
-The script is licensed under [MIT License](http://www.opensource.org/licenses/mit-license.php)
+The current version is 0.1.0 alpha. The first release is near!
 
 For further informations and demos check out the [demo page](http://stereobit.github.com/dragend/).
+
+The script is licensed under [MIT License](http://www.opensource.org/licenses/mit-license.php)
 
 # UPDATES/FEEDBACK & BUGS
 

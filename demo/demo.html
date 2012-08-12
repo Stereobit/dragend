@@ -54,8 +54,8 @@
     }
 
     footer {
-      padding: 10px 40px;
-      height: 40px;
+      padding: 15px 40px;
+      height: 50px;
       position: absolute;
       bottom: 0;
       background: #333745;
@@ -105,6 +105,7 @@
       padding: 100px 40px 20px;
       position: relative;
       text-shadow: 1px 1px 0 rgba(255,255,255,0.5);
+      max-width: 800px;
     }
 
     #swipe-container .content:after {
@@ -118,7 +119,12 @@
     #swipe-container .content .left {
       float: left;
       width: 50%;
-      margin-right: 15px;
+    }
+
+    #swipe-container .content .right {
+      width: auto;
+      margin-left: 50%;
+      padding-left: 30px;
     }
 
     #swipe-container .content p {
@@ -129,6 +135,12 @@
 
     #swipe-container .content ul {
       margin: 0 0 20px 20px;
+      font-size: 17px;
+      line-height: 24px;
+    }
+
+    #swipe-container .content li {
+      margin-bottom: 5px;
     }
 
     .page {
@@ -136,7 +148,6 @@
     }
 
     .nav {
-      position: absolute;
       -webkit-transition: opacity 0.5s;
          -moz-transition: opacity 0.5s;
            -o-transition: opacity 0.5s;
@@ -144,13 +155,26 @@
       padding: 15px;
       font-weight: 700;
       background: #EA2E49;
-      display: block;
+      display: inline-block;
       color: #DAEDE2;
       font-size: 23px;
       border-radius: 2px;
       text-shadow: 2px 2px 0 rgba(0,0,0,0.2);
       box-shadow: 2px 2px 0 rgba(0,0,0,0.5);
-      bottom: 80px;
+      bottom: 90px;
+      margin-right: 10px;
+    }
+
+    .previous:before {
+      content: "\0000AB";
+      display: inline-block;
+      padding-right: 8px;
+    }
+
+    .next:after {
+      content: "\0000BB";
+      display: inline-block;
+      padding-left: 8px;
     }
 
     .nav:hover,
@@ -158,12 +182,11 @@
       text-decoration: none;
     }
 
-    .next {
-      right: 40px;
-    }
-
-    .previous {
-      left: 40px;
+    .code {
+      font-family: monospace;
+      padding: 20px;
+      background: #DAEDE2;
+      margin-bottom: 20px;
     }
 
   </style>
@@ -186,45 +209,54 @@
         <div class="content">
           <div class="left">
             <p>dragend.js is a swipe plugin for <a href="http://jquery.com/">jQuery</a>. It's <a href="https://github.com/Stereobit/dragend">open source</a> and uses <a href="http://eightmedia.github.com/hammer.js/">hammer.js</a> for observing multi-touch gestures.</p>
+            <p>The current version is 0.1.0 alpha. The first release is near!</p>
             <h3>Features</h3>
             <ul>
+              <li>Horizontal and vertical swiping</li>
+              <li>Lightweight (853 bytes gzipped)</li>
               <li>Keyboard navigation</li>
               <li>Fullscreen or boxed</li>
-              <li>Lightweight (853 bytes gzipped)</li>
               <li>Contend scribe</li>
+              <li>Resize adjustment</li>
             </ul>
           </div>
 
-          <h3>Browser Support</h3>
-          <ul>
-            <li>Firefox 3.5+</li>
-            <li>Chrome</li>
-            <li>IE 8+</li>
-            <li>Safari 4+</li>
-            <li>Safari on iOS 5+</li>
-            <li>Opera 11+</li>
-          </ul>
+          <div class="right">
+            <h3>Browser Support</h3>
+            <ul>
+              <li>Firefox 3.5+</li>
+              <li>Chrome</li>
+              <li>IE 8+</li>
+              <li>Safari 4+</li>
+              <li>Safari on iOS 5+</li>
+              <li>Opera 11+</li>
+            </ul>
+            <a class="nav next">Getting started</a>
+          </div>
         </div>
-        <a class="nav next">Usage</a>
       </li>
       <li class="page">
         <div class="content">
-          <h3>Usage</h3>
+          <h3>Getting started</h3>
+          <div class="code">
+            $("#swipe-container").dragend();
+          </div>
+          <a class="nav previous">Info</a>
+          <a class="nav next">Configuration</a>
         </div>
-        <a class="nav previous">Info</a>
-        <a class="nav next">Configuration</a>
       </li>
       <li class="page">
         <div class="content">
           <h3>Configuration</h3>
+          <p>soon</p>
+          <a class="nav previous">Getting started</a>
         </div>
-        <a class="nav previous">Usage</a>
       </li>
     </ul>
   </div>
 
   <footer>
-    &copy; 2012 <a href="http://stereob.it/">Tobias Otte</a>, Licensed under <a href="http://www.opensource.org/licenses/mit-license.php">MIT-style license</a>
+    &copy; 2012 <a href="http://stereob.it/">Tobias Otte</a>, Licensed under <a href="http://www.opensource.org/licenses/mit-license.php">MIT-style license</a>, This project was initiated by the <a href="http://www.xing.com/">XING AG</a>
   </footer>
 
   <script type="text/javascript" src="./../src/lib/jquery-1.8.0.js"></script>
