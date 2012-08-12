@@ -23,10 +23,22 @@
     a {
       color: #EA2E49;
       text-decoration: none;
+      display: inline-block;
     }
 
     a:hover {
-      text-decoration: underline;
+      text-decoration: none;
+      -webkit-transform: scale(1.05,1.05);
+         -moz-transform: scale(1.05,1.05);
+           -o-transform: scale(1.05,1.05);
+              transform: scale(1.05,1.05);
+    }
+
+    a:active {
+      -webkit-transform: scale(0.95,0.95);
+         -moz-transform: scale(0.95,0.95);
+           -o-transform: scale(0.95,0.95);
+              transform: scale(0.95,0.95);
     }
 
     header {
@@ -38,6 +50,21 @@
       background: #333745;
       width: 100%;
       text-shadow: 2px 2px 0 rgba(0,0,0,0.5);
+      display: block;
+    }
+
+    footer {
+      padding: 10px 40px;
+      height: 40px;
+      position: absolute;
+      bottom: 0;
+      background: #333745;
+      width: 100%;
+      display: block;
+      text-shadow: 1px 1px 0 rgba(0,0,0,0.5);
+      color: #DAEDE2;
+      font-size: 15px;
+      box-sizing: border-box;
     }
 
     h1, h2, h3, .nav {
@@ -61,8 +88,9 @@
 
     h3 {
       color: #77C4D3;
-      font-size: 18px;
+      font-size: 22px;
       font-weight: 400;
+      margin-bottom: 10px;
     }
 
     #swipe-container {
@@ -79,11 +107,28 @@
       text-shadow: 1px 1px 0 rgba(255,255,255,0.5);
     }
 
-    #swipe-container .content p {
+    #swipe-container .content:after {
+      clear: both;
+      content: ".";
+      display: block;
+      height: 0;
+      visibility: hidden;
+    }
+
+    #swipe-container .content .left {
+      float: left;
       width: 50%;
+      margin-right: 15px;
+    }
+
+    #swipe-container .content p {
       font-size: 19px;
       line-height: 27px;
       margin-bottom: 20px;
+    }
+
+    #swipe-container .content ul {
+      margin: 0 0 20px 20px;
     }
 
     .page {
@@ -105,6 +150,7 @@
       border-radius: 2px;
       text-shadow: 2px 2px 0 rgba(0,0,0,0.2);
       box-shadow: 2px 2px 0 rgba(0,0,0,0.5);
+      bottom: 80px;
     }
 
     .nav:hover,
@@ -112,27 +158,11 @@
       text-decoration: none;
     }
 
-    .nav:hover {
-      -webkit-transform: scale(1.05,1.05);
-         -moz-transform: scale(1.05,1.05);
-           -o-transform: scale(1.05,1.05);
-              transform: scale(1.05,1.05);
-    }
-
-    .nav:active {
-      -webkit-transform: scale(0.95,0.95);
-         -moz-transform: scale(0.95,0.95);
-           -o-transform: scale(0.95,0.95);
-              transform: scale(0.95,0.95);
-    }
-
     .next {
-      bottom: 40px;
       right: 40px;
     }
 
     .previous {
-      bottom: 40px;
       left: 40px;
     }
 
@@ -154,13 +184,16 @@
     <ul id="pages">
       <li class="page">
         <div class="content">
-          <p>dragend.js is a lightweight (853 bytes gzipped) swipe plugin for <a href="http://jquery.com/">jQuery</a>. It's <a href="https://github.com/Stereobit/dragend">open source</a> and uses <a href="http://eightmedia.github.com/hammer.js/">hammer.js</a> for tracking multi-touch gestures.</p>
-          <h3>Features</h3>
-          <ul>
-            <li>Keyboard navigation</li>
-            <li>Fullscreen or boxed</li>
-            <li>
-          </ul>
+          <div class="left">
+            <p>dragend.js is a swipe plugin for <a href="http://jquery.com/">jQuery</a>. It's <a href="https://github.com/Stereobit/dragend">open source</a> and uses <a href="http://eightmedia.github.com/hammer.js/">hammer.js</a> for observing multi-touch gestures.</p>
+            <h3>Features</h3>
+            <ul>
+              <li>Keyboard navigation</li>
+              <li>Fullscreen or boxed</li>
+              <li>Lightweight (853 bytes gzipped)</li>
+              <li>Contend scribe</li>
+            </ul>
+          </div>
 
           <h3>Browser Support</h3>
           <ul>
@@ -189,6 +222,10 @@
       </li>
     </ul>
   </div>
+
+  <footer>
+    &copy; 2012 <a href="http://stereob.it/">Tobias Otte</a>, Licensed under <a href="http://www.opensource.org/licenses/mit-license.php">MIT-style license</a>
+  </footer>
 
   <script type="text/javascript" src="./../src/lib/jquery-1.8.0.js"></script>
   <script type="text/javascript" src="./../src/lib/hammer-0.6.1.js"></script>

@@ -4,30 +4,24 @@ dragend.js, Readme File:
 
 # DESCRIPTION
 
-It requires [jQuery](https://github.com/jquery/jquery/) and [hammer.js](http://eightmedia.github.com/hammer.js/).
+dragend.js is a swipe plugin for [jQuery](https://github.com/jquery/jquery/). It's uses [hammer.js](http://eightmedia.github.com/hammer.js/) for observing multi-touch gestures.
 
 The script is licensed under [MIT License](http://www.opensource.org/licenses/mit-license.php)
 
-# EXAMPLES
-
-
-# FEATURES
-
-
-# USAGE
-  
-# OPTIONS
-
+For further informations and demos check out the [demo page](http://stereobit.github.com/dragend/).
 
 # UPDATES/FEEDBACK & BUGS
 
 ##Planed features
-
+* Overscroll
 
 ##Known Bugs
-
+-
 
 # CHANGELOG
+
+* 2012-08-12
+  * 0.1.0 alpha release
 
 * 2012-08-04
   * Creation
