@@ -40,7 +40,7 @@
       text-shadow: 2px 2px 0 rgba(0,0,0,0.5);
     }
 
-    h1, h2, h3 {
+    h1, h2, h3, .nav {
       font-family: Arvo, "Helvetica Neue", Helvetica, Arial, sans-serif;
     }
 
@@ -76,6 +76,7 @@
     #swipe-container .content {
       padding: 100px 40px 20px;
       position: relative;
+      text-shadow: 1px 1px 0 rgba(255,255,255,0.5);
     }
 
     #swipe-container .content p {
@@ -89,14 +90,40 @@
       position: relative;
     }
 
-    .next,
-    .previous {
+    .nav {
       position: absolute;
-      opacity: 0;
       -webkit-transition: opacity 0.5s;
          -moz-transition: opacity 0.5s;
            -o-transition: opacity 0.5s;
               transition: opacity 0.5s;
+      padding: 15px;
+      font-weight: 700;
+      background: #EA2E49;
+      display: block;
+      color: #DAEDE2;
+      font-size: 23px;
+      border-radius: 2px;
+      text-shadow: 2px 2px 0 rgba(0,0,0,0.2);
+      box-shadow: 2px 2px 0 rgba(0,0,0,0.5);
+    }
+
+    .nav:hover,
+    .nav:active {
+      text-decoration: none;
+    }
+
+    .nav:hover {
+      -webkit-transform: scale(1.05,1.05);
+         -moz-transform: scale(1.05,1.05);
+           -o-transform: scale(1.05,1.05);
+              transform: scale(1.05,1.05);
+    }
+
+    .nav:active {
+      -webkit-transform: scale(0.95,0.95);
+         -moz-transform: scale(0.95,0.95);
+           -o-transform: scale(0.95,0.95);
+              transform: scale(0.95,0.95);
     }
 
     .next {
@@ -107,11 +134,6 @@
     .previous {
       bottom: 40px;
       left: 40px;
-    }
-
-    .active .next,
-    .active .previous {
-      opacity: 1;
     }
 
   </style>
@@ -136,6 +158,8 @@
           <h3>Features</h3>
           <ul>
             <li>Keyboard navigation</li>
+            <li>Fullscreen or boxed</li>
+            <li>
           </ul>
 
           <h3>Browser Support</h3>
@@ -148,20 +172,20 @@
             <li>Opera 11+</li>
           </ul>
         </div>
-        <div class="next">Usage</div>
+        <a class="nav next">Usage</a>
       </li>
       <li class="page">
         <div class="content">
           <h3>Usage</h3>
         </div>
-        <div class="previous">Info</div>
-        <div class="next">Configuration</div>
+        <a class="nav previous">Info</a>
+        <a class="nav next">Configuration</a>
       </li>
       <li class="page">
         <div class="content">
           <h3>Configuration</h3>
         </div>
-        <div class="previous">Usage</div>
+        <a class="nav previous">Usage</a>
       </li>
     </ul>
   </div>
@@ -177,14 +201,7 @@
       $("#swipe-container").dragend({
         "keyboardNavigation": true,
         "pageContainer"     : "ul#pages",
-        "pageElements"      : "li.page",
-        "onSwipeStart"      : function(container, element) {
-          console.log(element);
-          element.removeClass("active");
-        },
-        "onSwipeEnd"        : function(container, element) {
-          element.addClass("active");
-        }
+        "pageElements"      : "li.page"
       });
 
       $(".next").on("click", function() {
