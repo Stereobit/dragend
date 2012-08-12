@@ -2,9 +2,12 @@
 <html>
 <head>
 
-  <title>dragend.js</title>
+  <title>dragend.js &ndash; a jQuery plugin for content swiping</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Arvo:400,700' rel='stylesheet' type='text/css'>
 
   <style type="text/css">
 
@@ -14,24 +17,74 @@
       border: 0;
     }
 
+    body {
+      background: #EAFDF2;
+      color: #333745;
+      font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+
+    a {
+      color: #EA2E49;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    header {
+      padding: 25px 0 15px 0;
+      height: 40px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      background: #333745;
+      width: 100%;
+      text-shadow: 2px 2px 0 rgba(0,0,0,0.5);
+    }
+
+    h1, h2, h3 {
+      font-family: Arvo, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+
+    h1 {
+      margin-left: 40px;
+      color: #DAEDE2;
+      display: inline;
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    h2 {
+      color: #DAEDE2;
+      display: inline;
+      font-size: 20px;
+      font-weight: 400;
+    }
+
     #swipe-container {
       width: 100%;
       height: 100%;
-      color: #fff;
       position: absolute;
       top: 0;
       left: 0;
     }
 
-    #swipe-container li {
-      background: #444;
+    #swipe-container .content {
+      padding: 100px 40px 20px;
+    }
+
+    #swipe-container .content p {
+      font-size: 17px;
+      line-height: 25px;
     }
 
     #navigation {
       position: absolute;
       bottom: 0;
       left: 50%;
-      margin-left: -50%;
+      margin-left: -100px;
+      width: 200px;
     }
 
   </style>
@@ -39,11 +92,31 @@
 </head>
 <body>
 
+  <header>
+    <h1>dragend JS </h1><h2>a jQuery plugin for content swiping</h2>
+  </header>
+
   <div id="swipe-container">
     <ul>
-      <li class="page">1</li>
-      <li class="page">2</li>
-      <li class="page">3</li>
+      <li class="page">
+        <div class="content">
+          <p>dragend.js is a lightweight (853 bytes gzipped) swipe plugin for <a href="http://jquery.com/">jQuery</a>. It's <a href="https://github.com/Stereobit/dragend">open source</a> and uses <a href="http://eightmedia.github.com/hammer.js/">hammer.js</a> for tracking multi-touch gestures.</p>
+          <h2>Features</h2>
+          <ul>
+            <li></li>
+          </ul>
+        </div>
+      </li>
+      <li class="page">
+        <div class="content">
+          <h3>Usage</h3>
+        </div>
+      </li>
+      <li class="page">
+        <div class="content">
+          <h3>Configuration</h3>
+        </div>
+      </li>
     </ul>
   </div>
 
@@ -60,7 +133,7 @@
   <script>
 
     $(function() {
-      $("#swipe-container").dragend({"keyboardNavigation": true});
+      $("#swipe-container").dragend({"keyboardNavigation": true, "scribe": "100px"});
 
       $("#left").on("click", function() {
         $("#swipe-container").dragend("left");

@@ -34,7 +34,8 @@
           "direction"         : "horizontal",
           "pageContainer"     : "ul",
           "minTouchDistance"  : "40",
-          "keyboardNavigation": false
+          "keyboardNavigation": false,
+          "scribe"            : 0
       },
       keycodes = {
           "37": "left",
@@ -45,7 +46,7 @@
       containerStyles = {
         "overflow": "hidden",
         "padding" : 0
-      }
+      };
 
   var dragend = function(container, options, callback) {
 
@@ -59,6 +60,12 @@
     _calcPageDimentions = function() {
       var width  = container.width(),
           height = container.height();
+
+      if (settings.direction === "horizontal") {
+        width = width - parseInt(settings.scribe, 10);
+      } else {
+        height = height - parseInt(settings.scribe, 10);
+      };
 
       pageDimentions = {
         "width" : width,
@@ -131,19 +138,19 @@
 
     _calcNewPage = function(direction) {
       var scroll = {
-        "up" : function() {
+        "up": function() {
           scrollBorder.y = scrollBorder.y + pageDimentions.height;
           page++;
         },
-        "down" : function() {
+        "down": function() {
           scrollBorder.y = scrollBorder.y - pageDimentions.height;
           page--;
         },
-        "left" : function() {
+        "left": function() {
           scrollBorder.x = scrollBorder.x + pageDimentions.width;
           page++;
         },
-        "right" : function() {
+        "right": function() {
           scrollBorder.x = scrollBorder.x - pageDimentions.width;
           page--;
         }
@@ -171,22 +178,32 @@
     },
 
     sizePages = function() {
-      var pageCssProperties = { "padding" : 0 };
+      var pageCssProperties = containerStyles,
+          direction = {
+            "horizontal": function() {
+              $.extend(pageCssProperties, {
+                "float": "left"
+              });
+
+              container.find(settings.pageContainer).css({
+                "width"        : pageDimentions.width * pages.length,
+                "padding-right": settings.scribe
+              });
+            },
+            "vertical": function() {
+              container.css({"height": pageDimentions.height + parseInt(settings.scribe, 10)});
+              container.find(settings.pageContainer).css({"padding-bottom": settings.scribe});
+            }
+          };
 
       _calcPageDimentions();
 
       $.extend(pageCssProperties, {
-        "height" : pageDimentions.height + "px",
-        "width"  : pageDimentions.width  + "px",
+        "height" : pageDimentions.height,
+        "width"  : pageDimentions.width
       });
 
-      if (settings.direction === "horizontal") {
-        $.extend(pageCssProperties, {"display": "table-cell"});
-
-        container.find(settings.pageContainer).css({"width": pageDimentions.width * pages.length + "px"});
-      } else if (settings.direction === "vertical") {
-        container.css({"height": pageDimentions.height + "px"});
-      };
+      direction[settings.direction]();
 
       pages.each(function() {
         $(this).css(pageCssProperties);
@@ -211,9 +228,7 @@
       this.data("dragend", instance);
     };
 
-    if (typeof options === "string") {
-      instance.swipe(options);
-    };
+    if (typeof options === "string") instance.swipe(options);
 
     return this;
   };
