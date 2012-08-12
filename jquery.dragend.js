@@ -35,7 +35,11 @@
           "pageContainer"     : "ul",
           "minTouchDistance"  : "40",
           "keyboardNavigation": false,
-          "scribe"            : 0
+          "scribe"            : 0,
+          "hammerSettings"     : {
+            "drag_min_distance": 0,
+            "css_hacks"        : false
+          }
       },
       keycodes = {
           "37": "left",
@@ -88,12 +92,12 @@
       callback && callback(container, activeElement);
       activeElement.trigger("active");
 
-      container.on("drag", {"drag_min_distance": 0 }, function(event) {
+      container.on("drag", settings.hammerSettings, function(event) {
         event.stopPropagation();
 
-        _scrollTo( - event.distanceY + scrollBorder.y, - event.distanceX + scrollBorder.x)
+        _scrollTo( - event.distanceY + scrollBorder.y, - event.distanceX + scrollBorder.x);
 
-      }).on("dragend", {"drag_min_distance": 0 }, function(event) {
+      }).on("dragend", settings.hammerSettings, function(event) {
           event.stopPropagation();
 
           if (event.distance > settings.minTouchDistance) {
@@ -140,19 +144,19 @@
       var scroll = {
         "up": function() {
           scrollBorder.y = scrollBorder.y + pageDimentions.height;
-          page++;
+          if (page < pages.length - 1) page++;
         },
         "down": function() {
           scrollBorder.y = scrollBorder.y - pageDimentions.height;
-          page--;
+          if (page >= 0) page--;
         },
         "left": function() {
           scrollBorder.x = scrollBorder.x + pageDimentions.width;
-          page++;
+          if (page < pages.length - 1) page++;
         },
         "right": function() {
           scrollBorder.x = scrollBorder.x - pageDimentions.width;
-          page--;
+          if (page > 0) page--;
         }
       };
 
@@ -186,6 +190,7 @@
               });
 
               container.find(settings.pageContainer).css({
+                "overflow"     : "hidden",
                 "width"        : pageDimentions.width * pages.length,
                 "padding-right": settings.scribe
               });

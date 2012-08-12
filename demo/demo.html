@@ -6,9 +6,6 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
 
-  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
-  <link href='http://fonts.googleapis.com/css?family=Arvo:400,700' rel='stylesheet' type='text/css'>
-
   <style type="text/css">
 
     * {
@@ -18,7 +15,7 @@
     }
 
     body {
-      background: #EAFDF2;
+      background: #F6F6F6;
       color: #333745;
       font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
     }
@@ -48,17 +45,23 @@
     }
 
     h1 {
-      margin-left: 40px;
+      margin: 0 15px 0 40px;
       color: #DAEDE2;
-      display: inline;
+      display: inline-block;
       font-size: 28px;
       font-weight: 700;
     }
 
     h2 {
       color: #DAEDE2;
-      display: inline;
-      font-size: 20px;
+      display: inline-block;
+      font-size: 18px;
+      font-weight: 400;
+    }
+
+    h3 {
+      color: #77C4D3;
+      font-size: 18px;
       font-weight: 400;
     }
 
@@ -72,22 +75,51 @@
 
     #swipe-container .content {
       padding: 100px 40px 20px;
+      position: relative;
     }
 
     #swipe-container .content p {
-      font-size: 17px;
-      line-height: 25px;
+      width: 50%;
+      font-size: 19px;
+      line-height: 27px;
+      margin-bottom: 20px;
     }
 
-    #navigation {
+    .page {
+      position: relative;
+    }
+
+    .next,
+    .previous {
       position: absolute;
-      bottom: 0;
-      left: 50%;
-      margin-left: -100px;
-      width: 200px;
+      opacity: 0;
+      -webkit-transition: opacity 0.5s;
+         -moz-transition: opacity 0.5s;
+           -o-transition: opacity 0.5s;
+              transition: opacity 0.5s;
+    }
+
+    .next {
+      bottom: 40px;
+      right: 40px;
+    }
+
+    .previous {
+      bottom: 40px;
+      left: 40px;
+    }
+
+    .active .next,
+    .active .previous {
+      opacity: 1;
     }
 
   </style>
+
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Arvo:400,700' rel='stylesheet' type='text/css'>
+
+  <script type="text/javascript" src="./../src/lib/modernizr.custom-2.6.1.js"></script>
 
 </head>
 <body>
@@ -97,33 +129,42 @@
   </header>
 
   <div id="swipe-container">
-    <ul>
+    <ul id="pages">
       <li class="page">
         <div class="content">
           <p>dragend.js is a lightweight (853 bytes gzipped) swipe plugin for <a href="http://jquery.com/">jQuery</a>. It's <a href="https://github.com/Stereobit/dragend">open source</a> and uses <a href="http://eightmedia.github.com/hammer.js/">hammer.js</a> for tracking multi-touch gestures.</p>
-          <h2>Features</h2>
+          <h3>Features</h3>
           <ul>
-            <li></li>
+            <li>Keyboard navigation</li>
+          </ul>
+
+          <h3>Browser Support</h3>
+          <ul>
+            <li>Firefox 3.5+</li>
+            <li>Chrome</li>
+            <li>IE 8+</li>
+            <li>Safari 4+</li>
+            <li>Safari on iOS 5+</li>
+            <li>Opera 11+</li>
           </ul>
         </div>
+        <div class="next">Usage</div>
       </li>
       <li class="page">
         <div class="content">
           <h3>Usage</h3>
         </div>
+        <div class="previous">Info</div>
+        <div class="next">Configuration</div>
       </li>
       <li class="page">
         <div class="content">
           <h3>Configuration</h3>
         </div>
+        <div class="previous">Usage</div>
       </li>
     </ul>
   </div>
-
-  <ul id ="navigation">
-    <li id="left">left</li>
-    <li id="right">right</li>
-  </ul>
 
   <script type="text/javascript" src="./../src/lib/jquery-1.8.0.js"></script>
   <script type="text/javascript" src="./../src/lib/hammer-0.6.1.js"></script>
@@ -133,13 +174,21 @@
   <script>
 
     $(function() {
-      $("#swipe-container").dragend({"keyboardNavigation": true, "scribe": "100px"});
+      $("#swipe-container").dragend({
+        "keyboardNavigation": true,
+        "scribe"            : "100px",
+        "pageContainer"     : "ul#pages",
+        "pageElements"      : "li.page"
+      }, function(container, element) {
+        container.find("li.page").removeClass("active");
+        element.addClass("active");
+      });
 
-      $("#left").on("click", function() {
+      $(".next").on("click", function() {
         $("#swipe-container").dragend("left");
       });
 
-      $("#right").on("click", function() {
+      $(".previous").on("click", function() {
         $("#swipe-container").dragend("right");
       });
     });
