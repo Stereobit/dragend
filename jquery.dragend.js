@@ -52,7 +52,7 @@
         "padding" : 0
       };
 
-  var dragend = function(container, options, callback) {
+  var dragend = function(container, options) {
 
     var scrollBorder = { x: 0, y: 0 },
         page = 0,
@@ -84,12 +84,12 @@
     },
 
     _observeDrag = function() {
-      var activeElement = $(pages[page])
+      var activeElement = $(pages[page]);
 
       scrollBorder.x = container.scrollLeft();
       scrollBorder.y = container.scrollTop();
 
-      callback && callback(container, activeElement);
+      settings.onSwipeEnd && settings.onSwipeEnd(container, activeElement);
       activeElement.trigger("active");
 
       container.on("drag", settings.hammerSettings, function(event) {
@@ -177,6 +177,9 @@
     },
 
     swipe = function(direction) {
+      var activeElement = $(pages[page]);
+      
+      settings.onSwipeStart && settings.onSwipeStart(container, activeElement);
       _calcNewPage(direction);
       _scrollToNextPage(scrollBorder.x, scrollBorder.y);
     },
@@ -225,11 +228,11 @@
     }
   };
   
-  $.fn.dragend = function(options, callback) {
+  $.fn.dragend = function(options) {
     var instance = this.data("dragend");
 
     if (!instance) {
-      instance = new dragend(this, options, callback);
+      instance = new dragend(this, options);
       this.data("dragend", instance);
     };
 

@@ -176,12 +176,15 @@
     $(function() {
       $("#swipe-container").dragend({
         "keyboardNavigation": true,
-        "scribe"            : "100px",
         "pageContainer"     : "ul#pages",
-        "pageElements"      : "li.page"
-      }, function(container, element) {
-        container.find("li.page").removeClass("active");
-        element.addClass("active");
+        "pageElements"      : "li.page",
+        "onSwipeStart"      : function(container, element) {
+          console.log(element);
+          element.removeClass("active");
+        },
+        "onSwipeEnd"        : function(container, element) {
+          element.addClass("active");
+        }
       });
 
       $(".next").on("click", function() {
