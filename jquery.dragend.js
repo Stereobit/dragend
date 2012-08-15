@@ -27,8 +27,8 @@
  ;(function($, window) {
   "use strict";
 
-  var WINDOW = $(window),
-      BODY = $(document.body),
+  var WINDOW,
+      BODY,
       defaultSettings = {
           "pageElements"      : "li",
           "direction"         : "horizontal",
@@ -164,27 +164,28 @@
     },
 
     _init = function() {
-      if (!options || typeof options === "object") {
-        settings = $.extend(defaultSettings, options);
-      };
-
-      pages = container.find(settings.pageElements);
+      WINDOW = $(window),
+      BODY = $(document.body);
 
       container.css(containerStyles);
-      sizePages();
+      sizePages(options);
       _observeDrag();
       _observeBody();
     },
 
     swipe = function(direction) {
       var activeElement = $(pages[page]);
-      
+
       settings.onSwipeStart && settings.onSwipeStart(container, activeElement);
       _calcNewPage(direction);
       _scrollToNextPage(scrollBorder.x, scrollBorder.y);
     },
 
-    sizePages = function() {
+    sizePages = function(options) {
+      if (!options || typeof options === "object") {
+        settings = $.extend(defaultSettings, options);
+      };
+
       var pageCssProperties = containerStyles,
           direction = {
             "horizontal": function() {
@@ -195,7 +196,8 @@
               container.find(settings.pageContainer).css({
                 "overflow"     : "hidden",
                 "width"        : pageDimentions.width * pages.length,
-                "padding-right": settings.scribe
+                "padding-right": settings.scribe,
+                "box-sizing"   : "content-box"
               });
             },
             "vertical": function() {
@@ -203,6 +205,8 @@
               container.find(settings.pageContainer).css({"padding-bottom": settings.scribe});
             }
           };
+
+      pages = container.find(settings.pageElements);
 
       _calcPageDimentions();
 
@@ -220,18 +224,20 @@
       _scrollTo();
     };
 
-    _init();
-    
+    _init()
+
     return {
       "swipe"    : swipe,
       "sizePages": sizePages
     }
   };
-  
+
   $.fn.dragend = function(options) {
     var instance = this.data("dragend");
 
-    if (!instance) {
+    if (instance) {
+      instance.sizePages(options);
+    } else {
       instance = new dragend(this, options);
       this.data("dragend", instance);
     };
