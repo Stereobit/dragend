@@ -95,7 +95,7 @@
       container.on("drag", settings.hammerSettings, function(event) {
         event.stopPropagation();
 
-        _scrollTo( - event.distanceY + scrollBorder.y, - event.distanceX + scrollBorder.x);
+        _scrollTo(- event.distanceX + scrollBorder.x,  - event.distanceY + scrollBorder.y);
 
       }).on("dragend", settings.hammerSettings, function(event) {
           event.stopPropagation();
@@ -131,8 +131,8 @@
       var y = y || scrollBorder.y,
           x = x || scrollBorder.x;
 
-      container.scrollTop(x)
-               .scrollLeft(y);
+      container.scrollTop(y)
+               .scrollLeft(x);
     },
 
     _scrollToNextPage = function() {
