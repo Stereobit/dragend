@@ -28,18 +28,7 @@
 
     a:hover {
       text-decoration: none;
-      -webkit-transform: scale(1.05,1.05);
-         -moz-transform: scale(1.05,1.05);
-           -o-transform: scale(1.05,1.05);
-              transform: scale(1.05,1.05);
       cursor: pointer;
-    }
-
-    a:active {
-      -webkit-transform: scale(0.95,0.95);
-         -moz-transform: scale(0.95,0.95);
-           -o-transform: scale(0.95,0.95);
-              transform: scale(0.95,0.95);
     }
 
     header {
@@ -52,6 +41,7 @@
       width: 100%;
       text-shadow: 2px 2px 0 rgba(0,0,0,0.5);
       display: block;
+      z-index: 1;
     }
 
     footer {
@@ -149,10 +139,6 @@
     }
 
     .nav {
-      -webkit-transition: opacity 0.5s;
-         -moz-transition: opacity 0.5s;
-           -o-transition: opacity 0.5s;
-              transition: opacity 0.5s;
       padding: 15px;
       font-weight: 700;
       background: #EA2E49;
@@ -201,7 +187,7 @@
 <body>
 
   <header>
-    <h1>dragend JS </h1><h2>a jQuery plugin for content swiping</h2>
+    <h1 class="logo">dragend JS </h1><h2>a jQuery plugin for content swiping</h2>
   </header>
 
   <div id="swipe-container">
@@ -274,12 +260,16 @@
         "pageElements"      : "li.page"
       });
 
-      $(".next").on("click", function() {
+      $("a.next").on("click", function() {
         $("#swipe-container").dragend("left");
       });
 
-      $(".previous").on("click", function() {
+      $("a.previous").on("click", function() {
         $("#swipe-container").dragend("right");
+      });
+
+      $("h1.logo").on("click", function() {
+        $("#swipe-container").dragend("reset");
       });
     });
 

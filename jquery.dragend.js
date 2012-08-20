@@ -95,7 +95,7 @@
       container.on("drag", settings.hammerSettings, function(event) {
         event.stopPropagation();
 
-        _scrollTo(- event.distanceX + scrollBorder.x,  - event.distanceY + scrollBorder.y);
+        _scrollTo( - event.distanceX + scrollBorder.x,  - event.distanceY + scrollBorder.y);
 
       }).on("dragend", settings.hammerSettings, function(event) {
           event.stopPropagation();
@@ -118,7 +118,7 @@
 
         if (direction) {
           _calcNewPage(direction);
-          _scrollToNextPage(scrollBorder.x, scrollBorder.y);
+          _scrollToPage();
         };
       });
     },
@@ -135,7 +135,7 @@
                .scrollLeft(x);
     },
 
-    _scrollToNextPage = function() {
+    _scrollToPage = function() {
       _stopDragObserving();
       container.animate({ scrollLeft: scrollBorder.x, scrollTop: scrollBorder.y}, 200, "linear", _observeDrag);
     },
@@ -157,6 +157,11 @@
         "right": function() {
           scrollBorder.x = scrollBorder.x - pageDimentions.width;
           if (page > 0) page--;
+        },
+        "reset": function() {
+          scrollBorder.y = 0;
+          scrollBorder.x = 0;
+          page = 0;
         }
       };
 
@@ -178,7 +183,7 @@
 
       settings.onSwipeStart && settings.onSwipeStart(container, activeElement);
       _calcNewPage(direction);
-      _scrollToNextPage(scrollBorder.x, scrollBorder.y);
+      _scrollToPage();
     },
 
     sizePages = function(options) {
