@@ -146,8 +146,6 @@
     _checkTranslateSupport = function() {
       if ('WebKitCSSMatrix' in window && 'm11' in new WebKitCSSMatrix()) {
 
-        alert("webkit");
-
         scroll = {
           "horizontal": function(x, y) {
             pageContainer.css("-webkit-transform", "translate3d(" + x + "px, 0, 0)");
