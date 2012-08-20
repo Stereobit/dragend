@@ -63,7 +63,7 @@
     }
 
     h1 {
-      margin: 0 15px 0 40px;
+      margin: 0 15px 0 0;
       color: #DAEDE2;
       display: inline-block;
       font-size: 28px;
@@ -92,11 +92,16 @@
       left: 0;
     }
 
+    .confine,
     #swipe-container .content {
-      padding: 100px 40px 20px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    #swipe-container .content {
+      padding: 110px 40px 20px;
       position: relative;
       text-shadow: 1px 1px 0 rgba(255,255,255,0.5);
-      max-width: 800px;
     }
 
     #swipe-container .content:after {
@@ -187,7 +192,9 @@
 <body>
 
   <header>
-    <h1 class="logo">dragend JS </h1><h2>a jQuery plugin for content swiping</h2>
+    <div class="confine">
+      <h1 class="logo">dragend JS </h1><h2>a jQuery plugin for content swiping</h2>
+    </div>
   </header>
 
   <div id="swipe-container">
@@ -243,7 +250,9 @@
   </div>
 
   <footer>
-    &copy; 2012 <a href="http://stereob.it/">Tobias Otte</a>, Licensed under <a href="http://www.opensource.org/licenses/mit-license.php">MIT-style license</a>, This project was initiated by the <a href="http://www.xing.com/">XING AG</a>
+    <div class="confine">
+      &copy; 2012 <a href="http://stereob.it/">Tobias Otte</a>, Licensed under <a href="http://www.opensource.org/licenses/mit-license.php">MIT-style license</a>, This project was initiated by the <a href="http://www.xing.com/">XING AG</a>
+    </div>
   </footer>
 
   <script type="text/javascript" src="./../src/lib/jquery-1.8.0.js"></script>
