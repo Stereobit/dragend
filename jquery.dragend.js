@@ -58,6 +58,7 @@
 
     var scrollBorder = { x: 0, y: 0 },
         page = 0,
+        preventScroll = false,
         settings,
         pageContainer,
         pageDimentions,
@@ -91,15 +92,13 @@
     _observeDrag = function() {
       var activeElement = $(pages[page]);
 
-      pageContainer.css("-webkit-transition", "-webkit-transform 0");
-
       settings.onSwipeEnd && settings.onSwipeEnd(container, activeElement);
       activeElement.trigger("active");
 
       container.on("drag", settings.hammerSettings, function(event) {
         event.stopPropagation();
 
-        _scrollTo(event.distanceX - scrollBorder.x, event.distanceY - scrollBorder.y);
+        if (!preventScroll) _scrollTo(event.distanceX - scrollBorder.x, event.distanceY - scrollBorder.y);
 
       }).on("dragend", settings.hammerSettings, function(event) {
           event.stopPropagation();
@@ -127,10 +126,6 @@
       });
     },
 
-    _stopDragObserving = function() {
-      container.off("drag dragend");
-    },
-
     _scrollTo = function(x, y) {
       var y = y || - scrollBorder.y,
           x = x || - scrollBorder.x;
@@ -139,7 +134,7 @@
     },
 
     _scrollToPage = function() {
-      _stopDragObserving();
+      preventScroll = true;
       animateScroll();
     },
 
@@ -160,7 +155,8 @@
           _scrollTo();
 
           window.setTimeout(function() {
-            _observeDrag();
+            preventScroll = false;
+            pageContainer.css("-webkit-transition", "-webkit-transform 0");
           }, settings.duration);
         }
 
@@ -176,7 +172,9 @@
         };
 
         animateScroll = function() {
-          pageContainer.animate({ "margin-left": - scrollBorder.x, "margin-top": - scrollBorder.y}, settings.duration, "linear", _observeDrag);
+          pageContainer.animate({ "margin-left": - scrollBorder.x, "margin-top": - scrollBorder.y}, settings.duration, "linear", function() {
+            preventScroll = false;
+          });
         }
       };
     },
