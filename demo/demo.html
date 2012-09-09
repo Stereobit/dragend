@@ -2,7 +2,7 @@
 <html>
 <head>
 
-  <title>dragend.js &ndash; a jQuery plugin for content swiping</title>
+  <title>dragend JS &ndash; a jQuery plugin for content swiping</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
 
@@ -12,6 +12,10 @@
       padding: 0;
       margin: 0;
       border: 0;
+    }
+
+    html {
+      font-size: 10px;
     }
 
     body {
@@ -58,7 +62,7 @@
       display: block;
       text-shadow: 1px 1px 0 rgba(0,0,0,0.5);
       color: #DAEDE2;
-      font-size: 15px;
+      font-size: 1.5rem;
       box-sizing: border-box;
     }
 
@@ -70,20 +74,20 @@
       margin: 0 15px 0 0;
       color: #DAEDE2;
       display: inline-block;
-      font-size: 28px;
+      font-size: 2.8rem;
       font-weight: 700;
     }
 
     h2 {
       color: #DAEDE2;
       display: inline-block;
-      font-size: 18px;
+      font-size: 1.8rem;
       font-weight: 400;
     }
 
     h3 {
       color: #77C4D3;
-      font-size: 22px;
+      font-size: 2.2rem;
       font-weight: 400;
       margin-bottom: 10px;
     }
@@ -128,14 +132,14 @@
     }
 
     #swipe-container .content p {
-      font-size: 19px;
+      font-size: 1.9rem;
       line-height: 27px;
       margin-bottom: 20px;
     }
 
     #swipe-container .content ul {
-      margin: 0 0 20px 20px;
-      font-size: 17px;
+      margin: 0 0 30px 25px;
+      font-size: 1.7rem;
       line-height: 24px;
     }
 
@@ -153,7 +157,7 @@
       background: #EA2E49;
       display: inline-block;
       color: #DAEDE2;
-      font-size: 23px;
+      font-size: 2.3rem;
       border-radius: 2px;
       text-shadow: 2px 2px 0 rgba(0,0,0,0.2);
       box-shadow: 2px 2px 0 rgba(0,0,0,0.5);
@@ -185,6 +189,35 @@
       margin-bottom: 20px;
     }
 
+    #demo img {
+      width: 100%;
+      -webkit-user-drag: none;
+    }
+
+    #demo li {
+      position: relative
+    }
+
+    #demo .copyright {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      background: rgba(0,0,0,0.5);
+      color: #fff;
+      font-size: 1.4rem;
+      width: 100%;
+    }
+
+    #demo .copyright div {
+      padding: 10px;
+    }
+
+    @media all and (max-height: 600px) {
+      html {
+        font-size: 9px;
+      }
+    }
+
   </style>
 
   <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
@@ -206,16 +239,17 @@
       <li class="page">
         <div class="content">
           <div class="left">
-            <p>dragend.js is a swipe plugin for <a href="http://jquery.com/">jQuery</a>. It's <a href="https://github.com/Stereobit/dragend">open source</a> and uses <a href="http://eightmedia.github.com/hammer.js/">hammer.js</a> for observing multi-touch gestures.</p>
-            <p>The current version is 0.1.0 alpha. The first release is near!</p>
+            <p>dragend JS is a swipe plugin for <a href="http://jquery.com/">jQuery</a>. It's <a href="https://github.com/Stereobit/dragend">open source</a> and uses <a href="http://eightmedia.github.com/hammer.js/">hammer.js</a> for observing multi-touch gestures.</p>
+            <p>The current version is 0.1.0 beta. The first release is near!</p>
             <h3>Features</h3>
             <ul>
-              <li>Horizontal and vertical swiping</li>
-              <li>Lightweight (853 bytes gzipped)</li>
-              <li>Keyboard navigation</li>
-              <li>Fullscreen or boxed</li>
-              <li>Contend scribe</li>
-              <li>Resize adjustment</li>
+              <li>horizontal and vertical swiping</li>
+              <li>lightweight (1.08KB gzipped)</li>
+              <li>keyboard navigation</li>
+              <li>fullscreen or boxed</li>
+              <li>contend scribe</li>
+              <li>resize adjustment</li>
+              <li>overscroll</li>
             </ul>
           </div>
 
@@ -236,11 +270,38 @@
       <li class="page">
         <div class="content">
           <h3>Getting started</h3>
-          <div class="code">
-            $("#swipe-container").dragend();
+          <div class="left">
+            <p>To activate dragend JS just call the function on a jQuery element:</p>
+            <div class="code">
+              $("#swipe-container").dragend();
+            </div>
+            <a class="nav previous">Info</a>
+            <a class="nav next">Configuration</a>
           </div>
-          <a class="nav previous">Info</a>
-          <a class="nav next">Configuration</a>
+          <div class="right">
+            <div id="demo">
+              <ul>
+                <li>
+                  <img src="./../src/img/demo-image-1.jpg" alt="">
+                  <div class="copyright">
+                    <div>Copyright by <a href="http://www.flickr.com/photos/ishmaelo/212317535/">ishmaelo</a></div>
+                  </div>
+                </li>
+                <li>
+                  <img src="./../src/img/demo-image-2.jpg" alt="">
+                  <div class="copyright">
+                    <div>Copyright by <a href="http://www.flickr.com/photos/pagedooley/6132821813/">pagedooley</a></div>
+                  </div>
+                </li>
+                <li>
+                  <img src="./../src/img/demo-image-3.jpg" alt="">
+                  <div class="copyright">
+                    <div>Copyright by <a href="http://www.flickr.com/photos/msabbath/2350853664/">msabbath</a></div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
       </li>
       <li class="page">
@@ -271,6 +332,10 @@
         "keyboardNavigation": true,
         "pageContainer"     : "ul#pages",
         "pageElements"      : "li.page"
+      });
+
+      $("#demo").dragend({
+        "scribe": "50px"
       });
 
       $("a.next").on("click", function() {

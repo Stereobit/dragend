@@ -392,11 +392,6 @@ function Hammer(element, options, undefined)
                     return;
                 }
 
-                var interim_angle = getAngle(_pos.interim || _pos.start[0], _pos.move[0]),
-                    interim_direction = self.getDirectionFromAngle(interim_angle);
-                _pos.interim = _pos.move[0];
-
-
                 _gesture = 'drag';
 
                 var position = { x: _pos.move[0].x - _offset.left,
@@ -409,9 +404,7 @@ function Hammer(element, options, undefined)
                     distance        : _distance,
                     distanceX       : _distance_x,
                     distanceY       : _distance_y,
-                    angle           : _angle,
-                    interim_angle: interim_angle,
-                    interim_direction: interim_direction
+                    angle           : _angle
                 };
 
                 // on the first time trigger the start event
@@ -594,7 +587,7 @@ function Hammer(element, options, undefined)
 
                 _mousedown = false;
                 _event_end = event;
-                
+
                 var dragging = _gesture == 'drag';
 
                 // swipe gesture
