@@ -1,6 +1,6 @@
 dragend.js, Readme File:
 ==============================================================================
-2012-08-04, [Tobias Otte]
+2012-09-09, [Tobias Otte]
 
 # DESCRIPTION
 
@@ -15,18 +15,18 @@ The script is licensed under [MIT License](http://www.opensource.org/licenses/mi
 # UPDATES/FEEDBACK & BUGS
 
 ##Planed features
--
+---
 
 ##Known Bugs
--
+---
 
 # CHANGELOG
 
 * 2012-09-9
-  * 0.1.0 beta release
+  0.1.0 beta release
 
 * 2012-08-12
-  * 0.1.0 alpha release
+  0.1.0 alpha release
 
 * 2012-08-04
-  * Creation
+  Creation
