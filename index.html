@@ -27,8 +27,7 @@
     a {
       color: #EA2E49;
       text-decoration: none;
-      display: inline-block;
-    }
+     }
 
     a:hover {
       text-decoration: none;
@@ -65,7 +64,7 @@
       display: block;
       text-shadow: 1px 1px 0 rgba(0,0,0,0.5);
       color: #DAEDE2;
-      font-size: 1.5rem;
+      font-size: 1.3rem;
       line-height: 2rem;
       box-sizing: border-box;
       -webkit-box-shadow: inset 0px 5px 20px 0px rgba(0, 0, 0, 0.5);
@@ -136,7 +135,7 @@
     }
 
     #swipe-container .content ul {
-      margin: 0 0 3rem 2.5rem;
+      margin: 0 0 2rem 2.5rem;
       font-size: 1.7rem;
       line-height: 2.4rem;
     }
@@ -155,7 +154,7 @@
       background: #EA2E49;
       display: inline-block;
       color: #DAEDE2;
-      font-size: 2.3rem;
+      font-size: 2rem;
       border-radius: 2px;
       text-shadow: 2px 2px 0 rgba(0,0,0,0.2);
       box-shadow: 2px 2px 0 rgba(0,0,0,0.5);
@@ -187,9 +186,8 @@
       font-size: 1.5rem;
     }
 
-    #demo img {
-      width: 100%;
-      -webkit-user-drag: none;
+    #demo {
+      height: 429px;
     }
 
     #demo li {
@@ -208,6 +206,37 @@
 
     #demo .copyright div {
       padding: 10px;
+    }
+
+    .image-cutter {
+      overflow: hidden;
+    }
+
+    #demo img {
+      -webkit-user-drag: none;
+    }
+
+    .clfx:before,
+    .clfx:after {
+      content: " ";
+      display: table;
+    }
+
+    .clfx:after {
+      clear: both;
+    }
+
+    .clfx {
+      *zoom: 1;
+    }
+
+    .overflow {
+      overflow: hidden;
+      padding: 0 5px 2rem 0;
+    }
+
+    #swipe-container .content .download {
+      font-size: 1.5rem;
     }
 
     @media all and (min-height: 700px) {
@@ -258,7 +287,7 @@
   <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
   <link href='http://fonts.googleapis.com/css?family=Arvo:400,700' rel='stylesheet' type='text/css'>
 
-  <script type="text/javascript" src="./../src/lib/modernizr.custom-2.6.1.js"></script>
+  <script type="text/javascript" src="./src/lib/modernizr.custom-2.6.1.js"></script>
 
 </head>
 <body>
@@ -289,6 +318,11 @@
           </div>
 
           <div class="right">
+            <h3>Download</h3>
+            <ul class="download">
+              <li><a href="https://raw.github.com/Stereobit/dragend/0.1.0/dist/jquery.dragend-0.1.0.js">Download development version (unminified, with comments)</a></li>
+              <li><a href="https://raw.github.com/Stereobit/dragend/0.1.0/dist/jquery.dragend-0.1.0.min.js">Download production version (1.29k minified &amp; compressed)</a></li>
+            </ul>
             <h3>Browser Support</h3>
             <ul>
               <li>Firefox 3.5+</li>
@@ -298,14 +332,16 @@
               <li>Safari on iOS 5+</li>
               <li>Opera 11+</li>
             </ul>
-            <a class="nav next">Getting started</a>
+            <div class="overflow">
+              <a class="nav next">Getting started</a>
+            </div>
           </div>
         </div>
       </li>
       <li class="page">
         <div class="content">
-          <h3>Getting started</h3>
           <div class="left">
+            <h3>Getting started</h3>
             <p>To activate dragend JS just call the function on a jQuery element:</p>
             <div class="code">
               $("#swipe-container").dragend();
@@ -317,19 +353,25 @@
             <div id="demo">
               <ul>
                 <li>
-                  <img src="./src/img/demo-image-1.jpg" alt="">
+                  <div class="image-cutter">
+                    <img src="./src/img/demo-image-1.jpg" alt="">
+                  </div>
                   <div class="copyright">
                     <div>Copyright by <a href="http://www.flickr.com/photos/ishmaelo/212317535/">ishmaelo</a></div>
                   </div>
                 </li>
                 <li>
-                  <img src="./src/img/demo-image-2.jpg" alt="">
+                  <div class="image-cutter">
+                    <img src="./src/img/demo-image-2.jpg" alt="">
+                  </div>
                   <div class="copyright">
                     <div>Copyright by <a href="http://www.flickr.com/photos/pagedooley/6132821813/">pagedooley</a></div>
                   </div>
                 </li>
                 <li>
-                  <img src="./src/img/demo-image-3.jpg" alt="">
+                  <div class="image-cutter">
+                    <img src="./src/img/demo-image-3.jpg" alt="">
+                  </div>
                   <div class="copyright">
                     <div>Copyright by <a href="http://www.flickr.com/photos/msabbath/2350853664/">msabbath</a></div>
                   </div>
