@@ -35,7 +35,7 @@
   // (http://eightmedia.github.com/hammer.js/) for observing multi-touch
   // gestures. You can use dragend JS in fullscreen or boxed mode.
   //
-  // The current version is 0.1.0 beta. The first release is near!
+  // The current version is 0.1.0.
   //
   // Usage
   // =====================
