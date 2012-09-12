@@ -30,7 +30,8 @@
      }
 
     a:hover {
-      text-decoration: none;
+      text-decoration: underline;
+      color: #EA2E49;
       cursor: pointer;
     }
 
@@ -56,7 +57,7 @@
     }
 
     footer {
-      padding: 1.5rem 4rem;
+      padding: 1.5rem 4rem 1rem;
       position: absolute;
       bottom: 0;
       background: #333745;
@@ -65,12 +66,16 @@
       text-shadow: 1px 1px 0 rgba(0,0,0,0.5);
       color: #DAEDE2;
       font-size: 1.3rem;
-      line-height: 2rem;
+      line-height: 1.8rem;
       box-sizing: border-box;
       -webkit-box-shadow: inset 0px 5px 20px 0px rgba(0, 0, 0, 0.5);
          -moz-box-shadow: inset 0px 5px 20px 0px rgba(0, 0, 0, 0.5);
               box-shadow: inset 0px 5px 20px 0px rgba(0, 0, 0, 0.5);
       border-top: 1px solid #fff;
+    }
+
+    footer a {
+      color: #fff;
     }
 
     h1, h2, h3, .nav {
@@ -108,19 +113,19 @@
     }
 
     .confine,
-    #swipe-container .content {
+    #swipe-container .page-content {
       max-width: 800px;
       margin: 0 auto;
-      padding: 0 4rem;
+      padding: 0 2rem;
     }
 
-    #swipe-container .content {
-      padding: 11rem 4rem 2rem;
+    #swipe-container .page-content {
+      padding: 11rem 2rem 2rem;
       position: relative;
       text-shadow: 1px 1px 0 rgba(255,255,255,0.5);
     }
 
-    #swipe-container .content:after {
+    #swipe-container .page-content:after {
       clear: both;
       content: ".";
       display: block;
@@ -128,19 +133,19 @@
       visibility: hidden;
     }
 
-    #swipe-container .content p {
+    #swipe-container p {
       font-size: 1.9rem;
       line-height: 2.7rem;
       margin-bottom: 2rem;
     }
 
-    #swipe-container .content ul {
+    #swipe-container ul {
       margin: 0 0 2rem 2.5rem;
       font-size: 1.7rem;
       line-height: 2.4rem;
     }
 
-    #swipe-container .content li {
+    #swipe-container li {
       margin-bottom: 0.5rem;
     }
 
@@ -159,6 +164,10 @@
       text-shadow: 2px 2px 0 rgba(0,0,0,0.2);
       box-shadow: 2px 2px 0 rgba(0,0,0,0.5);
       margin-right: 1rem;
+    }
+
+    .nav:hover {
+      color: #DAEDE2;
     }
 
     .previous:before {
@@ -181,7 +190,7 @@
     .code {
       font-family: monospace;
       padding: 2rem;
-      background: #DAEDE2;
+      background: #F6F792;
       margin-bottom: 2rem;
       font-size: 1.5rem;
     }
@@ -202,6 +211,11 @@
       color: #fff;
       font-size: 1.4rem;
       width: 100%;
+      text-shadow: none;
+    }
+
+    #demo .copyright a {
+      color: #fff;
     }
 
     #demo .copyright div {
@@ -270,15 +284,28 @@
     }
 
     @media all and (min-width: 700px) {
-      #swipe-container .content .left {
+      #swipe-container .left {
         float: left;
         width: 50%;
       }
 
-      #swipe-container .content .right {
+      #swipe-container .right {
         width: auto;
         margin-left: 50%;
-        padding-left: 30px;
+      }
+
+      #swipe-container .left .content {
+        padding-right: 20px;
+      }
+
+      #swipe-container .right .content {
+        padding-left: 20px;
+      }
+    }
+
+    @media all and (max-width: 700px) {
+      html {
+        font-size: 8px;
       }
     }
 
@@ -301,88 +328,95 @@
   <div id="swipe-container">
     <ul id="pages">
       <li class="page">
-        <div class="content">
+        <div class="page-content">
           <div class="left">
-            <p>dragend JS is a swipe plugin for <a href="http://jquery.com/">jQuery</a>. It's <a href="https://github.com/Stereobit/dragend">open source</a> and uses <a href="http://eightmedia.github.com/hammer.js/">hammer.js</a> for observing multi-touch gestures.</p>
-            <p>The current version is 0.1.0.</p>
-            <h3>Features</h3>
-            <ul>
-              <li>horizontal and vertical swiping</li>
-              <li>lightweight (1.29KB gzipped)</li>
-              <li>keyboard navigation</li>
-              <li>fullscreen or boxed</li>
-              <li>contend scribe</li>
-              <li>resize adjustment</li>
-              <li>overscroll</li>
-            </ul>
-          </div>
-
-          <div class="right">
-            <h3>Download</h3>
-            <ul class="download">
-              <li><a href="https://raw.github.com/Stereobit/dragend/0.1.0/dist/jquery.dragend-0.1.0.js">Download development version (unminified, with comments)</a></li>
-              <li><a href="https://raw.github.com/Stereobit/dragend/0.1.0/dist/jquery.dragend-0.1.0.min.js">Download production version (1.29k minified &amp; compressed)</a></li>
-            </ul>
-            <h3>Browser Support</h3>
-            <ul>
-              <li>Firefox 3.5+</li>
-              <li>Chrome</li>
-              <li>IE 8+</li>
-              <li>Safari 4+</li>
-              <li>Safari on iOS 5+</li>
-              <li>Opera 11+</li>
-            </ul>
-            <div class="overflow">
-              <a class="nav next">Getting started</a>
-            </div>
-          </div>
-        </div>
-      </li>
-      <li class="page">
-        <div class="content">
-          <div class="left">
-            <h3>Getting started</h3>
-            <p>To activate dragend JS just call the function on a jQuery element:</p>
-            <div class="code">
-              $("#swipe-container").dragend();
-            </div>
-            <a class="nav previous">Info</a>
-            <a class="nav next">Configuration</a>
-          </div>
-          <div class="right">
-            <div id="demo">
+            <div class="content">
+              <p>dragend JS is a swipe plugin for <a href="http://jquery.com/">jQuery</a>. It's <a href="https://github.com/Stereobit/dragend">open source</a> and uses <a href="http://eightmedia.github.com/hammer.js/">hammer.js</a> for observing multi-touch gestures.</p>
+              <p>The current version is 0.1.0.</p>
+              <h3>Features</h3>
               <ul>
-                <li>
-                  <div class="image-cutter">
-                    <img src="./src/img/demo-image-1.jpg" alt="">
-                  </div>
-                  <div class="copyright">
-                    <div>Copyright by <a href="http://www.flickr.com/photos/ishmaelo/212317535/">ishmaelo</a></div>
-                  </div>
-                </li>
-                <li>
-                  <div class="image-cutter">
-                    <img src="./src/img/demo-image-2.jpg" alt="">
-                  </div>
-                  <div class="copyright">
-                    <div>Copyright by <a href="http://www.flickr.com/photos/pagedooley/6132821813/">pagedooley</a></div>
-                  </div>
-                </li>
-                <li>
-                  <div class="image-cutter">
-                    <img src="./src/img/demo-image-3.jpg" alt="">
-                  </div>
-                  <div class="copyright">
-                    <div>Copyright by <a href="http://www.flickr.com/photos/msabbath/2350853664/">msabbath</a></div>
-                  </div>
-                </li>
+                <li>horizontal and vertical swiping</li>
+                <li>lightweight (1.29KB gzipped)</li>
+                <li>keyboard navigation</li>
+                <li>fullscreen or boxed</li>
+                <li>contend scribe</li>
+                <li>resize adjustment</li>
+                <li>overscroll</li>
               </ul>
             </div>
           </div>
+
+          <div class="right">
+            <div class="content">
+              <h3>Download</h3>
+              <ul class="download">
+                <li><a href="https://raw.github.com/Stereobit/dragend/0.1.0/dist/jquery.dragend-0.1.0.js">Download development version (unminified, with comments)</a></li>
+                <li><a href="https://raw.github.com/Stereobit/dragend/0.1.0/dist/jquery.dragend-0.1.0.min.js">Download production version (1.29k minified &amp; compressed)</a></li>
+              </ul>
+              <h3>Browser Support</h3>
+              <ul>
+                <li>Firefox 3.5+</li>
+                <li>Chrome</li>
+                <li>IE 8+</li>
+                <li>Safari 4+</li>
+                <li>Safari on iOS 5+</li>
+              </ul>
+              <div class="overflow">
+                <a class="nav next">Getting started</a>
+              </div>
+            </div>
+          </div>
         </div>
       </li>
       <li class="page">
-        <div class="content">
+        <div class="page-content">
+          <div class="left">
+            <div class="content">
+              <h3>Getting started</h3>
+              <p>To activate dragend JS just call the function on a jQuery element:</p>
+              <div class="code">
+                $("#demo").dragend();
+              </div>
+              <a class="nav previous">Info</a>
+              <a class="nav next">Configuration</a>
+            </div>
+          </div>
+          <div class="right">
+            <div class="content">
+              <div id="demo">
+                <ul>
+                  <li>
+                    <div class="image-cutter">
+                      <img src="./src/img/demo-image-2.jpg" alt="">
+                    </div>
+                    <div class="copyright">
+                      <div>Copyright by <a href="http://www.flickr.com/photos/pagedooley/6132821813/">pagedooley</a></div>
+                    </div>
+                  </li>
+                  <li>
+                    <div class="image-cutter">
+                      <img src="./src/img/demo-image-1.jpg" alt="">
+                    </div>
+                    <div class="copyright">
+                      <div>Copyright by <a href="http://www.flickr.com/photos/ishmaelo/212317535/">ishmaelo</a></div>
+                    </div>
+                  </li>
+                  <li>
+                    <div class="image-cutter">
+                      <img src="./src/img/demo-image-3.jpg" alt="">
+                    </div>
+                    <div class="copyright">
+                      <div>Copyright by <a href="http://www.flickr.com/photos/msabbath/2350853664/">msabbath</a></div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </li>
+      <li class="page">
+        <div class="page-content">
           <h3>Configuration</h3>
           <p>soon</p>
           <a class="nav previous">Getting started</a>
@@ -411,9 +445,7 @@
         "pageElements"      : "li.page"
       });
 
-      $("#demo").dragend({
-        "scribe": "50px"
-      });
+      $("#demo").dragend();
 
       $("a.next").on("click", function() {
         $("#swipe-container").dragend("left");
