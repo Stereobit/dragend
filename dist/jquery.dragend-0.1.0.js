@@ -279,7 +279,8 @@
               });
 
               pageContainer.css({
-                "overflow"                   : "hidden",
+                "overflow-y"                 : "hidden",
+                "overflow-x"                 : "scroll",
                 "width"                      : pageDimentions.width * pages.length,
                 "padding-right"              : settings.scribe,
                 "box-sizing"                 : "content-box",
