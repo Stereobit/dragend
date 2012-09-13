@@ -8,6 +8,10 @@
 
   <style type="text/css">
 
+    ::-webkit-scrollbar {
+      display: none;
+    }
+
     * {
       padding: 0;
       margin: 0;
@@ -43,7 +47,6 @@
       left: 0;
       background: #333745;
       width: 100%;
-      text-shadow: 2px 2px 0 rgba(0,0,0,0.5);
       display: block;
       z-index: 1;
       -webkit-box-shadow: inset 0px -5px 20px 0px rgba(0, 0, 0, 0.5);
@@ -84,10 +87,24 @@
 
     h1 {
       margin: 0 1.5rem 0 0;
-      color: #DAEDE2;
+      color: rgba(218,237,226,0.9);
       display: inline-block;
       font-size: 4.3rem;
       font-weight: 700;
+/*      text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1), -1px -1px 1px rgba(0, 0, 0, 0.1), 5px 5px 0 rgba(246, 247, 146, 0.3), -5px -5px 0 rgba(234, 6, 73, 0.3);*/
+    }
+
+    h1 span {
+      background: rgba(218,237,226,1);
+      border: 1px solid rgba(0,0,0,0.8);
+      color: rgba(119,196,211,1);
+      border-radius: 100%;
+      display: inline-block;
+      width: 5rem;
+      height: 4.25rem;
+      font-size: 3rem;
+      text-align: center;
+      padding: 0.75rem 0 0;
     }
 
     h2 {
@@ -321,7 +338,7 @@
 
   <header>
     <div class="confine">
-      <h1 class="logo">dragend JS </h1><h2>a jQuery plugin for content swiping</h2>
+      <h1 class="logo">dragend <span>JS</span> </h1><h2>a jQuery plugin for content swiping</h2>
     </div>
   </header>
 

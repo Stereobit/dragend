@@ -271,16 +271,17 @@
     // ### Size pages
 
     sizePages = function() {
-      var pageCssProperties = $.extend({}, containerStyles),
+      var pageCssProperties = {},
           direction = {
             "horizontal": function() {
               $.extend(pageCssProperties, {
-                "float": "left"
+                "float"     : "left",
+                "overflow-x": "scroll",
+                "padding"   : 0
               });
 
               pageContainer.css({
-                "overflow-y"                 : "hidden",
-                "overflow-x"                 : "scroll",
+                "overflow"                   : "hidden",
                 "width"                      : pageDimentions.width * pages.length,
                 "padding-right"              : settings.scribe,
                 "box-sizing"                 : "content-box",
