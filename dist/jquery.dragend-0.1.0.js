@@ -24,7 +24,7 @@
  *
  */
 
- ;(function($, window) {
+ ;( function( $, window ) {
   "use strict";
 
   // Welcome To dragend JS
@@ -73,11 +73,12 @@
       "minTouchDistance"  : "40",
       "keyboardNavigation": false,
       "scribe"            : 0,
-      "duration"          : 400,
+      "duration"          : 300,
       "hammerSettings"    : {
         "drag_min_distance": 0,
         "css_hacks"        : false,
-        "swipe"            : false
+        "swipe"            : false,
+        "prevent_default"  : true
       }
     },
     keycodes = {
@@ -95,8 +96,8 @@
 
     // Cached objects
     var
-      WINDOW = $(window),
-      BODY   = $(document.body),
+      WINDOW = $( window ),
+      BODY   = $( document.body ),
 
       scrollBorder  = { x: 0, y: 0 },
       page          = 0,
@@ -121,11 +122,11 @@
         width  = container.width(),
         height = container.height();
 
-      if (settings.direction === "horizontal") {
-        width = width - parseInt(settings.scribe, 10);
+      if ( settings.direction === "horizontal" ) {
+        width = width - parseInt( settings.scribe, 10 );
         scrollBorder.x = width * page;
       } else {
-        height = height - parseInt(settings.scribe, 10);
+        height = height - parseInt( settings.scribe, 10 );
         scrollBorder.y = height * page;
       }
 
@@ -144,12 +145,12 @@
     // Drag event
 
     _overscroll = {
-      "right": function(event) {
-        if (!scrollBorder.x) {
-          return (event.distanceX - scrollBorder.x) / 4;
+      "right": function( event ) {
+        if ( !scrollBorder.x ) {
+          return ( event.distanceX - scrollBorder.x ) / 4;
         }
       },
-      "left": function(event) {
+      "left": function( event ) {
         if ((pages.length - 1) * pageDimentions.width <= scrollBorder.x) {
           return - ((pages.length - 1) * pageDimentions.width) + event.distanceX / 4;
         }
@@ -286,8 +287,8 @@
           "horizontal": function() {
             $.extend(pageCssProperties, {
               "float"     : "left",
-              "overflow-x": "scroll",
-              "overflow-y": "hidden",
+              "overflow-y": "scroll",
+              "overflow-x": "hidden",
               "padding"   : 0
             });
 
@@ -466,22 +467,22 @@
   };
 
   // Register jQuery plugin
-  $.fn.dragend = function(options) {
-    var instance = this.data("dragend");
+  $.fn.dragend = function( options ) {
+    var instance = this.data( "dragend" );
 
     // check if instance already created
-    if (instance) {
-      instance.updateInstance(options);
+    if ( instance ) {
+      instance.updateInstance( options );
     } else {
-      instance = new Dragend(this, options);
-      this.data("dragend", instance);
+      instance = new Dragend( this, options );
+      this.data( "dragend", instance );
     }
 
     // check if should trigger swipe
-    if (typeof options === "string") instance.swipe(options);
+    if ( typeof options === "string" ) instance.swipe( options );
 
     // jQuery functions should always return the elment
     return this;
   };
 
-})(jQuery, window);
+})( jQuery, window );
