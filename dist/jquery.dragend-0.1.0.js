@@ -181,6 +181,13 @@
           event.preventDefault();
 
           if (event.distance > settings.minTouchDistance) {
+            if (
+                ((event.direction === "left" || event.direction === "right") && (settings.direction === "vertical")) ||
+                ((event.direction === "up" || event.direction === "down") && (settings.direction === "horizontal"))
+               ) {
+              _scrollToPage();
+              return;
+            }
             swipe(event.direction);
           } else {
             _scrollToPage();
@@ -289,8 +296,19 @@
               });
             },
             "vertical": function() {
+              $.extend(pageCssProperties, {
+                "overflow": "hidden",
+                "padding"   : 0
+              });
+
               container.css({"height": pageDimentions.height + parseInt(settings.scribe, 10)});
-              container.find(settings.pageContainer).css({"padding-bottom": settings.scribe});
+              pageContainer.css({
+                "padding-bottom"             : settings.scribe,
+                "box-sizing"                 : "content-box",
+                "-webkit-backface-visibility": "hidden",
+                "-webkit-perspective"        : 1000,
+                "margin"                     : 0
+              });
             }
           };
 
@@ -334,7 +352,7 @@
           }
         },
         "down": function() {
-          if (page >= 0) {
+          if (page > 0) {
             scrollBorder.y = scrollBorder.y - pageDimentions.height;
             page--;
           }
@@ -372,6 +390,8 @@
     _onSwipeEnd = function() {
       preventScroll = false;
       activeElement.trigger("active");
+
+      // Call onSwipeEnd caalback function
       if (settings.onSwipeEnd) settings.onSwipeEnd(container, activeElement, page);
     },
 
@@ -418,6 +438,7 @@
     swipe = function(direction) {
       var activeElement = $(pages[page]);
 
+      // Call onSwipeStart caalback function
       if (settings.onSwipeStart) settings.onSwipeStart(container, activeElement);
       _scrollToPage(direction);
     },
