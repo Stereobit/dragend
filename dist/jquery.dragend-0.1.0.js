@@ -65,46 +65,49 @@
   // * duration
   // * hammerSettings
 
-  var defaultSettings = {
-          "pageContainer"     : "ul",
-          "pageElements"      : "li",
-          "direction"         : "horizontal",
-          "minTouchDistance"  : "40",
-          "keyboardNavigation": false,
-          "scribe"            : 0,
-          "duration"          : 400,
-          "hammerSettings"    : {
-            "drag_min_distance": 0,
-            "css_hacks"        : false
-          }
-      },
-      keycodes = {
-          "37": "left",
-          "38": "up",
-          "39": "right",
-          "40": "down"
-      },
-      containerStyles = {
-        "overflow": "hidden",
-        "padding" : 0
-      };
+  var
+    defaultSettings = {
+      "pageContainer"     : "ul",
+      "pageElements"      : "li",
+      "direction"         : "horizontal",
+      "minTouchDistance"  : "40",
+      "keyboardNavigation": false,
+      "scribe"            : 0,
+      "duration"          : 400,
+      "hammerSettings"    : {
+        "drag_min_distance": 0,
+        "css_hacks"        : false,
+        "swipe"            : false
+      }
+    },
+    keycodes = {
+      "37": "left",
+      "38": "up",
+      "39": "right",
+      "40": "down"
+    },
+    containerStyles = {
+      "overflow": "hidden",
+      "padding" : 0
+    },
 
-  var Dragend = function(container, options) {
+    Dragend = function(container, options) {
 
     // Cached objects
-    var WINDOW = $(window),
-        BODY   = $(document.body);
+    var
+      WINDOW = $(window),
+      BODY   = $(document.body),
 
-    var scrollBorder  = { x: 0, y: 0 },
-        page          = 0,
-        preventScroll = false,
-        settings      = $.extend({}, defaultSettings),
-        pageContainer,
-        pageDimentions,
-        pages,
-        activeElement,
-        _scroll,
-        _animateScroll,
+      scrollBorder  = { x: 0, y: 0 },
+      page          = 0,
+      preventScroll = false,
+      settings      = $.extend({}, defaultSettings),
+      pageContainer,
+      pageDimentions,
+      pages,
+      activeElement,
+      _scroll,
+      _animateScroll,
 
     // Private functions
     // =================
@@ -114,8 +117,9 @@
     // Updates the page dimentions values
 
     _calcPageDimentions = function() {
-      var width  = container.width(),
-          height = container.height();
+      var
+        width  = container.width(),
+        height = container.height();
 
       if (settings.direction === "horizontal") {
         width = width - parseInt(settings.scribe, 10);
@@ -171,8 +175,9 @@
         event.stopPropagation();
         event.preventDefault();
 
-        var x = Math.round(_overscroll[event.direction](event)) || event.distanceX - scrollBorder.x,
-            y = Math.round(_overscroll[event.direction](event)) || event.distanceY - scrollBorder.y;
+        var
+          x = Math.round(_overscroll[event.direction](event)) || event.distanceX - scrollBorder.x,
+          y = Math.round(_overscroll[event.direction](event)) || event.distanceY - scrollBorder.y;
 
         if (!preventScroll) _scroll[settings.direction](x, y);
 
@@ -275,42 +280,43 @@
     // ### Size pages
 
     sizePages = function() {
-      var pageCssProperties = {},
-          direction = {
-            "horizontal": function() {
-              $.extend(pageCssProperties, {
-                "float"     : "left",
-                "overflow-x": "scroll",
-                "overflow-y": "hidden",
-                "padding"   : 0
-              });
+      var
+        pageCssProperties = {},
+        direction = {
+          "horizontal": function() {
+            $.extend(pageCssProperties, {
+              "float"     : "left",
+              "overflow-x": "scroll",
+              "overflow-y": "hidden",
+              "padding"   : 0
+            });
 
-              pageContainer.css({
-                "overflow"                   : "hidden",
-                "width"                      : pageDimentions.width * pages.length,
-                "padding-right"              : settings.scribe,
-                "box-sizing"                 : "content-box",
-                "-webkit-backface-visibility": "hidden",
-                "-webkit-perspective"        : 1000,
-                "margin"                     : 0
-              });
-            },
-            "vertical": function() {
-              $.extend(pageCssProperties, {
-                "overflow": "hidden",
-                "padding"   : 0
-              });
+            pageContainer.css({
+              "overflow"                   : "hidden",
+              "width"                      : pageDimentions.width * pages.length,
+              "padding-right"              : settings.scribe,
+              "box-sizing"                 : "content-box",
+              "-webkit-backface-visibility": "hidden",
+              "-webkit-perspective"        : 1000,
+              "margin"                     : 0
+            });
+          },
+          "vertical": function() {
+            $.extend(pageCssProperties, {
+              "overflow": "hidden",
+              "padding"   : 0
+            });
 
-              container.css({"height": pageDimentions.height + parseInt(settings.scribe, 10)});
-              pageContainer.css({
-                "padding-bottom"             : settings.scribe,
-                "box-sizing"                 : "content-box",
-                "-webkit-backface-visibility": "hidden",
-                "-webkit-perspective"        : 1000,
-                "margin"                     : 0
-              });
-            }
-          };
+            container.css({"height": pageDimentions.height + parseInt(settings.scribe, 10)});
+            pageContainer.css({
+              "padding-bottom"             : settings.scribe,
+              "box-sizing"                 : "content-box",
+              "-webkit-backface-visibility": "hidden",
+              "-webkit-perspective"        : 1000,
+              "margin"                     : 0
+            });
+          }
+        };
 
       pages = container.find(settings.pageElements);
       pageContainer = container.find(settings.pageContainer);
