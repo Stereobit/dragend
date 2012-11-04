@@ -1,8 +1,9 @@
 /*
  * Hammer.JS
- * version 0.6.1
+ * version 0.6.2
  * author: Eight Media
  * https://github.com/EightMedia/hammer.js
+ * Licensed under the MIT license.
  */
 function Hammer(element, options, undefined)
 {
@@ -12,7 +13,6 @@ function Hammer(element, options, undefined)
         // prevent the default event or not... might be buggy when false
         prevent_default    : false,
         css_hacks          : true,
-        cancel_event       : true,
 
         swipe              : true,
         swipe_time         : 200,   // ms
@@ -124,8 +124,7 @@ function Hammer(element, options, undefined)
      * @param  float    angle
      * @return string   direction
      */
-    this.getDirectionFromAngle = function( angle )
-    {
+    this.getDirectionFromAngle = function( angle ) {
         var directions = {
             down: angle >= 45 && angle < 135, //90
             left: angle >= 135 || angle <= -135, //180
@@ -141,6 +140,22 @@ function Hammer(element, options, undefined)
             }
         }
         return direction;
+    };
+
+
+    /**
+     * destory events
+     * @return  void
+     */
+    this.destroy = function() {
+        if(_has_touch) {
+            removeEvent(element, "touchstart touchmove touchend touchcancel", handleEvents);
+        }
+        // for non-touch
+        else {
+            removeEvent(element, "mouseup mousedown mousemove", handleEvents);
+            removeEvent(element, "mouseout", handleMouseOut);
+        }
     };
 
 
@@ -179,9 +194,9 @@ function Hammer(element, options, undefined)
         }
         // multitouch, return array with positions
         else {
-            var pos = [], src, touches = event.touches.length > 0 ? event.touches : event.changedTouches;
-            for(var t=0, len=touches.length; t<len; t++) {
-                src = touches[t];
+            var pos = [], src;
+            for(var t=0, len=event.touches.length; t<len; t++) {
+                src = event.touches[t];
                 pos.push({ x: src.pageX, y: src.pageY });
             }
             return pos;
@@ -199,6 +214,17 @@ function Hammer(element, options, undefined)
         return Math.atan2(pos2.y - pos1.y, pos2.x - pos1.x) * 180 / Math.PI;
     }
 
+    /**
+     * calculate the distance between two points
+     * @param   object  pos1 { x: int, y: int }
+     * @param   object  pos2 { x: int, y: int }
+     */
+    function getDistance( pos1, pos2 )
+    {
+        var x = pos2.x - pos1.x, y = pos2.y - pos1.y;
+        return Math.sqrt((x * x) + (y * y));
+    }
+
 
     /**
      * calculate the scale size between two fingers
@@ -209,16 +235,8 @@ function Hammer(element, options, undefined)
     function calculateScale(pos_start, pos_move)
     {
         if(pos_start.length == 2 && pos_move.length == 2) {
-            var x, y;
-
-            x = pos_start[0].x - pos_start[1].x;
-            y = pos_start[0].y - pos_start[1].y;
-            var start_distance = Math.sqrt((x*x) + (y*y));
-
-            x = pos_move[0].x - pos_move[1].x;
-            y = pos_move[0].y - pos_move[1].y;
-            var end_distance = Math.sqrt((x*x) + (y*y));
-
+            var start_distance = getDistance(pos_start[0], pos_start[1]);
+            var end_distance = getDistance(pos_move[0], pos_move[1]);
             return end_distance / start_distance;
         }
 
@@ -235,16 +253,8 @@ function Hammer(element, options, undefined)
     function calculateRotation(pos_start, pos_move)
     {
         if(pos_start.length == 2 && pos_move.length == 2) {
-            var x, y;
-
-            x = pos_start[0].x - pos_start[1].x;
-            y = pos_start[0].y - pos_start[1].y;
-            var start_rotation = Math.atan2(y, x) * 180 / Math.PI;
-
-            x = pos_move[0].x - pos_move[1].x;
-            y = pos_move[0].y - pos_move[1].y;
-            var end_rotation = Math.atan2(y, x) * 180 / Math.PI;
-
+            var start_rotation = getAngle(pos_start[1], pos_start[0]);
+            var end_rotation = getAngle(pos_move[1], pos_move[0]);
             return end_rotation - start_rotation;
         }
 
@@ -278,8 +288,6 @@ function Hammer(element, options, undefined)
 
     function cancelEvent(event)
     {
-        if (!options.cancel_event) { return; };
-
         event = event || window.event;
         if(event.preventDefault){
             event.preventDefault();
@@ -588,7 +596,6 @@ function Hammer(element, options, undefined)
                 _mousedown = false;
                 _event_end = event;
 
-                var dragging = _gesture == 'drag';
 
                 // swipe gesture
                 gestures.swipe(event);
@@ -596,7 +603,7 @@ function Hammer(element, options, undefined)
 
                 // drag gesture
                 // dragstart is triggered, so dragend is possible
-                if(dragging) {
+                if(_gesture == 'drag') {
                     triggerEvent("dragend", {
                         originalEvent   : event,
                         direction       : _direction,
@@ -621,15 +628,25 @@ function Hammer(element, options, undefined)
 
                 _prev_gesture = _gesture;
 
-                // trigger release event
+                // trigger release event.
+                // "release" by default doesn't return the co-ords where your
+                // finger was released. "position" will return "the last touched co-ords"
                 triggerEvent("release", {
                     originalEvent   : event,
-                    gesture         : _gesture
+                    gesture         : _gesture,
+                    position        : _pos.move || _pos.start
                 });
 
                 // reset vars
                 reset();
                 break;
+        }
+    }
+
+
+    function handleMouseOut(event) {
+        if(!isInsideHammer(element, event.relatedTarget)) {
+            handleEvents(event);
         }
     }
 
@@ -642,11 +659,7 @@ function Hammer(element, options, undefined)
     // for non-touch
     else {
         addEvent(element, "mouseup mousedown mousemove", handleEvents);
-        addEvent(element, "mouseout", function(event) {
-            if(!isInsideHammer(element, event.relatedTarget)) {
-                handleEvents(event);
-            }
-        });
+        addEvent(element, "mouseout", handleMouseOut);
     }
 
 
@@ -728,6 +741,25 @@ function Hammer(element, options, undefined)
             }
             else if(document.attachEvent){
                 element.attachEvent("on"+ types[t], callback);
+            }
+        }
+    }
+
+
+    /**
+     * detach event
+     * @param   node    element
+     * @param   string  types
+     * @param   object  callback
+     */
+    function removeEvent(element, types, callback) {
+        types = types.split(" ");
+        for(var t= 0,len=types.length; t<len; t++) {
+            if(element.removeEventListener){
+                element.removeEventListener(types[t], callback, false);
+            }
+            else if(document.detachEvent){
+                element.detachEvent("on"+ types[t], callback);
             }
         }
     }
