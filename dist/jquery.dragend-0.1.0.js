@@ -66,6 +66,7 @@
   // * hammerSettings
 
   var
+
     defaultSettings = {
       "pageContainer"     : "ul",
       "pageElements"      : "li",
@@ -81,18 +82,20 @@
         "prevent_default"  : true
       }
     },
+
     keycodes = {
       "37": "left",
       "38": "up",
       "39": "right",
       "40": "down"
     },
+
     containerStyles = {
       "overflow": "hidden",
       "padding" : 0
     },
 
-    Dragend = function(container, options) {
+    Dragend = function( container, options ) {
 
     // Cached objects
     var
@@ -118,16 +121,21 @@
     // Updates the page dimentions values
 
     _calcPageDimentions = function() {
+
       var
         width  = container.width(),
         height = container.height();
 
       if ( settings.direction === "horizontal" ) {
+
         width = width - parseInt( settings.scribe, 10 );
         scrollBorder.x = width * page;
+
       } else {
+
         height = height - parseInt( settings.scribe, 10 );
         scrollBorder.y = height * page;
+
       }
 
       pageDimentions = {
@@ -147,22 +155,30 @@
     _overscroll = {
       "right": function( event ) {
         if ( !scrollBorder.x ) {
+
           return ( event.distanceX - scrollBorder.x ) / 4;
+
         }
       },
       "left": function( event ) {
         if ((pages.length - 1) * pageDimentions.width <= scrollBorder.x) {
+
           return - ((pages.length - 1) * pageDimentions.width) + event.distanceX / 4;
+
         }
       },
       "down": function(event) {
         if (!scrollBorder.y) {
+
           return (event.distanceY - scrollBorder.y) / 4;
+
         }
       },
       "up": function(event) {
         if ((pages.length - 1) * pageDimentions.height <= scrollBorder.y) {
+
           return - ((pages.length - 1) * pageDimentions.height) + event.distanceY / 4;
+
         }
       }
     },
