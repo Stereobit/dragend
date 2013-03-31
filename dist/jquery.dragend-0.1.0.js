@@ -255,10 +255,10 @@
         .on("drag", this.settings.hammerSettings, this._onDrag.bind(this))
         .on("dragend", this.settings.hammerSettings, this._ondragend.bind(this));
 
-      WINDOW.on("resize", this._sizePages);
+      WINDOW.on("resize", this._sizePages.bind(this));
 
       if (this.settings.keyboardNavigation) {
-        BODY.on("keydown", this._onKeydown);
+        BODY.on("keydown", this._onKeydown.bind(this));
       }
 
     },
