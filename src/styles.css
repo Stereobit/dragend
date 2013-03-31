@@ -47,8 +47,8 @@ header {
 footer {     
   margin-top: 2rem;
   display: block;
-  font-size: 1.4rem;
-  line-height: 1.8rem;
+  font-size: 1.3rem;
+  line-height: 1.7rem;
   box-sizing: border-box;
   position: absolute;
   bottom: 0;
@@ -58,8 +58,12 @@ footer {
 }
 
 footer .confine {
-  padding: 2.2rem 3rem;
+  padding: 1.8rem 2.4rem;
   position: relative;
+}
+
+footer a {
+  color: #DAEDE2;
 }
 
 h1, h2, h3, .nav {
@@ -104,7 +108,7 @@ h3 {
 
 #contend {
   border-top: 10rem solid transparent;
-  border-bottom: 5rem solid transparent;
+  border-bottom: 4rem solid transparent;
   box-sizing: border-box;
   width: 100%;
   height: 100%;
@@ -119,6 +123,12 @@ h3 {
   position: absolute;
   top: 0;
   left: 0;
+  opacity: 0;
+  -webkit-transition: opacity 0.6s ease-in-out;
+     -moz-transition: opacity 0.6s ease-in-out;
+      -ms-transition: opacity 0.6s ease-in-out;
+       -o-transition: opacity 0.6s ease-in-out;
+          transition: opacity 0.6s ease-in-out;
 }
 
 .confine,
@@ -129,7 +139,7 @@ h3 {
 }
 
 #swipe-container .page-content {
-  padding: 3rem 2rem;
+  padding: 2rem 2rem;
   position: relative;
   text-shadow: 1px 1px 0 rgba(255,255,255,0.5);
 }
