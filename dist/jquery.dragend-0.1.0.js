@@ -83,7 +83,6 @@
       "hammerSettings"    : {
         "drag_min_distance": 0,
         "css_hacks"        : false,
-        "swipe"            : false,
         "prevent_default"  : true
       }
     },
@@ -217,29 +216,29 @@
     // Drag event
 
     _overscroll: function(event) {
-      switch (event.direction) {
+      switch (event.gesture.direction) {
 
         case "right":
           if ( !this.scrollBorder.x ) {
-            return ( event.distanceX - this.scrollBorder.x ) / 4;
+            return ( event.gesture.deltaX - this.scrollBorder.x ) / 4;
           }
           break;
 
         case "left":
           if ((this.pages.length - 1) * this.pageDimentions.width <= this.scrollBorder.x) {
-            return - ((this.pages.length - 1) * this.pageDimentions.width) + event.distanceX / 4;
+            return - ((this.pages.length - 1) * this.pageDimentions.width) + event.gesture.deltaX / 4;
           }
           break;
 
         case "down":
           if (!this.scrollBorder.y) {
-            return (event.distanceY - this.scrollBorder.y) / 4;
+            return (event.gesture.deltaY - this.scrollBorder.y) / 4;
           }
           break;
 
         case "up":
           if ((this.pages.length - 1) * this.pageDimentions.height <= this.scrollBorder.y) {
-            return - ((this.pages.length - 1) * this.pageDimentions.height) + event.distanceY / 4;
+            return - ((this.pages.length - 1) * this.pageDimentions.height) + event.gesture.deltaY / 4;
           }
           break;
 
@@ -251,7 +250,7 @@
     // Sets the observers for drag, resize and key events
 
     _observe: function() {
-      this.container
+      this.container.hammer()
         .on("drag", this.settings.hammerSettings, this._onDrag.bind(this))
         .on("dragend", this.settings.hammerSettings, this._ondragend.bind(this));
 
@@ -268,8 +267,8 @@
       event.preventDefault();
 
       if (!this.preventScroll) {
-        var x = Math.round(this._overscroll(event)) || event.distanceX - this.scrollBorder.x,
-            y = Math.round(this._overscroll(event)) || event.distanceY - this.scrollBorder.y;
+        var x = Math.round(this._overscroll(event)) || event.gesture.deltaX - this.scrollBorder.x,
+            y = Math.round(this._overscroll(event)) || event.gesture.deltaY - this.scrollBorder.y;
 
         this._scroll(x, y);
       }
@@ -280,15 +279,15 @@
       event.stopPropagation();
       event.preventDefault();
 
-      if (event.distance > this.settings.minTouchDistance) {
+      if (event.gesture.distance > this.settings.minTouchDistance) {
         if (
-            ((event.direction === "left" || event.direction === "right") && (this.settings.direction === "vertical")) ||
-            ((event.direction === "up" || event.direction === "down") && (this.settings.direction === "horizontal"))
+            ((event.gesture.direction === "left" || event.gesture.direction === "right") && (this.settings.direction === "vertical")) ||
+            ((event.gesture.direction === "up" || event.gesture.direction === "down") && (this.settings.direction === "horizontal"))
            ) {
           this._scrollToPage();
           return;
         }
-        this.swipe(event.direction);
+        this.swipe(event.gesture.direction);
       } else {
         this._scrollToPage();
       }
