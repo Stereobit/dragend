@@ -496,6 +496,8 @@
 
       $("body").on("resize", function(event) {
         event.preventDefault();
+      }).on("touchmove", function(event){
+        event.preventDefault();
       });
     });
 
