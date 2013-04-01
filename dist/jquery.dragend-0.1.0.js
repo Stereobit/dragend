@@ -125,19 +125,19 @@
     withTranslateMethodes = {
       // ### Scroll translate
       //
-      // Animation lookup table when translate is supported
+      // Animation when translate is supported
       //
       // Takes:
       // x and y values to go with
 
-      _scroll: function( x, y ) {
+      _scroll: function( coordinates ) {
         switch ( this.settings.direction ) {
           case "horizontal":
-            this.pageContainer.css( "-webkit-transform", "translate3d(" + x + "px, 0, 0)" );
+            this.pageContainer.css( "-webkit-transform", "translate3d(" + coordinates.x + "px, 0, 0)" );
             break;
 
           case "vertical":
-            this.pageContainer.css( "-webkit-transform", "translate3d(0, " + y + "px, 0)" );
+            this.pageContainer.css( "-webkit-transform", "translate3d(0, " + coordinates.y + "px, 0)" );
             break;
         }
       },
@@ -148,7 +148,10 @@
         this.activeElement = this.pages.eq( this.page );
 
         this.pageContainer.css( "-webkit-transition", "-webkit-transform " + this.settings.duration + "ms ease-out" );
-        this._scroll( - this.scrollBorder.x, - this.scrollBorder.y );
+        this._scroll({
+          x: - this.scrollBorder.x,
+          y: - this.scrollBorder.y
+        });
 
         window.setTimeout( $.proxy( this.afterScroll, this ), this.settings.duration );
       },
@@ -213,34 +216,47 @@
     // Takes:
     // Drag event
 
-    _overscroll: function( event ) {
-      switch ( event.gesture.direction ) {
+    _overscroll: function( direction, x, y ) {
+      var coordinates = {
+        x: x,
+        y: y
+      };
+
+      switch ( direction ) {
 
         case "right":
           if ( !this.scrollBorder.x ) {
-            return (event.gesture.deltaX - this.scrollBorder.x) / 4;
+            Math.round( coordinates.x = (x - this.scrollBorder.x) / 5 );
+            return coordinates;
           }
           break;
 
         case "left":
           if ( (this.pages.length - 1) * this.pageDimentions.width <= this.scrollBorder.x ) {
-            return - ((this.pages.length - 1) * this.pageDimentions.width) + event.gesture.deltaX / 4;
+            coordinates.x = Math.round( - ((this.pages.length - 1) * this.pageDimentions.width) + x / 5 );
+            return coordinates;
           }
           break;
 
         case "down":
           if ( !this.scrollBorder.y ) {
-            return (event.gesture.deltaY - this.scrollBorder.y) / 4;
+            coordinates.y = Math.round( (y - this.scrollBorder.y) / 5 );
+            return coordinates;
           }
           break;
 
         case "up":
           if ( (this.pages.length - 1) * this.pageDimentions.height <= this.scrollBorder.y ) {
-            return - ((this.pages.length - 1) * this.pageDimentions.height) + event.gesture.deltaY / 4;
+            coordinates.y = Math.round( - ((this.pages.length - 1) * this.pageDimentions.height) + y / 5 );
+            return coordinates;
           }
           break;
-
       }
+
+      return {
+        x: x - this.scrollBorder.x,
+        y: y - this.scrollBorder.y
+      };
     },
 
     // Observe
@@ -250,7 +266,9 @@
     _observe: function() {
       this.container.hammer()
         .on( "drag", this.settings.hammerSettings, $.proxy( this._onDrag, this ) )
-        .on( "dragend", this.settings.hammerSettings, $.proxy( this._ondragend, this ) );
+        .on( "dragend", this.settings.hammerSettings, $.proxy( this._onDragend, this ) )
+        .on( "mousewheel", $.proxy( this._onMouseWheel, this ) )
+        .on( "mousewheelend", $.proxy( this._onMouseWheelEnd, this ) );
 
       WINDOW.on( "resize", $.proxy( this._sizePages, this ) );
 
@@ -261,32 +279,62 @@
     },
 
     _onDrag: function( event ) {
-      event.stopPropagation();
-      event.preventDefault();
+      var gesture = event.gesture,
+          coordinates = this._overscroll( gesture.direction, gesture.deltaX, gesture.deltaY );
 
       if ( !this.preventScroll ) {
-        var overScrollCheck = Math.round(this._overscroll(event)),
-            x = overScrollCheck || event.gesture.deltaX - this.scrollBorder.x,
-            y = overScrollCheck || event.gesture.deltaY - this.scrollBorder.y;
-
-        this._scroll( x, y );
+        this._scroll( coordinates );
       }
 
     },
 
-    _ondragend: function( event ) {
+    _onMouseWheel: function( event ) {
+      event.preventDefault();
+
+      var coordinates = this._overscroll( event.gesture.direction , event.gesture.deltaX / 20, event.gesture.deltaY / 20 );
+
+      if ( !this.preventScroll ) {
+        this._scroll( coordinates );
+      }
+    },
+
+    _onDragend: function( event ) {
+      var gestureDirection = event.gesture.direction;
+
       event.stopPropagation();
       event.preventDefault();
 
       if ( event.gesture.distance > this.settings.minTouchDistance ) {
         if (
-            ((event.gesture.direction === "left" || event.gesture.direction === "right") && (this.settings.direction === "vertical")) ||
-            ((event.gesture.direction === "up" || event.gesture.direction === "down") && (this.settings.direction === "horizontal"))
+            ((gestureDirection === "left" || gestureDirection === "right") && (this.settings.direction === "vertical")) ||
+            ((gestureDirection === "up" || gestureDirection === "down") && (this.settings.direction === "horizontal"))
            ) {
           this._scrollToPage();
           return;
         }
-        this.swipe( event.gesture.direction );
+        this.swipe( gestureDirection );
+      } else {
+        this._scrollToPage();
+      }
+    },
+
+    _onMouseWheelEnd: function(event) {
+      var gestureDirection = event.gesture.direction;
+
+      console.log(event.gesture.delta);
+
+      event.stopPropagation();
+      event.preventDefault();
+
+      if ( event.gesture.distance > this.settings.minTouchDistance ) {
+        if (
+            ((gestureDirection === "left" || gestureDirection === "right") && (this.settings.direction === "vertical")) ||
+            ((gestureDirection === "up" || gestureDirection === "down") && (this.settings.direction === "horizontal"))
+           ) {
+          this._scrollToPage();
+          return;
+        }
+        this.swipe( gestureDirection );
       } else {
         this._scrollToPage();
       }
@@ -473,7 +521,10 @@
         this._calcNewPage( options, pageNumber );
       }
 
-      this._scroll( - this.scrollBorder.x, - this.scrollBorder.y );
+      this._scroll({
+        x: - this.scrollBorder.x,
+        y: - this.scrollBorder.y
+      });
     },
 
     // Scroll to page
