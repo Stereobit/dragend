@@ -296,6 +296,8 @@
       if ( !this.preventScroll ) {
         this._scroll( coordinates );
       }
+
+      console.log(event);
     },
 
     _onDragend: function( event ) {
@@ -321,23 +323,14 @@
     _onMouseWheelEnd: function(event) {
       var gestureDirection = event.gesture.direction;
 
-      console.log(event.gesture.delta);
-
       event.stopPropagation();
       event.preventDefault();
 
-      if ( event.gesture.distance > this.settings.minTouchDistance ) {
-        if (
-            ((gestureDirection === "left" || gestureDirection === "right") && (this.settings.direction === "vertical")) ||
-            ((gestureDirection === "up" || gestureDirection === "down") && (this.settings.direction === "horizontal"))
-           ) {
-          this._scrollToPage();
-          return;
-        }
-        this.swipe( gestureDirection );
-      } else {
+      if ( Math.abs(event.gesture.delta) / 20 > this.settings.minTouchDistance ) {
         this._scrollToPage();
       }
+
+      console.log(event);
     },
 
     _onKeydown: function( event ) {
