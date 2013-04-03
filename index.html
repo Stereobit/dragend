@@ -84,25 +84,19 @@
                 <div id="demo">
                   <ul>
                     <li>
-                      <div class="image-cutter">
-                        <img src="./src/img/demo-image-2.jpg" alt="">
-                      </div>
+                      <img src="./src/img/demo-image-2.jpg" alt="" width="640" height="429">
                       <div class="copyright">
                         <div>Copyright by <a href="http://www.flickr.com/photos/pagedooley/6132821813/">pagedooley</a></div>
                       </div>
                     </li>
                     <li>
-                      <div class="image-cutter">
-                        <img src="./src/img/demo-image-1.jpg" alt="">
-                      </div>
+                      <img src="./src/img/demo-image-1.jpg" alt="" width="640" height="429">
                       <div class="copyright">
                         <div>Copyright by <a href="http://www.flickr.com/photos/ishmaelo/212317535/">ishmaelo</a></div>
                       </div>
                     </li>
                     <li>
-                      <div class="image-cutter">
-                        <img src="./src/img/demo-image-3.jpg" alt="">
-                      </div>
+                      <img src="./src/img/demo-image-3.jpg" alt="" width="640" height="429">
                       <div class="copyright">
                         <div>Copyright by <a href="http://www.flickr.com/photos/msabbath/2350853664/">msabbath</a></div>
                       </div>
@@ -116,8 +110,11 @@
         <li class="page">
           <div class="page-content">
             <h3>Configuration</h3>
-            <p>soon</p>
+            <p>You can configurate dragend js by overwriding the default config. You can also pass callback function for onSwipeStart and onSwipeEnd.</p>
+            <p>If you want to swipe after initializeing just call dragend again on the element with the direction you want to swipe to </p>
+            <p>For directily jumping or scrolling to a page call dragend again on the element and add jumpToPage or scrollToPage in the option object</p>
             <a class="nav previous">Getting started</a>
+            <a class="nav reset">Back to page one</a>
           </div>
         </li>
       </ul>
@@ -145,7 +142,10 @@
         "pageElements"      : "li.page"
       });
 
-      $("#demo").dragend();
+      $("#demo").dragend({
+        direction: "vertical",
+        scribe: "40px"
+      });
 
       $("a.next").on("click", function() {
         container.dragend("left");
@@ -155,7 +155,7 @@
         container.dragend("right");
       });
 
-      $("h1.logo").on("click", function() {
+      $("h1.logo, a.reset").on("click", function() {
         container.dragend("reset");
       });
 

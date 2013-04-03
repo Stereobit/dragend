@@ -84,7 +84,6 @@
       "hammerSettings"    : {
         "drag_min_distance": 0,
         "css_hacks"        : false,
-        "swipe"            : false,
         "prevent_default"  : true
       }
     },
@@ -281,6 +280,8 @@
       var gesture = event.gesture,
           coordinates = this._overscroll( gesture.direction, gesture.deltaX, gesture.deltaY );
 
+      event.stopPropagation();
+
       if ( !this.preventScroll ) {
         this._scroll( coordinates );
       }
@@ -320,33 +321,34 @@
         "float"     : "left",
         "overflow-y": "scroll",
         "overflow-x": "hidden",
-        "padding"   : 0
+        "padding"   : 0,
+        "display"   : "block"
       });
 
       this.pageContainer.css({
         "overflow"                   : "hidden",
         "width"                      : this.pageDimentions.width * this.pages.length,
-        "padding-right"              : this.settings.scribe,
         "box-sizing"                 : "content-box",
         "-webkit-backface-visibility": "hidden",
         "-webkit-perspective"        : 1000,
-        "margin"                     : 0
+        "margin"                     : 0,
+        "padding"                    : 0
       });
     },
 
     setVerticalContainerCssValues: function() {
       $.extend( this.pageCssProperties, {
         "overflow": "hidden",
-        "padding"   : 0
+        "padding" : 0,
+        "display" : "block"
       });
 
-      this.container.css( { "height": this.pageDimentions.height + parseInt(this.settings.scribe, 10) } );
       this.pageContainer.css({
-        "padding-bottom"             : this.settings.scribe,
-        "box-sizing"                 : "content-box",
-        "-webkit-backface-visibility": "hidden",
-        "-webkit-perspective"        : 1000,
-        "margin"                     : 0
+        "padding-bottom"              : this.settings.scribe,
+        "box-sizing"                  : "content-box",
+        "-webkit-backface-visibility" : "hidden",
+        "-webkit-perspective"         : 1000,
+        "margin"                      : 0
       });
     },
 
@@ -378,7 +380,7 @@
 
       } else {
 
-        height = height - parseInt( settings.scribe, 10 );
+        height = height - parseInt( this.settings.scribe, 10 );
         this.scrollBorder.y = height * this.page;
 
       }

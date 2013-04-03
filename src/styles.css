@@ -129,6 +129,10 @@ h3 {
       -ms-transition: opacity 0.6s ease-in-out;
        -o-transition: opacity 0.6s ease-in-out;
           transition: opacity 0.6s ease-in-out;
+  cursor: hand;
+  cursor:-moz-grab;
+  cursor:-webkit-grab;
+  cursor: grab;
 }
 
 .confine,
@@ -170,7 +174,6 @@ h3 {
   margin: 0 0 2rem 2.5rem;
   font-size: 1.9rem;
   line-height: 2.6rem;
-  cursor: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAACVBMVEUAAAAAAAD///+D3c/SAAAAAXRSTlMAQObYZgAAADFJREFUeNqdzLENADAIxMD49x86jdMgESSsb7iCswuckTgeGKkiUICkg+6F4q38YO4CYXsAxEWyUkoAAAAASUVORK5CYII=)
 }
 
 #swipe-container ul#pages {
@@ -202,6 +205,7 @@ h3 {
   box-shadow: 2px 2px 0 rgba(0,0,0,0.5);
   margin-right: 1rem;
   margin: 0 2px 2px 0;
+  cursor: pointer;
 }
 
 .nav:hover {
@@ -247,6 +251,11 @@ h3 {
   position: relative
 }
 
+#demo img {
+  display: block;
+  float: left;
+}
+
 #demo .copyright {
   position: absolute;
   bottom: 0;
@@ -264,10 +273,6 @@ h3 {
 
 #demo .copyright div {
   padding: 10px;
-}
-
-.image-cutter {
-  overflow: hidden;
 }
 
 #demo img {
