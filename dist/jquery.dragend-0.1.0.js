@@ -109,8 +109,6 @@
       this.pages         = container.find( this.settings.pageElements );
       this.scrollBorder  = { x: 0, y: 0 };
       this.page          = 0;
-      this.tempMouseWheelDeltaX = 0;
-      this.tempMouseWheelDeltaY = 0;
       this.preventScroll = false;
       this.pageCssProperties = {
         "margin": 0,
@@ -269,8 +267,7 @@
     _observe: function() {
       this.container.hammer()
         .on( "drag", this.settings.hammerSettings, $.proxy( this._onDrag, this ) )
-        .on( "dragend", this.settings.hammerSettings, $.proxy( this._onDragend, this ) )
-        .on( "mousewheel", $.proxy( this._onMouseWheel, this ) );
+        .on( "dragend", this.settings.hammerSettings, $.proxy( this._onDragend, this ) );
 
       WINDOW.on( "resize", $.proxy( this._sizePages, this ) );
 
@@ -308,76 +305,6 @@
       } else {
         this._scrollToPage();
       }
-    },
-
-    _onMouseWheel: function( event ) {
-      event.preventDefault();
-
-      this._setTempMouseWheelValues( event );
-
-      window.setTimeout($.proxy(this._checkForScrollEnd, this), 700, event);
-
-      var coordinates = this._overscroll( event.gesture.direction, this.tempMouseWheelDeltaX / 10, this.tempMouseWheelDeltaY / 10 );
-
-      if ( !this.preventScroll && !this.preventMouseScroll ) {
-        if ( Math.abs( this.tempMouseWheelDeltaX ) > this.settings.minScrollDistance ||
-             Math.abs( this.tempMouseWheelDeltaY ) > this.settings.minScrollDistance ) {
-          this.swipe( event.gesture.direction );
-          this._resetTempMouseWheelValues();
-          this.preventMouseScroll = true;
-          window.setTimeout($.proxy(function() {
-            this.preventMouseScroll = false;
-          }, this), 700);
-        } else {
-          this._scroll( coordinates );
-        }
-      }
-
-    },
-
-    _onMouseWheelEnd: function( event ) {
-      var gestureDirection = event.gesture.direction;
-
-      event.stopPropagation();
-      event.preventDefault();
-
-      if ( Math.abs(this.tempMouseWheelDeltaX) < this.settings.minScrollDistance &&
-           Math.abs(this.tempMouseWheelDeltaY) < this.settings.minScrollDistance ) {
-        this._scrollToPage();
-      }
-    },
-
-    _checkForScrollEnd: function( event ) {
-      var currentTimeStamp = new Date().getTime(),
-          stampDifference  = currentTimeStamp - this.lastMouseWheelTimestamp;
-
-      if (stampDifference >= 700) {
-        this._onMouseWheelEnd( event );
-        this._resetTempMouseWheelValues();
-      }
-
-    },
-
-    _setTempMouseWheelValues: function ( event ) {
-
-      if ( event.timeStamp - this.lastTimestamp > 700 ) {
-        this._resetTempMouseWheelValues();
-      } else {
-        this._updateTempMouseWheelValues(event);
-      }
-
-      this.lastMouseWheelTimestamp = event.timeStamp;
-
-    },
-
-    _resetTempMouseWheelValues: function() {
-      this.tempMouseWheelDeltaX = 0;
-      this.tempMouseWheelDeltaY = 0;
-    },
-
-    _updateTempMouseWheelValues: function( event ) {
-      this.tempMouseWheelDeltaX = this.tempMouseWheelDeltaX - event.gesture.deltaX;
-      this.tempMouseWheelDeltaY = this.tempMouseWheelDeltaY - event.gesture.deltaY;
     },
 
     _onKeydown: function( event ) {
