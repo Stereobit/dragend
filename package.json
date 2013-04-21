@@ -1,0 +1,18 @@
+{
+  "name": "dragend",
+  "version": "0.1.0",
+  "description": "A jQuery plugin for content swiping",
+  "keywords": [ "touch", "jquery", "mobile" ],
+  "repositories": [
+    {
+      "type": "git",
+      "url": "http://github.com/stereobit/dragend.git"
+    }
+  ],
+  "dependencies" : {
+    "jquery"   :  "1.9.0",
+    "hammerjs" :  "1.0.5"
+  },
+  "main": "jquery.dragend.js",
+  "license": "MIT"
+}
