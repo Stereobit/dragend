@@ -1,7 +1,7 @@
 /**
  * ---------------------------- DRAGEND JS -------------------------------------
  *
- * Version: 0.1.0 beta
+ * Version: 0.1.0
  * https://github.com/Stereobit/dragend
  * Copyright (c) 2012 Tobias Otte, t@stereob.it
  *
