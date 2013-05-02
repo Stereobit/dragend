@@ -172,14 +172,14 @@
       // Takes:
       // x and y values to go with
 
-      _scroll: function( x, y ) {
+      _scroll: function( coordinates ) {
         switch ( this.settings.direction ) {
           case "horizontal":
-            this.pageContainer.css( { "margin-left": x } );
+            this.pageContainer.css( { "margin-left": coordinates.x } );
             break;
 
           case "vertical":
-            this.pageContainer.css( { "margin-top": y } );
+            this.pageContainer.css( { "margin-top": coordinates.y } );
             break;
         }
       },
@@ -192,8 +192,9 @@
         this.pageContainer.animate({
           "margin-left": - this.scrollBorder.x,
           "margin-top": - this.scrollBorder.y
-        }, this.settings.duration, "linear", $.proxy( this.afterScroll, this ));
+        }, this.settings.duration, "linear", $.proxy( this._onSwipeEnd, this ));
       }
+
     };
 
   // ### Check translate support
