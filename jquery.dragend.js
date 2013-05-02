@@ -531,7 +531,7 @@
       this.activeElement = this.pages.eq( this.page );
 
       // Call onSwipeStart callback function
-      this.settings.onSwipeStart( container, this.activeElement );
+      this.settings.onSwipeStart( this.container, this.activeElement );
       this._scrollToPage( direction );
     },
 
