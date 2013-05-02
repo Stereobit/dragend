@@ -1,7 +1,7 @@
 /**
  * ---------------------------- DRAGEND JS -------------------------------------
  *
- * Version: 0.1.0
+ * Version: 0.1.1
  * https://github.com/Stereobit/dragend
  * Copyright (c) 2012 Tobias Otte, t@stereob.it
  *
@@ -35,7 +35,7 @@
   // (http://eightmedia.github.com/hammer.js/) for observing multi-touch
   // gestures. You can use dragend JS in fullscreen or boxed mode.
   //
-  // The current version is 0.1.0.
+  // The current version is 0.1.1
   //
   // Usage
   // =====================
@@ -73,31 +73,33 @@
 
     // Default setting
     defaultSettings = {
-      "pageContainer"     : "ul",
-      "pageElements"      : "li",
-      "direction"         : "horizontal",
-      "minTouchDistance"  : "40",
-      "minScrollDistance" : "500",
-      "keyboardNavigation": false,
-      "scribe"            : 0,
-      "duration"          : 300,
-      "hammerSettings"    : {
-        "drag_min_distance": 0,
-        "css_hacks"        : false,
-        "prevent_default"  : true
+      pageContainer      : "ul",
+      pageElements       : "li",
+      direction          : "horizontal",
+      minTouchDistance   : "40",
+      minScrollDistance  : "500",
+      onSwipeStart       : $.noop,
+      onSwipeEnd         : $.noop,
+      keyboardNavigation : false,
+      scribe             : 0,
+      duration           : 300,
+      hammerSettings     : {
+        drag_min_distance: 0,
+        css_hacks        : false,
+        prevent_default  : true
       }
     },
 
     keycodes = {
-      "37": "left",
-      "38": "up",
-      "39": "right",
-      "40": "down"
+      37: "left",
+      38: "up",
+      39: "right",
+      40: "down"
     },
 
     containerStyles = {
-      "overflow": "hidden",
-      "padding" : 0
+      overflow: "hidden",
+      padding : 0
     },
 
     Dragend = function( container, options ) {
@@ -110,8 +112,8 @@
       this.page          = 0;
       this.preventScroll = false;
       this.pageCssProperties = {
-        "margin": 0,
-        "border": 0
+        margin: 0,
+        border: 0
       };
 
       // Initialisation
@@ -170,28 +172,29 @@
       // Takes:
       // x and y values to go with
 
-      _scrollFallback: function( x, y ) {
+      _scroll: function( coordinates ) {
         switch ( this.settings.direction ) {
           case "horizontal":
-            this.pageContainer.css( { "margin-left": x } );
+            this.pageContainer.css( { "margin-left": coordinates.x } );
             break;
 
           case "vertical":
-            this.pageContainer.css( { "margin-top": y } );
+            this.pageContainer.css( { "margin-top": coordinates.y } );
             break;
         }
       },
 
       // ### Animated scroll without translate support
 
-      _animateScrollFallback: function() {
+      _animateScroll: function() {
         this.activeElement = this.pages.eq( this.page );
 
         this.pageContainer.animate({
           "margin-left": - this.scrollBorder.x,
           "margin-top": - this.scrollBorder.y
-        }, this.settings.duration, "linear", this._onSwipeEnd);
+        }, this.settings.duration, "linear", $.proxy( this._onSwipeEnd, this ));
       }
+
     };
 
   // ### Check translate support
@@ -277,22 +280,35 @@
     },
 
     _onDrag: function( event ) {
-      var gesture = event.gesture,
-          coordinates = this._overscroll( gesture.direction, gesture.deltaX, gesture.deltaY );
+      var gesture,
+          coordinates;
 
       event.stopPropagation();
 
-      if ( !this.preventScroll ) {
+      if ( event.gesture ) {
+          gesture = event.gesture,
+          coordinates = this._overscroll( gesture.direction, gesture.deltaX, gesture.deltaY );
+      } else {
+        throw new Error("Dragend JS detected some problems with the event handling. Maybe the user-drag CSS attribute can help.");
+      }
+
+      if ( gesture && !this.preventScroll ) {
         this._scroll( coordinates );
       }
 
     },
 
     _onDragend: function( event ) {
-      var gestureDirection = event.gesture.direction;
+      var gestureDirection;
 
       event.stopPropagation();
       event.preventDefault();
+
+      if (event.gesture) {
+        gestureDirection = event.gesture.direction;
+      } else {
+        throw new Error("Dragend JS detected some problems with the event handling. Maybe the user-drag CSS attribute can help.");
+      }
 
       if ( event.gesture.distance > this.settings.minTouchDistance ) {
         if (
@@ -318,7 +334,7 @@
 
     setHorizontalContainerCssValues: function() {
       $.extend( this.pageCssProperties, {
-        "float"     : "left",
+        "float"   : "left",
         "overflow-y": "scroll",
         "overflow-x": "hidden",
         "padding"   : 0,
@@ -386,8 +402,8 @@
       }
 
       this.pageDimentions = {
-        "width" : width,
-        "height": height
+        width : width,
+        height: height
       };
 
     },
@@ -400,8 +416,8 @@
       this.setContainerCssValues();
 
       $.extend( this.pageCssProperties, {
-        "height": this.pageDimentions.height,
-        "width" : this.pageDimentions.width
+        height: this.pageDimentions.height,
+        width : this.pageDimentions.width
       });
 
       this.pages.css( this.pageCssProperties );
@@ -472,9 +488,7 @@
       this.activeElement.trigger( "active" );
 
       // Call onSwipeEnd caalback function
-      if ( this.settings.onSwipeEnd ) {
-        this.settings.onSwipeEnd(this.container, this.activeElement, this.page);
-      }
+      this.settings.onSwipeEnd(this.container, this.activeElement, this.page);
     },
 
     // Jump to page
@@ -518,7 +532,7 @@
       this.activeElement = this.pages.eq( this.page );
 
       // Call onSwipeStart callback function
-      if ( this.settings.onSwipeStart ) this.settings.onSwipeStart( container, this.activeElement );
+      this.settings.onSwipeStart( this.container, this.activeElement );
       this._scrollToPage( direction );
     },
 
