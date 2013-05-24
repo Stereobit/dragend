@@ -102,6 +102,10 @@
       40: "down"
     },
 
+    errors = {
+      handling: "Dragend JS detected some problems with the event handling. Maybe the user-drag CSS attribute can help"
+    },
+
     containerStyles = {
       overflow: "hidden",
       padding : 0,
@@ -306,7 +310,7 @@
         coordinates = this._checkOverscroll( gesture.direction, gesture.deltaX, gesture.deltaY );
         this.settings.onDrag( this.activeElement, gesture, coordinates.overscroll );
       } else {
-        throw new Error("Dragend JS detected some problems with the event handling. Maybe the user-drag CSS attribute can help.");
+        throw new Error(errors.handling);
         return;
       }
 
@@ -325,11 +329,16 @@
       if (event.gesture) {
         gesture = event.gesture;
       } else {
-        throw new Error("Dragend JS detected some problems with the event handling. Maybe the user-drag CSS attribute can help.");
+        throw new Error(errors.handling);
         return;
       }
 
-      if ( event.gesture.distance > this.settings.minTouchDistance ) {
+      // TODO: This is ugly
+      if (
+          event.gesture.distance > this.settings.minTouchDistance &&
+          !((gesture.direction === "left" || gesture.direction === "right") && (this.settings.direction === "vertical")) &&
+          !((gesture.direction === "up" || gesture.direction === "down") && (this.settings.direction === "horizontal"))
+        ) {
         this.swipe( gesture.direction );
       } else {
         this._scrollToPage();
