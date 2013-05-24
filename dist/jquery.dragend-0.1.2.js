@@ -1,7 +1,7 @@
 /**
  * ---------------------------- DRAGEND JS -------------------------------------
  *
- * Version: 0.1.1
+ * Version: 0.1.2
  * https://github.com/Stereobit/dragend
  * Copyright (c) 2012 Tobias Otte, t@stereob.it
  *
@@ -35,7 +35,7 @@
   // (http://eightmedia.github.com/hammer.js/) for observing multi-touch
   // gestures. You can use dragend JS in fullscreen or boxed mode.
   //
-  // The current version is 0.1.1
+  // The current version is 0.1.2
   //
   // Usage
   // =====================
@@ -59,9 +59,12 @@
   // * direction: "horizontal" or "vertical"
   // * minTouchDistance: minuimum distance (in pixel) the user has to drag
   //   to swip
-  // * scripe: pixel value for a possible scripe
+  // * scribe: pixel value for a possible scribe
   // * onSwipeStart: callback function before the animation
   // * onSwipeEnd: callback function after the animation
+  // * onDrag: callback on drag
+  // * onDragEnd: callback on dragend
+  // * borderBetweenPages: if you need space between pages add a pixel value
   // * duration
   // * hammerSettings
 
@@ -76,12 +79,14 @@
       pageContainer      : "ul",
       pageElements       : "li",
       direction          : "horizontal",
-      minTouchDistance   : "40",
-      minScrollDistance  : "500",
+      minTouchDistance   : "0",
       onSwipeStart       : $.noop,
       onSwipeEnd         : $.noop,
+      onDrag             : $.noop,
+      onDragEnd          : $.noop,
       keyboardNavigation : false,
       scribe             : 0,
+      borderBetweenPages : 0,
       duration           : 300,
       hammerSettings     : {
         drag_min_distance: 0,
@@ -99,7 +104,8 @@
 
     containerStyles = {
       overflow: "hidden",
-      padding : 0
+      padding : 0,
+      cursor: "grab"
     },
 
     Dragend = function( container, options ) {
@@ -112,8 +118,7 @@
       this.page          = 0;
       this.preventScroll = false;
       this.pageCssProperties = {
-        margin: 0,
-        border: 0
+        margin: 0
       };
 
       // Initialisation
@@ -187,12 +192,21 @@
       // ### Animated scroll without translate support
 
       _animateScroll: function() {
+        var css;
+
         this.activeElement = this.pages.eq( this.page );
 
-        this.pageContainer.animate({
-          "margin-left": - this.scrollBorder.x,
-          "margin-top": - this.scrollBorder.y
-        }, this.settings.duration, "linear", $.proxy( this._onSwipeEnd, this ));
+        switch ( this.settings.direction ) {
+          case "horizontal":
+            css = { "margin-left": - this.scrollBorder.x };
+            break;
+
+          case "vertical":
+            css = { "margin-top": - this.scrollBorder.y };
+            break;
+        }
+
+        this.pageContainer.animate(css, this.settings.duration, "linear", $.proxy( this._onSwipeEnd, this ));
       }
 
     };
@@ -219,10 +233,11 @@
     // Takes:
     // Drag event
 
-    _overscroll: function( direction, x, y ) {
+    _checkOverscroll: function( direction, x, y ) {
       var coordinates = {
         x: x,
-        y: y
+        y: y,
+        overscroll: true
       };
 
       switch ( direction ) {
@@ -236,7 +251,7 @@
 
         case "left":
           if ( (this.pages.length - 1) * this.pageDimentions.width <= this.scrollBorder.x ) {
-            coordinates.x = Math.round( - ((this.pages.length - 1) * this.pageDimentions.width) + x / 5 );
+            coordinates.x = Math.round( - ((this.pages.length - 1) * (this.pageDimentions.width + this.settings.borderBetweenPages)) + x / 5 );
             return coordinates;
           }
           break;
@@ -250,7 +265,7 @@
 
         case "up":
           if ( (this.pages.length - 1) * this.pageDimentions.height <= this.scrollBorder.y ) {
-            coordinates.y = Math.round( - ((this.pages.length - 1) * this.pageDimentions.height) + y / 5 );
+            coordinates.y = Math.round( - ((this.pages.length - 1) * (this.pageDimentions.height + this.settings.borderBetweenPages)) + y / 5 );
             return coordinates;
           }
           break;
@@ -258,7 +273,8 @@
 
       return {
         x: x - this.scrollBorder.x,
-        y: y - this.scrollBorder.y
+        y: y - this.scrollBorder.y,
+        overscroll: false
       };
     },
 
@@ -286,42 +302,40 @@
       event.stopPropagation();
 
       if ( event.gesture ) {
-          gesture = event.gesture,
-          coordinates = this._overscroll( gesture.direction, gesture.deltaX, gesture.deltaY );
+        gesture = event.gesture,
+        coordinates = this._checkOverscroll( gesture.direction, gesture.deltaX, gesture.deltaY );
+        this.settings.onDrag( this.activeElement, gesture, coordinates.overscroll );
       } else {
         throw new Error("Dragend JS detected some problems with the event handling. Maybe the user-drag CSS attribute can help.");
+        return;
       }
 
-      if ( gesture && !this.preventScroll ) {
+      if ( !this.preventScroll ) {
         this._scroll( coordinates );
       }
 
     },
 
     _onDragend: function( event ) {
-      var gestureDirection;
+      var gesture;
 
       event.stopPropagation();
       event.preventDefault();
 
       if (event.gesture) {
-        gestureDirection = event.gesture.direction;
+        gesture = event.gesture;
       } else {
         throw new Error("Dragend JS detected some problems with the event handling. Maybe the user-drag CSS attribute can help.");
+        return;
       }
 
       if ( event.gesture.distance > this.settings.minTouchDistance ) {
-        if (
-            ((gestureDirection === "left" || gestureDirection === "right") && (this.settings.direction === "vertical")) ||
-            ((gestureDirection === "up" || gestureDirection === "down") && (this.settings.direction === "horizontal"))
-           ) {
-          this._scrollToPage();
-          return;
-        }
-        this.swipe( gestureDirection );
+        this.swipe( gesture.direction );
       } else {
         this._scrollToPage();
       }
+
+      this.settings.onDragEnd( this.activeElement );
     },
 
     _onKeydown: function( event ) {
@@ -335,7 +349,7 @@
     setHorizontalContainerCssValues: function() {
       $.extend( this.pageCssProperties, {
         "float"   : "left",
-        "overflow-y": "scroll",
+        "overflow-y": "auto",
         "overflow-x": "hidden",
         "padding"   : 0,
         "display"   : "block"
@@ -343,7 +357,7 @@
 
       this.pageContainer.css({
         "overflow"                   : "hidden",
-        "width"                      : this.pageDimentions.width * this.pages.length,
+        "width"                      : (this.pageDimentions.width * this.pages.length) + (this.settings.borderBetweenPages * this.pages.length),
         "box-sizing"                 : "content-box",
         "-webkit-backface-visibility": "hidden",
         "-webkit-perspective"        : 1000,
@@ -440,28 +454,28 @@
       switch ( direction ) {
         case "up":
           if ( this.page < this.pages.length - 1 ) {
-            this.scrollBorder.y = this.scrollBorder.y + this.pageDimentions.height;
+            this.scrollBorder.y = this.scrollBorder.y + this.pageDimentions.height + this.settings.borderBetweenPages;
             this.page++;
           }
           break;
 
         case "down":
           if ( this.page > 0 ) {
-            this.scrollBorder.y = this.scrollBorder.y - this.pageDimentions.height;
+            this.scrollBorder.y = this.scrollBorder.y - this.pageDimentions.height - this.settings.borderBetweenPages;
             this.page--;
           }
           break;
 
         case "left":
           if ( this.page < this.pages.length - 1 ) {
-            this.scrollBorder.x = this.scrollBorder.x + this.pageDimentions.width;
+            this.scrollBorder.x = this.scrollBorder.x + this.pageDimentions.width + this.settings.borderBetweenPages;
             this.page++;
           }
           break;
 
         case "right":
           if ( this.page > 0 ) {
-            this.scrollBorder.x = this.scrollBorder.x - this.pageDimentions.width;
+            this.scrollBorder.x = this.scrollBorder.x - this.pageDimentions.width - this.settings.borderBetweenPages;
             this.page--;
           }
           break;
@@ -487,7 +501,7 @@
       this.preventScroll = false;
       this.activeElement.trigger( "active" );
 
-      // Call onSwipeEnd caalback function
+      // Call onSwipeEnd callback function
       this.settings.onSwipeEnd(this.container, this.activeElement, this.page);
     },
 
@@ -532,7 +546,7 @@
       this.activeElement = this.pages.eq( this.page );
 
       // Call onSwipeStart callback function
-      this.settings.onSwipeStart( this.container, this.activeElement );
+      this.settings.onSwipeStart( this.container, this.activeElement, this.page );
       this._scrollToPage( direction );
     },
 
@@ -540,6 +554,8 @@
       if ( typeof options === "object" ) $.extend( this.settings, options );
 
       this.page = this.settings.jumpToPage || this.settings.scrollToPage || this.page;
+
+      this.activeElement = this.pages.eq( this.page );
 
       this._sizePages();
     }

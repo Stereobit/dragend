@@ -6,11 +6,20 @@ dragend.js, Readme File:
 
 dragend.js is a swipe plugin for [jQuery](https://github.com/jquery/jquery/). It uses [hammer.js](http://eightmedia.github.com/hammer.js/) for observing multi-touch gestures.
 
-The current version is 0.1.1.
+The current version is 0.1.2
 
 For further informations and demos check out the [demo page](http://stereobit.github.com/dragend/).
 
 # CHANGELOG
+
+* 2013-05-25
+  0.1.2 release
+
+  Changes:
+  - fixed some bugs in Firefox
+  - added callbacks for onDrag and onDragEnd
+  - added borderBetweenPages option
+  - switch overflow-y from scroll to auto
 
 * 2013-05-02
   0.1.1 release
