@@ -413,15 +413,9 @@
           height = this.container.height();
 
       if ( this.settings.direction === "horizontal" ) {
-
         width = width - parseInt( this.settings.scribe, 10 );
-        this.scrollBorder.x = width * this.page;
-
       } else {
-
         height = height - parseInt( this.settings.scribe, 10 );
-        this.scrollBorder.y = height * this.page;
-
       }
 
       this.pageDimentions = {
@@ -490,7 +484,15 @@
           break;
 
         case "page":
-          this.scrollBorder.x = this.pageDimentions.width * pageNumber;
+          switch ( this.settings.direction ) {
+            case "horizontal":
+              this.scrollBorder.x = (this.pageDimentions.width + this.settings.borderBetweenPages) * pageNumber;
+              break;
+
+            case "vertical":
+              this.scrollBorder.y = (this.pageDimentions.height + this.settings.borderBetweenPages) * pageNumber;
+              break;
+          }
           this.page = pageNumber;
           break;
 
@@ -523,6 +525,7 @@
     // Direction and pagenumber
 
     _jumpToPage: function( options, pageNumber ) {
+
       if ( options ) {
         this._calcNewPage( options, pageNumber );
       }
