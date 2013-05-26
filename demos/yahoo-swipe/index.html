@@ -1,0 +1,165 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+
+  <title>Yahoo weather app like page swiping</title>
+
+  <style type="text/css">
+    * {
+      padding: 0;
+      margin: 0;
+      border: 0;
+    }
+
+    body {
+      background: #eee;
+      padding: 15px;
+      font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+
+    #phone {
+      width: 320px;
+      padding: 132px 28px 78px 32px;
+      height: 534px;
+      background: url(img/phone.png) no-repeat;
+      margin: 0 auto;
+    }
+
+    #gallery {
+      list-style: none;
+      width: 320px;
+      height: 482px;
+      background: #111;
+      cursor: hand;
+      cursor: -moz-grab;
+      cursor: -webkit-grab;
+      cursor: grab;
+    }
+
+    #gallery li {
+      border-right: 5px solid #111;
+    }
+
+    #gallery .item {
+      height: 482px;
+    }
+
+    #gallery li:last-child  {
+      border: 0;
+    }
+
+    #gallery .item img {
+      display: block;
+      height: 482px;
+      -webkit-user-select: none;
+         -moz-user-select: none;
+          -ms-user-select: none;
+              user-select: none;
+      -webkit-user-drag: none;
+              user-drag: none;
+    }
+
+    #dragend {
+      position: absolute;
+      bottom: 50px;
+      right: 50px;
+      background: #345;
+      padding: 18px;
+      color: #fff;
+      border-radius: 3px;
+      width: 150px;
+      font-size: 15px;
+    }
+
+    #dragend h1 {
+      font-size: 15px;
+      font-weight: normal;
+      margin-bottom: 12px;
+    }
+
+    #dragend a {
+      text-decoration: underline;
+      color: #fff
+    }
+
+  </style>
+  
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Arvo:400,700' rel='stylesheet' type='text/css'>
+
+</head>
+<body>
+
+  <div id="phone">
+    <div id="gallery">
+      <ul>
+        <li>
+          <div class="item">
+            <img src="img/demo-image-1.jpg" alt="" draggable="false">
+          </div>
+        </li>
+        <li>
+          <div class="item">
+            <img src="img/demo-image-2.jpg" alt="" draggable="false">
+          </div>
+        </li>
+        <li>
+          <div class="item">
+            <img src="img/demo-image-3.jpg" alt="" draggable="false">
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="dragend">
+    <h1>A Yahoo weather app like page swiping demo with <a href="http://stereobit.github.io/dragend/">dragend JS</a></h1>
+    For more details checkout <a href="https://coderwall.com/p/hkdqsa">this blog post</a>
+  </div>
+  
+
+  <script type="text/javascript" src="../lib/jquery-1.9.1.min.js"></script>
+  <script type="text/javascript" src="../lib/jquery.hammer-1.0.5.min.js"></script>
+  <script type="text/javascript" src="../../dist/jquery.dragend-0.1.2.min.js"></script>
+
+  <script>
+
+    $(function() {
+      $("#gallery").dragend({
+        borderBetweenPages: 5,
+        onDrag: function( activeElement, gesture, overscroll ) {
+          var deltaX = parseInt( - gesture.deltaX / 2 );
+
+          if ( overscroll ) {
+            deltaX = deltaX / 5;
+          }
+
+          $(activeElement).prev().find("img").css("margin-left", deltaX + 160 );
+          $(activeElement).find("img").css("margin-left", deltaX);
+          $(activeElement).next().find("img").css("margin-left", deltaX - 160 );
+        },
+        onDragEnd: function( activeElement ) {
+          $(activeElement).prev().find("img").animate({
+            "margin-left": 160
+          }, 300);
+          $(activeElement).find("img").animate({
+            "margin-left": 0
+          }, 300);
+          $(activeElement).next().find("img").animate({
+            "margin-left": - 160
+          }, 300);
+        }
+      });
+
+      $(document).on("dragstart", function(event) {
+        if (event.target.nodeName.toUpperCase() == "IMG") {
+          return false;
+        }
+      });
+    });
+
+  </script>
+
+</body>
+</html>
