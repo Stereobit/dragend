@@ -1,0 +1,13 @@
+language: node_js
+node_js:
+  - 0.8
+env:
+  global:
+    - SAUCE_USERNAME: stereobit
+    - SAUCE_ACCESS_KEY: c17048ea-eb72-41c9-9894-1c53922055b8
+install:
+  - git submodule update --init --recursive
+  - git clone --recursive https://github.com/theintern/intern.git
+  - cd ../intern
+  - npm install --production
+script: node runner.js config=my-package/test/intern
