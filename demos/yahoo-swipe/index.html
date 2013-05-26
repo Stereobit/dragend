@@ -24,6 +24,7 @@
       height: 534px;
       background: url(img/phone.png) no-repeat;
       margin: 0 auto;
+      display: none;
     }
 
     #gallery {
@@ -151,6 +152,8 @@
           }, 300);
         }
       });
+
+      $("#phone").fadeIn();
 
       $(document).on("dragstart", function(event) {
         if (event.target.nodeName.toUpperCase() == "IMG") {
