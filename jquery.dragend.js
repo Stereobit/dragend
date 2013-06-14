@@ -1,7 +1,7 @@
 /**
  * ---------------------------- DRAGEND JS -------------------------------------
  *
- * Version: 0.1.2
+ * Version: 0.1.3
  * https://github.com/Stereobit/dragend
  * Copyright (c) 2012 Tobias Otte, t@stereob.it
  *
@@ -35,7 +35,7 @@
   // (http://eightmedia.github.com/hammer.js/) for observing multi-touch
   // gestures. You can use dragend JS in fullscreen or boxed mode.
   //
-  // The current version is 0.1.2
+  // The current version is 0.1.3
   //
   // Usage
   // =====================
@@ -117,7 +117,6 @@
       this.settings      = $.extend( {}, defaultSettings, options );
       this.container     = container;
       this.pageContainer = container.find( this.settings.pageContainer );
-      this.pages         = container.find( this.settings.pageElements );
       this.scrollBorder  = { x: 0, y: 0 };
       this.page          = 0;
       this.preventScroll = false;
@@ -428,6 +427,7 @@
     // ### Size pages
 
     _sizePages: function() {
+
       this._setPageDimentions();
 
       this.setContainerCssValues();
@@ -566,6 +566,7 @@
       if ( typeof options === "object" ) $.extend( this.settings, options );
 
       this.page = this.settings.jumpToPage || this.settings.scrollToPage || this.page;
+      this.pages = this.container.find( this.settings.pageElements );
 
       this.activeElement = this.pages.eq( this.page );
 
