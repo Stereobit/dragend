@@ -13,6 +13,7 @@ For further informations and demos check out the [demo page](http://stereobit.gi
 # CHANGELOG
 
 * 2013-06-14
+  0.1.3 release
 
   Changes:
   - fixed bug when adding new pages and updating the instance
