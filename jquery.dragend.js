@@ -246,7 +246,7 @@
       switch ( direction ) {
 
         case "right":
-          if ( !this.scrollBorder.x ) {
+          if ( !this.scrollBorder.x && this._checkGestureDirection( direction ) ) {
             Math.round( coordinates.x = (x - this.scrollBorder.x) / 5 );
             return coordinates;
           }
@@ -260,7 +260,7 @@
           break;
 
         case "down":
-          if ( !this.scrollBorder.y ) {
+          if ( !this.scrollBorder.y && this._checkGestureDirection( direction )) {
             coordinates.y = Math.round( (y - this.scrollBorder.y) / 5 );
             return coordinates;
           }
@@ -332,12 +332,7 @@
         return;
       }
 
-      // TODO: This is ugly
-      if (
-          event.gesture.distance > this.settings.minTouchDistance &&
-          !((gesture.direction === "left" || gesture.direction === "right") && (this.settings.direction === "vertical")) &&
-          !((gesture.direction === "up" || gesture.direction === "down") && (this.settings.direction === "horizontal"))
-        ) {
+      if ( event.gesture.distance > this.settings.minTouchDistance && this._checkGestureDirection( gesture.direction )) {
         this.swipe( gesture.direction );
       } else {
         this._scrollToPage();
@@ -351,6 +346,13 @@
 
       if ( direction ) {
         this._scrollToPage(direction);
+      }
+    },
+
+    _checkGestureDirection: function( direction ) {
+      if (((direction === "left" || direction === "right") && this.settings.direction === "horizontal") ||
+          ((direction === "up" || direction === "down") && this.settings.direction === "vertical") ) {
+        return true;
       }
     },
 
