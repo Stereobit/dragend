@@ -57,8 +57,8 @@
   // * pageContainer: container for the swiping elments
   // * pageElements: selector for all elments that should provide a page
   // * direction: "horizontal" or "vertical"
-  // * minTouchDistance: minuimum distance (in pixel) the user has to drag
-  //   to swip
+  // * minDragDistance: minuimum distance (in pixel) the user has to drag
+  //   to trigger swip
   // * scribe: pixel value for a possible scribe
   // * onSwipeStart: callback function before the animation
   // * onSwipeEnd: callback function after the animation
@@ -79,7 +79,7 @@
       pageContainer      : "ul",
       pageElements       : "li",
       direction          : "horizontal",
-      minTouchDistance   : "0",
+      minDragDistance    : "40",
       onSwipeStart       : $.noop,
       onSwipeEnd         : $.noop,
       onDrag             : $.noop,
@@ -123,6 +123,9 @@
       this.pageCssProperties = {
         margin: 0
       };
+
+      // Keep old options naming working
+      this.settings.minDragDistance = options.minTouchDistance || "40";
 
       // Initialisation
 
@@ -332,7 +335,7 @@
         return;
       }
 
-      if ( event.gesture.distance > this.settings.minTouchDistance && this._checkGestureDirection( gesture.direction )) {
+      if ( event.gesture.distance > this.settings.minDragDistance && this._checkGestureDirection( gesture.direction )) {
         this.swipe( gesture.direction );
       } else {
         this._scrollToPage();
