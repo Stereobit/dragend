@@ -308,12 +308,11 @@
       event.stopPropagation();
 
       if ( event.gesture ) {
-        gesture = event.gesture,
+        gesture = event.gesture;
         coordinates = this._checkOverscroll( gesture.direction, gesture.deltaX, gesture.deltaY );
         this.settings.onDrag( this.activeElement, gesture, coordinates.overscroll );
       } else {
         throw new Error(errors.handling);
-        return;
       }
 
       if ( !this.preventScroll ) {
