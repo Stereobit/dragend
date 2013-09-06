@@ -572,7 +572,7 @@
       if ( this.settings.jumpToPage !== undefined ) {
         this.page = this.settings.jumpToPage;
       } else if ( this.settings.scrollToPage !== undefined ) {
-        this.page = this.settings.scrollToPage
+        this.page = this.settings.scrollToPage;
       }
 
       this.pages = this.container.find( this.settings.pageElements );
