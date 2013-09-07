@@ -28,7 +28,6 @@
     "url": "https://github.com/stereobit/dragend/issues"
   },
   "dependencies": {
-    "jquery": "1.9.0",
     "hammerjs": "1.0.5"
   },
   "main": "jquery.dragend.js",
