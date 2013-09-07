@@ -1,18 +1,39 @@
 {
   "name": "dragend",
-  "version": "0.1.3",
-  "description": "A jQuery plugin for content swiping",
-  "keywords": [ "touch", "jquery", "mobile" ],
+  "version": "0.2.0",
+  "description": "A javascript for content swiping",
+  "keywords": [
+    "touch",
+    "jquery",
+    "mobile",
+    "hammer"
+  ],
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/stereobit/dragend/blob/master/MIT-LICENSE.txt"
+    }
+  ],
+  "author": {
+    "name": "Tobias Otte",
+    "email": "t@stereob.it"
+  },
   "repositories": [
     {
       "type": "git",
       "url": "http://github.com/stereobit/dragend.git"
     }
   ],
-  "dependencies" : {
-    "jquery"   :  "1.9.0",
-    "hammerjs" :  "1.0.5"
+  "bugs": {
+    "url": "https://github.com/stereobit/dragend/issues"
+  },
+  "dependencies": {
+    "jquery": "1.9.0",
+    "hammerjs": "1.0.5"
   },
   "main": "jquery.dragend.js",
-  "license": "MIT"
+  "devDependencies": {
+    "grunt": "0.4.x",
+    "mocha": "~1.12.1"
+  }
 }
