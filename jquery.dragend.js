@@ -229,14 +229,14 @@
   // ### Check translate support
   ( function checkTranslateSupport() {
     if ( "WebKitCSSMatrix" in window && "m11" in new WebKitCSSMatrix() ) {
-      $.extend( Dragend.prototype, withTranslateMethodes );
+      extend( Dragend.prototype, withTranslateMethodes );
     } else {
-      $.extend( Dragend.prototype, withoutTranslateMethodes );
+      extend( Dragend.prototype, withoutTranslateMethodes );
     }
   } )();
 
 
-  $.extend(Dragend.prototype, {
+  extend(Dragend.prototype, {
 
     // Private functions
     // =================
@@ -369,7 +369,7 @@
     },
 
     setHorizontalContainerCssValues: function() {
-      $.extend( this.pageCssProperties, {
+      extend( this.pageCssProperties, {
         "float"   : "left",
         "overflow-y": "auto",
         "overflow-x": "hidden",
@@ -389,7 +389,7 @@
     },
 
     setVerticalContainerCssValues: function() {
-      $.extend( this.pageCssProperties, {
+      extend( this.pageCssProperties, {
         "overflow": "hidden",
         "padding" : 0,
         "display" : "block"
@@ -446,7 +446,7 @@
 
       this.setContainerCssValues();
 
-      $.extend( this.pageCssProperties, {
+      extend( this.pageCssProperties, {
         height: this.pageDimentions.height,
         width : this.pageDimentions.width
       });
@@ -576,8 +576,8 @@
       this._scrollToPage( direction );
     },
 
-    updateInstance: function( options ) {
-      if ( typeof options === "object" ) $.extend( this.settings, options );
+    updateInstance: function( settings ) {
+      if ( typeof options === "object" ) extend( this.settings, settings );
 
       if ( this.settings.jumpToPage !== undefined ) {
         this.page = this.settings.jumpToPage;
