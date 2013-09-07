@@ -74,16 +74,18 @@
     WINDOW = $( window ),
     BODY   = $( document.body ),
 
+    noop = function() {},
+
     // Default setting
     defaultSettings = {
       pageContainer      : "ul",
       pageElements       : "li",
       direction          : "horizontal",
       minDragDistance    : "40",
-      onSwipeStart       : $.noop,
-      onSwipeEnd         : $.noop,
-      onDrag             : $.noop,
-      onDragEnd          : $.noop,
+      onSwipeStart       : noop,
+      onSwipeEnd         : noop,
+      onDrag             : noop,
+      onDragEnd          : noop,
       keyboardNavigation : false,
       scribe             : 0,
       borderBetweenPages : 0,
@@ -324,6 +326,8 @@
     _onDragend: function( event ) {
       var gesture;
 
+      console.log("msg");
+
       event.stopPropagation();
       event.preventDefault();
 
@@ -331,7 +335,6 @@
         gesture = event.gesture;
       } else {
         throw new Error(errors.handling);
-        return;
       }
 
       if ( event.gesture.distance > this.settings.minDragDistance && this._checkGestureDirection( gesture.direction )) {
