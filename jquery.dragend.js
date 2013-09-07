@@ -105,7 +105,7 @@
     },
 
     errors = {
-      handling: "Dragend JS detected some problems with the event handling. Maybe the user-drag CSS attribute can help"
+      handling: "Dragend JS detected some problems with the event handling. Maybe the user-drag CSS attribute on images can help"
     },
 
     containerStyles = {
