@@ -114,9 +114,16 @@
       cursor: "grab"
     },
 
-    Dragend = function( container, options ) {
+    extend = function(destination, source) {
+      for (var property in source)
+        destination[property] = source[property];
+      return destination;
+    },
 
-      this.settings      = $.extend( {}, defaultSettings, options );
+    Dragend = function( container, settings ) {
+      var defaultSettingsCopy = extend( {}, defaultSettings );
+
+      this.settings      = extend( defaultSettingsCopy, settings );
       this.container     = container;
       this.pageContainer = container.find( this.settings.pageContainer );
       this.scrollBorder  = { x: 0, y: 0 };
