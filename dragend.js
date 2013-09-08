@@ -133,13 +133,13 @@
         margin: 0
       };
 
-      // Keep old options naming working
-      this.settings.minDragDistance = options.minTouchDistance || "40";
+      // Keep old settings naming working
+      this.settings.minDragDistance = settings.minTouchDistance || "40";
 
       // Initialisation
 
       this.container.css( containerStyles );
-      this.updateInstance( options );
+      this.updateInstance( settings );
       this._observe();
 
     },
@@ -577,7 +577,7 @@
     },
 
     updateInstance: function( settings ) {
-      if ( typeof options === "object" ) extend( this.settings, settings );
+      if ( typeof settings === "object" ) extend( this.settings, settings );
 
       if ( this.settings.jumpToPage !== undefined ) {
         this.page = this.settings.jumpToPage;
@@ -594,19 +594,19 @@
   });
 
   // Register jQuery plugin
-  $.fn.dragend = function( options ) {
+  $.fn.dragend = function( settings ) {
     var instance = this.data( "dragend" );
 
     // check if instance already created
     if ( instance ) {
-      instance.updateInstance( options );
+      instance.updateInstance( settings );
     } else {
-      instance = new Dragend( this, options );
+      instance = new Dragend( this, settings );
       this.data( "dragend", instance );
     }
 
     // check if should trigger swipe
-    if ( typeof options === "string" ) instance.swipe( options );
+    if ( typeof settings === "string" ) instance.swipe( settings );
 
     // jQuery functions should always return the elment
     return this;
