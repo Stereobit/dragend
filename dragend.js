@@ -134,7 +134,7 @@
       };
 
       // Keep old settings naming working
-      this.settings.minDragDistance = settings.minTouchDistance || "40";
+      this.settings.minDragDistance = this.settings.minTouchDistance || "40";
 
       // Initialisation
 
@@ -593,23 +593,34 @@
     }
   });
 
-  // Register jQuery plugin
-  $.fn.dragend = function( settings ) {
-    var instance = this.data( "dragend" );
+    if ( $ ) {
+        (function($) {
+          // Register jQuery plugin
+          $.fn.dragend = function( settings ) {
+            var instance = this.data( "dragend" );
 
-    // check if instance already created
-    if ( instance ) {
-      instance.updateInstance( settings );
-    } else {
-      instance = new Dragend( this, settings );
-      this.data( "dragend", instance );
+            // check if instance already created
+            if ( instance ) {
+              instance.updateInstance( settings );
+            } else {
+              instance = new Dragend( this, settings );
+              this.data( "dragend", instance );
+            }
+
+            // check if should trigger swipe
+            if ( typeof settings === "string" ) instance.swipe( settings );
+
+            // jQuery functions should always return the elment
+            return this;
+          };
+        })( window.jQuery || window.Zepto );
     }
 
-    // check if should trigger swipe
-    if ( typeof settings === "string" ) instance.swipe( settings );
+    if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) {
+        define(function() { return Dragend; });
+    } else {
+        window.Dragend = Dragend;
+    }
 
-    // jQuery functions should always return the elment
-    return this;
-  };
 
-})( jQuery, window );
+})( window.jQuery || window.Zepto, window );
