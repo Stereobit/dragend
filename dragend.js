@@ -121,13 +121,16 @@
 
       this.settings      = extend( defaultSettingsCopy, settings );
       this.container     = $(container);
-      this.pageContainer = this.container.find( this.settings.pageContainer );
+      this.pageContainer = $("<div>");
       this.scrollBorder  = { x: 0, y: 0 };
       this.page          = 0;
       this.preventScroll = false;
       this.pageCssProperties = {
         margin: 0
       };
+
+      this.pageContainer.html(this.container.html())
+      this.container.html(this.pageContainer);
 
       // Keep old settings naming working
       this.settings.minDragDistance = this.settings.minTouchDistance || "40";

@@ -23,22 +23,26 @@
       height: 500px;
       display: none;
       margin: 100px auto;
+      background: #457;
     }
 
     #demo ul {
       list-style: none;
-      background: #457;
       cursor: hand;
       cursor: -moz-grab;
       cursor: -webkit-grab;
       cursor: grab;
     }
 
-    #demo li:first-child {
+    #demo li.first {
       background: #577;
     }
 
-    #demo li:last-child {
+    #demo li.middle {
+      background: #1e8;
+    }
+
+    #demo li.last {
       background: #e8b;
     }
 
@@ -75,16 +79,17 @@
 
   <div id="demo">
     <ul>
+      <li class="first"></li>
       <li></li>
+      <li class="middle"></li>
       <li></li>
-      <li></li>
+      <li class="last"></li>
     </ul>
   </div>
 
   <div id="dragend">
     <h1>A simple <a href="http://stereobit.github.io/dragend/">dragend JS</a> demo</h1>
   </div>
-
 
   <script type="text/javascript" src="../lib/jquery-1.9.1.min.js"></script>
   <script type="text/javascript" src="../lib/jquery.hammer-1.0.5.min.js"></script>
