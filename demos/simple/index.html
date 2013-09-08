@@ -98,7 +98,10 @@
   <script>
 
     $(function() {
-      $("#demo").dragend().fadeIn();
+      $("#demo").dragend({
+        itemsInPage: 3,
+        direction: "vertical",
+      }).fadeIn();
     });
 
     var _gaq = _gaq || [];

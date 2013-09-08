@@ -83,6 +83,7 @@
       onDrag             : noop,
       onDragEnd          : noop,
       keyboardNavigation : false,
+      itemsInPage        : 0,
       scribe             : 0,
       borderBetweenPages : 0,
       duration           : 300,
@@ -264,8 +265,8 @@
           break;
 
         case "left":
-          if ( (this.pages.length - 1) * this.pageDimentions.width <= this.scrollBorder.x ) {
-            coordinates.x = Math.round( - ((this.pages.length - 1) * (this.pageDimentions.width + this.settings.borderBetweenPages)) + x / 5 );
+          if ( (this.pagesCount - 1) * this.pageDimentions.width <= this.scrollBorder.x ) {
+            coordinates.x = Math.round( - ((Math.round(this.pagesCount) - 1) * (this.pageDimentions.width + this.settings.borderBetweenPages)) + x / 5 );
             return coordinates;
           }
           break;
@@ -278,8 +279,8 @@
           break;
 
         case "up":
-          if ( (this.pages.length - 1) * this.pageDimentions.height <= this.scrollBorder.y ) {
-            coordinates.y = Math.round( - ((this.pages.length - 1) * (this.pageDimentions.height + this.settings.borderBetweenPages)) + y / 5 );
+          if ( (this.pagesCount - 1) * this.pageDimentions.height <= this.scrollBorder.y ) {
+            coordinates.y = Math.round( - ((Math.round(this.pagesCount) - 1) * (this.pageDimentions.height + this.settings.borderBetweenPages)) + y / 5 );
             return coordinates;
           }
           break;
@@ -376,7 +377,7 @@
 
       this.pageContainer.css({
         "overflow"                   : "hidden",
-        "width"                      : (this.pageDimentions.width * this.pages.length) + (this.settings.borderBetweenPages * this.pages.length),
+        "width"                      : (this.pageDimentions.width + this.settings.borderBetweenPages) * this.pagesCount,
         "box-sizing"                 : "content-box",
         "-webkit-backface-visibility": "hidden",
         "-webkit-perspective"        : 1000,
@@ -443,10 +444,17 @@
 
       this.setContainerCssValues();
 
-      extend( this.pageCssProperties, {
-        height: this.pageDimentions.height,
-        width : this.pageDimentions.width
-      });
+      if ( this.settings.direction === "horizontal" ) {
+        extend( this.pageCssProperties, {
+          height: this.pageDimentions.height,
+          width : this.pageDimentions.width / this.settings.itemsInPage
+        });
+      } else {
+        extend( this.pageCssProperties, {
+          height: this.pageDimentions.height / this.settings.itemsInPage,
+          width : this.pageDimentions.width
+        });
+      }
 
       this.pages.css( this.pageCssProperties );
 
@@ -467,7 +475,7 @@
     _calcNewPage: function(direction, pageNumber) {
       switch ( direction ) {
         case "up":
-          if ( this.page < this.pages.length - 1 ) {
+          if ( this.page < this.pagesCount - 1 ) {
             this.scrollBorder.y = this.scrollBorder.y + this.pageDimentions.height + this.settings.borderBetweenPages;
             this.page++;
           }
@@ -481,7 +489,7 @@
           break;
 
         case "left":
-          if ( this.page < this.pages.length - 1 ) {
+          if ( this.page < this.pagesCount - 1 ) {
             this.scrollBorder.x = this.scrollBorder.x + this.pageDimentions.width + this.settings.borderBetweenPages;
             this.page++;
           }
@@ -583,6 +591,7 @@
       }
 
       this.pages = this.container.find( this.settings.pageElements );
+      this.pagesCount = this.pages.length / this.settings.itemsInPage;
 
       this.activeElement = this.pages.eq( this.page );
 
