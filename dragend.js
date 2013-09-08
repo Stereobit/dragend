@@ -70,10 +70,6 @@
 
   var
 
-    // Cached objects
-    WINDOW = $( window ),
-    BODY   = $( document.body ),
-
     noop = function() {},
 
     // Default setting
@@ -124,8 +120,8 @@
       var defaultSettingsCopy = extend( {}, defaultSettings );
 
       this.settings      = extend( defaultSettingsCopy, settings );
-      this.container     = container;
-      this.pageContainer = container.find( this.settings.pageContainer );
+      this.container     = $(container);
+      this.pageContainer = this.container.find( this.settings.pageContainer );
       this.scrollBorder  = { x: 0, y: 0 };
       this.page          = 0;
       this.preventScroll = false;
@@ -302,10 +298,10 @@
         .on( "drag", this.settings.hammerSettings, $.proxy( this._onDrag, this ) )
         .on( "dragend", this.settings.hammerSettings, $.proxy( this._onDragend, this ) );
 
-      WINDOW.on( "resize", $.proxy( this._sizePages, this ) );
+      $( window ).on( "resize", $.proxy( this._sizePages, this ) );
 
       if ( this.settings.keyboardNavigation ) {
-        BODY.on( "keydown", $.proxy( this._onKeydown, this ) );
+        $( document.body ).on( "keydown", $.proxy( this._onKeydown, this ) );
       }
 
     },
@@ -332,8 +328,6 @@
 
     _onDragend: function( event ) {
       var gesture;
-
-      console.log("msg");
 
       event.stopPropagation();
       event.preventDefault();
@@ -594,26 +588,28 @@
   });
 
     if ( $ ) {
-        (function($) {
-          // Register jQuery plugin
-          $.fn.dragend = function( settings ) {
-            var instance = this.data( "dragend" );
+        // Register jQuery plugin
+        $.fn.dragend = function( settings ) {
+
+          this.each(function() {
+            var instance = $(this).data( "dragend" );
 
             // check if instance already created
             if ( instance ) {
               instance.updateInstance( settings );
             } else {
               instance = new Dragend( this, settings );
-              this.data( "dragend", instance );
+              $(this).data( "dragend", instance );
             }
 
             // check if should trigger swipe
             if ( typeof settings === "string" ) instance.swipe( settings );
 
-            // jQuery functions should always return the elment
-            return this;
-          };
-        })( window.jQuery || window.Zepto );
+          });
+
+          // jQuery functions should always return the intance
+          return this;
+        };
     }
 
     if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) {
