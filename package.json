@@ -30,7 +30,7 @@
   "dependencies": {
     "hammerjs": "1.0.5"
   },
-  "main": "jquery.dragend.js",
+  "main": "dragend.js",
   "devDependencies": {
     "grunt": "0.4.x",
     "mocha": "~1.12.1",
