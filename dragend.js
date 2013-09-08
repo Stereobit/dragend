@@ -83,7 +83,7 @@
       onDrag             : noop,
       onDragEnd          : noop,
       keyboardNavigation : false,
-      itemsInPage        : 0,
+      itemsInPage        : 1,
       scribe             : 0,
       borderBetweenPages : 0,
       duration           : 300,
@@ -130,7 +130,7 @@
         margin: 0
       };
 
-      this.pageContainer.html(this.container.html())
+      this.pageContainer.html(this.container.html());
       this.container.html(this.pageContainer);
 
       // Keep old settings naming working
@@ -266,7 +266,7 @@
 
         case "left":
           if ( (this.pagesCount - 1) * this.pageDimentions.width <= this.scrollBorder.x ) {
-            coordinates.x = Math.round( - ((Math.round(this.pagesCount) - 1) * (this.pageDimentions.width + this.settings.borderBetweenPages)) + x / 5 );
+            coordinates.x = Math.round( - ((Math.ceil(this.pagesCount) - 1) * (this.pageDimentions.width + this.settings.borderBetweenPages)) + x / 5 );
             return coordinates;
           }
           break;
@@ -280,7 +280,7 @@
 
         case "up":
           if ( (this.pagesCount - 1) * this.pageDimentions.height <= this.scrollBorder.y ) {
-            coordinates.y = Math.round( - ((Math.round(this.pagesCount) - 1) * (this.pageDimentions.height + this.settings.borderBetweenPages)) + y / 5 );
+            coordinates.y = Math.round( - ((Math.ceil(this.pagesCount) - 1) * (this.pageDimentions.height + this.settings.borderBetweenPages)) + y / 5 );
             return coordinates;
           }
           break;
