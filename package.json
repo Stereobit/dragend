@@ -33,6 +33,7 @@
   "main": "jquery.dragend.js",
   "devDependencies": {
     "grunt": "0.4.x",
-    "mocha": "~1.12.1"
+    "mocha": "~1.12.1",
+    "expect.js": "~0.2.0"
   }
 }

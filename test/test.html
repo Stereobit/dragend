@@ -1,12 +1,16 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Mocha Tests</title>
+  <title>Dragend Tests</title>
   <link rel="stylesheet" href="../node_modules/mocha/mocha.css" />
 </head>
 <body>
   <div id="mocha"></div>
+  <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
   <script src="../node_modules/mocha/mocha.js"></script>
+  <script src="../node_modules/expect.js/expect.js"></script>
+  <script>mocha.setup('bdd')</script>
+  <script src="test.js"></script>
   <script>
     mocha.checkLeaks();
     mocha.globals(['jQuery']);
