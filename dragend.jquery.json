@@ -9,7 +9,7 @@
     "slider",
     "slideshow"
   ],
-  "version": "0.1.3",
+  "version": "0.2.0",
   "author": {
     "name": "Tobias Otte",
     "url": "https://github.com/Stereobit/dragend"
@@ -24,13 +24,12 @@
   "licenses": [
     {
       "type": "MIT",
-      "url": "https://github.com/jquery/jquery-color/blob/2.1.2/MIT-LICENSE.txt"
+      "url": "https://github.com/stereobit/dragend/blob/master/MIT-LICENSE.txt"
     }
   ],
   "bugs": "https://github.com/Stereobit/dragend/issues",
   "homepage": "http://stereobit.github.io/dragend/",
   "dependencies": {
-    "jquery": ">=1.9",
     "hammerjs": ">=1.0"
   }
 }
