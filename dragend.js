@@ -711,6 +711,7 @@
   });
 
     if ( $ ) {
+
         // Register jQuery plugin
         $.fn.dragend = function( settings ) {
 
@@ -733,9 +734,8 @@
           // jQuery functions should always return the intance
           return this;
         };
-    }
 
-    if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) {
+    } else if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) {
         define(function() { return Dragend; });
     } else {
         window.Dragend = Dragend;
