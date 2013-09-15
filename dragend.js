@@ -111,21 +111,23 @@
     },
 
     setStyles = function(element, styles) {
-      var style,
+      var property,
           value;
 
-      for (style in styles) {
+      for (property in styles) {
 
-        if(styles.hasOwnProperty(style)) {
-          value = styles[style];
+        if(styles.hasOwnProperty(property)) {
+          value = styles[property];
 
-          switch (style) {
+          switch (property) {
             case "height":
             case "width":
+            case "margin-left":
+            case "margin-top":
               value += "px";
           }
 
-          element.style[style] = value;
+          element.style[property] = value;
 
         }
 
@@ -163,6 +165,33 @@
       }
 
       return Array.prototype.slice.call(elements);
+    },
+
+    animate = function(element, propery, to, speed, callback) {
+
+      var start = + new Date(),
+          from = parseInt(element.style[propery], 10);
+
+      var timer = setInterval(function() {
+
+        var timeGone = + new Date() - start,
+            value;
+
+        if (timeGone >= speed) {
+
+          value = to;
+          callback();
+
+          clearInterval(timer);
+
+        } else {
+          value = Math.round((( (to - from) * (Math.floor((timeGone / speed) * 100) / 100) ) + from));
+        }
+
+        element.style[propery] = value + "px";
+
+      }, 5);
+
     },
 
     Dragend = function( container, settings ) {
@@ -252,6 +281,7 @@
       // x and y values to go with
 
       _scroll: function( coordinates ) {
+
         switch ( this.settings.direction ) {
           case "horizontal":
 
@@ -274,21 +304,25 @@
       // ### Animated scroll without translate support
 
       _animateScroll: function() {
-        var css;
+        var property,
+            value;
 
         this.activeElement = this.pages[this.page];
 
         switch ( this.settings.direction ) {
           case "horizontal":
-            css = { "margin-left": - this.scrollBorder.x };
+            property = "margin-left";
+            value = - this.scrollBorder.x;
             break;
 
           case "vertical":
-            css = { "margin-top": - this.scrollBorder.y };
+            property = "margin-top";
+            value = - this.scrollBorder.y;
             break;
         }
 
-        $(this.pageContainer).animate(css, this.settings.duration, "linear", proxy( this._onSwipeEnd, this ));
+        animate(this.pageContainer, property, value, this.settings.duration, proxy( this._onSwipeEnd, this ));
+
       }
 
     };
