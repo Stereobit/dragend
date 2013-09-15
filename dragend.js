@@ -598,7 +598,6 @@
 
     _onSwipeEnd: function() {
       this.preventScroll = false;
-      $(this.activeElement).trigger( "active" );
 
       // Call onSwipeEnd callback function
       this.settings.onSwipeEnd(this.container, this.activeElement, this.page);
