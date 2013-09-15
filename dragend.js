@@ -451,7 +451,7 @@
         this._scrollToPage();
       }
 
-      this.settings.onDragEnd( this.activeElement );
+      this.settings.onDragEnd( this.container, this.activeElement, this.page );
     },
 
     _onKeydown: function( event ) {
