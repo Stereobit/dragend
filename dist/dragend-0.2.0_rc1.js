@@ -697,8 +697,6 @@
         this.page = this.settings.scrollToPage;
       }
 
-      console.log(this.settings.pageClass)
-
       this.pages = getElementsByClassName(this.settings.pageClass, this.pageContainer);
 
       if (this.pages.length) {
