@@ -109,6 +109,29 @@
       padding : 0
     },
 
+    setStyles = function(element, styles) {
+      var style,
+          value;
+
+      for (style in styles) {
+
+        if(styles.hasOwnProperty(style)) {
+          value = styles[style];
+
+          switch (style) {
+            case "height":
+            case "width":
+              value += "px";
+          }
+
+          element.style[style] = value;
+
+        }
+
+      }
+
+    },
+
     extend = function(destination, source) {
       for (var property in source)
         destination[property] = source[property];
@@ -136,7 +159,7 @@
 
       // Initialisation
 
-      this.container.css( containerStyles );
+      setStyles(this.container.get(0), containerStyles);
       this.updateInstance( settings );
       this._observe();
 
@@ -153,11 +176,15 @@
       _scroll: function( coordinates ) {
         switch ( this.settings.direction ) {
           case "horizontal":
-            this.pageContainer.css( "-webkit-transform", "translate3d(" + coordinates.x + "px, 0, 0)" );
+            setStyles(this.pageContainer.get(0), {
+              "-webkit-transform": "translate3d(" + coordinates.x + "px, 0, 0)"
+            });
             break;
 
           case "vertical":
-            this.pageContainer.css( "-webkit-transform", "translate3d(0, " + coordinates.y + "px, 0)" );
+            setStyles(this.pageContainer.get(0), {
+              "-webkit-transform": "translate3d(0, " + coordinates.y + "px, 0)"
+            });
             break;
         }
       },
@@ -167,7 +194,10 @@
       _animateScroll: function() {
         this.activeElement = this.pages.eq( this.page );
 
-        this.pageContainer.css( "-webkit-transition", "-webkit-transform " + this.settings.duration + "ms ease-out" );
+        setStyles(this.pageContainer.get(0), {
+          "-webkit-transition": "-webkit-transform " + this.settings.duration + "ms ease-out"
+        });
+
         this._scroll({
           x: - this.scrollBorder.x,
           y: - this.scrollBorder.y
@@ -178,7 +208,9 @@
 
       afterScroll: function() {
         this._onSwipeEnd();
-        this.pageContainer.css( "-webkit-transition", "-webkit-transform 0" );
+        setStyles(this.pageContainer.get(0), {
+          "-webkit-transition": "-webkit-transform 0"
+        });
       }
     },
 
@@ -193,11 +225,19 @@
       _scroll: function( coordinates ) {
         switch ( this.settings.direction ) {
           case "horizontal":
-            this.pageContainer.css( { "margin-left": coordinates.x } );
+
+            setStyles(this.pageContainer.get(0), {
+              "margin-left": coordinates.x
+            });
+
             break;
 
           case "vertical":
-            this.pageContainer.css( { "margin-top": coordinates.y } );
+
+            setStyles(this.pageContainer.get(0), {
+              "margin-top": coordinates.y
+            });
+
             break;
         }
       },
@@ -373,7 +413,7 @@
         "display"   : "block"
       });
 
-      this.pageContainer.css({
+      setStyles(this.pageContainer.get(0), {
         "overflow"                   : "hidden",
         "width"                      : (this.pageDimentions.width + this.settings.borderBetweenPages) * this.pagesCount,
         "box-sizing"                 : "content-box",
@@ -391,7 +431,7 @@
         "display" : "block"
       });
 
-      this.pageContainer.css({
+      setStyles(this.pageContainer.get(0), {
         "padding-bottom"              : this.settings.scribe,
         "box-sizing"                  : "content-box",
         "-webkit-backface-visibility" : "hidden",
@@ -454,7 +494,9 @@
         });
       }
 
-      this.pages.css( this.pageCssProperties );
+      this.pages.each($.proxy(function(index, element) {
+          setStyles(element, this.pageCssProperties);
+      }, this));
 
       if ( this.settings.scrollToPage !== undefined ) {
         this._scrollToPage( "page", this.page );
