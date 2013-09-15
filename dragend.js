@@ -138,6 +138,12 @@
       return destination;
     },
 
+    proxy = function( fn, context ) {
+      return function() {
+        return fn.apply( context, Array.prototype.slice.call(arguments) );
+      };
+    },
+
     Dragend = function( container, settings ) {
       var defaultSettingsCopy = extend( {}, defaultSettings );
 
@@ -161,7 +167,7 @@
       this._observe();
 
       // Give the DOM some time to update ...
-      window.setTimeout($.proxy(function() {
+      window.setTimeout(proxy(function() {
           this.updateInstance( settings );
       }, this), 10);
 
@@ -205,7 +211,7 @@
           y: - this.scrollBorder.y
         });
 
-        window.setTimeout( $.proxy( this.afterScroll, this ), this.settings.duration );
+        window.setTimeout( proxy( this.afterScroll, this ), this.settings.duration );
       },
 
       afterScroll: function() {
@@ -261,7 +267,7 @@
             break;
         }
 
-        $(this.pageContainer).animate(css, this.settings.duration, "linear", $.proxy( this._onSwipeEnd, this ));
+        $(this.pageContainer).animate(css, this.settings.duration, "linear", proxy( this._onSwipeEnd, this ));
       }
 
     };
@@ -339,13 +345,13 @@
 
     _observe: function() {
       $(this.container).hammer()
-        .on( "drag", this.settings.hammerSettings, $.proxy( this._onDrag, this ) )
-        .on( "dragend", this.settings.hammerSettings, $.proxy( this._onDragend, this ) );
+        .on( "drag", this.settings.hammerSettings, proxy( this._onDrag, this ) )
+        .on( "dragend", this.settings.hammerSettings, proxy( this._onDragend, this ) );
 
-      $( window ).on( "resize", $.proxy( this._sizePages, this ) );
+      $( window ).on( "resize", proxy( this._sizePages, this ) );
 
       if ( this.settings.keyboardNavigation ) {
-        $( document.body ).on( "keydown", $.proxy( this._onKeydown, this ) );
+        $( document.body ).on( "keydown", proxy( this._onKeydown, this ) );
       }
 
     },
@@ -459,8 +465,6 @@
     // Updates the page dimentions values
 
     _setPageDimentions: function() {
-      console.log(this.container.offsetWidth)
-
       var width  = this.container.offsetWidth,
           height = this.container.offsetHeight;
 
@@ -497,7 +501,7 @@
         });
       }
 
-      this.pages.each($.proxy(function(index, element) {
+      this.pages.each(proxy(function(index, element) {
           setStyles(element, this.pageCssProperties);
       }, this));
 
@@ -653,7 +657,6 @@
             if ( instance ) {
               instance.updateInstance( settings );
             } else {
-              console.log(this)
               instance = new Dragend( this, settings );
               $(this).data( "dragend", instance );
             }
