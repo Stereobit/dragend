@@ -155,10 +155,6 @@
       this.container.innerHTML = null;
       this.container.appendChild(this.pageContainer);
 
-
-      // Keep old settings naming working
-      this.settings.minDragDistance = this.settings.minTouchDistance || "40";
-
       // Initialisation
 
       setStyles(this.container, containerStyles);
