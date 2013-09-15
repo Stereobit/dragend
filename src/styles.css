@@ -179,7 +179,7 @@ h3 {
   box-shadow: 0 0 50px rgba(242,242,242,0.4);
 }
 
-#swipe-container ul {
+#swipe-container > div > ul ul {
   margin: 0 0 2rem 2.5rem;
   font-size: 1.7rem;
   line-height: 2.3rem;
@@ -189,6 +189,10 @@ h3 {
   list-style: none;
   background: url(img/kante.png) repeat-x 0 0, url(img/kante_2.png) repeat-x 0 100%, url(img/background.png) 0 0 repeat;
   background-color: #f2f2f1;
+}
+
+#swipe-container > div > ul {
+  padding: 0;
 }
 
 #swipe-container li {
