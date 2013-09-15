@@ -6,7 +6,8 @@
     "touch",
     "jquery",
     "mobile",
-    "hammer"
+    "hammer",
+    "responsive"
   ],
   "licenses": [
     {
