@@ -185,7 +185,7 @@ h3 {
   line-height: 2.6rem;
 }
 
-#swipe-container ul#pages {
+#swipe-container > div {
   list-style: none;
   background: url(img/kante.png) repeat-x 0 0, url(img/kante_2.png) repeat-x 0 100%, url(img/background.png) 0 0 repeat;
   background-color: #f2f2f1;
@@ -335,4 +335,3 @@ h3 {
   #swipe-container .right .content {
     padding-left: 20px;
   }
-
