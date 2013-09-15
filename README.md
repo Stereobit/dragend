@@ -20,6 +20,7 @@ For further informations and demos check out the [demo page](http://stereobit.gi
 * contend scribe
 * resize adjustment
 * overscroll
+* full responsive
 
 # How to
 
