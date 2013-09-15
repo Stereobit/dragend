@@ -249,7 +249,9 @@
       // ### Animated scroll with translate support
 
       _animateScroll: function() {
-        this.activeElement = this.pages[this.page];
+        this.activeElement = this.pages[this.page * this.settings.itemsInPage];
+
+        console.log();
 
         setStyles(this.pageContainer, {
           "-webkit-transition": "-webkit-transform " + this.settings.duration + "ms ease-out"
@@ -306,7 +308,7 @@
         var property,
             value;
 
-        this.activeElement = this.pages[this.page];
+        this.activeElement = this.pages[this.page * this.settings.itemsInPage];
 
         switch ( this.settings.direction ) {
           case "horizontal":
@@ -677,7 +679,7 @@
     // ================
 
     swipe: function( direction ) {
-      this.activeElement = this.pages[this.page];
+      this.activeElement = this.pages[this.page * this.settings.itemsInPage];
 
       // Call onSwipeStart callback function
       this.settings.onSwipeStart( this.container, this.activeElement, this.page );
@@ -701,7 +703,7 @@
         throw new Error(errors.pages);
       }
 
-      this.activeElement = this.pages[this.page];
+      this.activeElement = this.pages[this.page * this.settings.itemsInPage];
 
       this._sizePages();
     }
