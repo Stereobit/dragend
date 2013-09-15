@@ -145,15 +145,24 @@
       };
     },
 
-    getElementsByClassName = function(cn, root) {
+    getElementsByClassName = function(className, root) {
+      var elements = [];
 
-      for (var r=[], e=root.getElementsByTagName('*'), i=e.length; i--;) {
-        if ((' '+e[i].className+' ').indexOf(' '+cn+' ')>-1) {
-          r.push(e[i]);
+      if( !document.querySelector && document.querySelectorAll ) {
+         elements = root.getElementsByClassName(className);
+      } else {
+        var allElements = root.getElementsByTagName('*'),
+            i = allElements.length;
+
+        for (i; i--;) {
+          if ((' ' + allElements[i].className + ' ').indexOf(' ' + className +' ') > -1 ) {
+            elements.push(allElements[i]);
+          }
         }
+
       }
 
-      return r;
+      return elements;
     },
 
     Dragend = function( container, settings ) {
