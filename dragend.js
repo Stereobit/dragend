@@ -74,7 +74,6 @@
 
     // Default setting
     defaultSettings = {
-      pageContainer      : "ul",
       pageElements       : "li",
       direction          : "horizontal",
       minDragDistance    : "40",

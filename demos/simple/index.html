@@ -19,15 +19,11 @@
     }
 
     #demo {
-      width: 100%;
+      width: 500px;
       height: 500px;
       display: none;
       margin: 100px auto;
       background: #457;
-    }
-
-    #demo ul {
-      list-style: none;
       cursor: hand;
       cursor: -moz-grab;
       cursor: -webkit-grab;
@@ -98,21 +94,8 @@
   <script>
 
     $(function() {
-      $("#demo").dragend({
-        itemsInPage: 3,
-      }).fadeIn();
+      $("#demo").dragend().fadeIn();
     });
-
-    $(window).on("resize", function() {
-      var width = $(this).width();
-
-      if (width < 1000) {
-        $("#demo").dragend({
-          itemsInPage: 2,
-        })
-      }
-
-    })
 
     var _gaq = _gaq || [];
     _gaq.push(['_setAccount', 'UA-219062-10']);
