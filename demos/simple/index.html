@@ -88,13 +88,14 @@
   </div>
 
   <script type="text/javascript" src="../lib/jquery.min.js"></script>
-  <script type="text/javascript" src="../lib/jquery.hammer.min.js"></script>
+  <script type="text/javascript" src="../lib/hammer.min.js"></script>
   <script type="text/javascript" src="../../dragend.js"></script>
 
   <script>
 
     $(function() {
-      $("#demo").dragend().fadeIn();
+      new Dragend($("#demo").get(0))
+      $("#demo").fadeIn();
     });
 
     var _gaq = _gaq || [];

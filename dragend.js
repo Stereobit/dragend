@@ -162,7 +162,7 @@
 
       }
 
-      return elements;
+      return Array.prototype.slice.call(elements);
     },
 
     Dragend = function( container, settings ) {
@@ -365,14 +365,15 @@
     // Sets the observers for drag, resize and key events
 
     _observe: function() {
-      $(this.container).hammer()
-        .on( "drag", this.settings.hammerSettings, proxy( this._onDrag, this ) )
-        .on( "dragend", this.settings.hammerSettings, proxy( this._onDragend, this ) );
+      var hammer = new Hammer(this.container, this.settings.hammerSettings);
 
-      $( window ).on( "resize", proxy( this._sizePages, this ) );
+      hammer.on("drag", proxy( this._onDrag, this ))
+            .on( "dragend", proxy( this._onDragend, this ));
+
+      Hammer.event.bindDom(window, "resize", proxy( this._sizePages, this ));
 
       if ( this.settings.keyboardNavigation ) {
-        $( document.body ).on( "keydown", proxy( this._onKeydown, this ) );
+        Hammer.event.bindDom(document.body, "keydown", proxy( this._onKeydown, this ));
       }
 
     },
