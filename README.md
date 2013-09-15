@@ -4,13 +4,88 @@ dragend.js, Readme File:
 
 # DESCRIPTION
 
-dragend.js is a swipe plugin for [jQuery](https://github.com/jquery/jquery/). It uses [hammer.js](http://eightmedia.github.com/hammer.js/) for observing multi-touch gestures.
+dragend.js is a touch ready, full responsive, content swipe script. It uses [hammer.js](http://eightmedia.github.com/hammer.js/) for observing multi-touch gestures. It also can but don't have to be used as a [jQuery](https://github.com/jquery/jquery/) plugin.
 
-The current version is 0.1.3
+The current version is 0.2.0_rc1
 
 For further informations and demos check out the [demo page](http://stereobit.github.com/dragend/).
 
+# Featues
+
+* horizontal and vertical swiping
+* mobile and desktop ready
+* lightweight (2.6KB gzipped)
+* keyboard navigation
+* fullscreen or boxed
+* contend scribe
+* resize adjustment
+* overscroll
+
+# How to
+
+```html
+<div id="demo">
+  <div class="dragend-page"></div>
+  <div class="dragend-page"></div>
+</div>
+```
+
+## with jQuery
+```javascript
+$("#demo").dragend(options);
+```
+
+## without jQuery
+```javascript
+new Dragend(document.getElementById("demo"), options);
+```
+
+You can call the dragend method a second time to trigger some actions. When you want to go to a page when you click on a link you could do something like this:
+
+```javascript
+$("#container").dragend();
+  $("#my-link").on("click", function(){
+     $("#container").dragend({
+      scrollToPage: 2
+    });
+  });
+```
+
+instead of scrollToPage you can use jumpToPage to get to a page without a animation. Or
+
+```javascript
+$("#container").dragend("left");
+```
+
+to swipe left or right.
+
+# Options
+  * pageClass: classname selector for all elments that should provide a page
+  * direction: "horizontal" or "vertical"
+  * minDragDistance: minuimum distance (in pixel) the user has to drag to trigger swip
+  * scribe: pixel value for a possible scribe
+  * onSwipeStart: callback function before the animation
+  * onSwipeEnd: callback function after the animation
+  * onDrag: callback on drag
+  * onDragEnd: callback on dragend
+  * borderBetweenPages: if you need space between pages add a pixel value
+  * duration
+  * hammerSettings
+
+# Demos
+
+* [Simple demo](http://stereobit.github.io/dragend/demos/simple/index.html)
+* [Responsive demo](http://stereobit.github.io/dragend/demos/responsive/index.html)
+* [Yahoo weather app like page swiping demo](http://stereobit.github.io/dragend/demos/yahoo-swipe/index.html)
+
 # CHANGELOG
+
+* 2013-06-14
+  0.2.0_rc1 release
+
+  Changes:
+  - remove jQuery dependency
+  - add responsive support
 
 * 2013-06-14
   0.1.3 release
@@ -43,7 +118,7 @@ For further informations and demos check out the [demo page](http://stereobit.gi
 * 2012-08-04
   Creation
 
-# LICENCE 
+# LICENCE
 
 Copyright (c) 2012 [Tobias Otte](http://stereb.it)
 
