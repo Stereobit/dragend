@@ -143,7 +143,7 @@
 
       this.settings      = extend( defaultSettingsCopy, settings );
       this.container     = $(container);
-      this.pageContainer = $("<div>");
+      this.pageContainer = document.createElement("div");
       this.scrollBorder  = { x: 0, y: 0 };
       this.page          = 0;
       this.preventScroll = false;
@@ -151,7 +151,7 @@
         margin: 0
       };
 
-      this.pageContainer.html(this.container.html());
+      this.pageContainer.innerHTML = this.container.html();
       this.container.html(this.pageContainer);
 
       // Keep old settings naming working
@@ -176,13 +176,13 @@
       _scroll: function( coordinates ) {
         switch ( this.settings.direction ) {
           case "horizontal":
-            setStyles(this.pageContainer.get(0), {
+            setStyles(this.pageContainer, {
               "-webkit-transform": "translate3d(" + coordinates.x + "px, 0, 0)"
             });
             break;
 
           case "vertical":
-            setStyles(this.pageContainer.get(0), {
+            setStyles(this.pageContainer, {
               "-webkit-transform": "translate3d(0, " + coordinates.y + "px, 0)"
             });
             break;
@@ -194,7 +194,7 @@
       _animateScroll: function() {
         this.activeElement = this.pages.eq( this.page );
 
-        setStyles(this.pageContainer.get(0), {
+        setStyles(this.pageContainer, {
           "-webkit-transition": "-webkit-transform " + this.settings.duration + "ms ease-out"
         });
 
@@ -208,7 +208,7 @@
 
       afterScroll: function() {
         this._onSwipeEnd();
-        setStyles(this.pageContainer.get(0), {
+        setStyles(this.pageContainer, {
           "-webkit-transition": "-webkit-transform 0"
         });
       }
@@ -226,7 +226,7 @@
         switch ( this.settings.direction ) {
           case "horizontal":
 
-            setStyles(this.pageContainer.get(0), {
+            setStyles(this.pageContainer, {
               "margin-left": coordinates.x
             });
 
@@ -234,7 +234,7 @@
 
           case "vertical":
 
-            setStyles(this.pageContainer.get(0), {
+            setStyles(this.pageContainer, {
               "margin-top": coordinates.y
             });
 
@@ -259,7 +259,7 @@
             break;
         }
 
-        this.pageContainer.animate(css, this.settings.duration, "linear", $.proxy( this._onSwipeEnd, this ));
+        $(this.pageContainer).animate(css, this.settings.duration, "linear", $.proxy( this._onSwipeEnd, this ));
       }
 
     };
@@ -413,7 +413,7 @@
         "display"   : "block"
       });
 
-      setStyles(this.pageContainer.get(0), {
+      setStyles(this.pageContainer, {
         "overflow"                   : "hidden",
         "width"                      : (this.pageDimentions.width + this.settings.borderBetweenPages) * this.pagesCount,
         "box-sizing"                 : "content-box",
@@ -431,7 +431,7 @@
         "display" : "block"
       });
 
-      setStyles(this.pageContainer.get(0), {
+      setStyles(this.pageContainer, {
         "padding-bottom"              : this.settings.scribe,
         "box-sizing"                  : "content-box",
         "-webkit-backface-visibility" : "hidden",
