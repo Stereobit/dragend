@@ -6,7 +6,7 @@ dragend.js, Readme File:
 
 dragend.js is a touch ready, full responsive, content swipe script. It uses [hammer.js](http://eightmedia.github.com/hammer.js/) for observing multi-touch gestures. It also can but don't have to be used as a [jQuery](https://github.com/jquery/jquery/) plugin.
 
-The current version is 0.2.0 Release Candidate 1
+The current version is 0.2.0 release candidate 1
 
 For further informations and demos check out the [demo page](http://stereobit.github.com/dragend/).
 
@@ -41,11 +41,13 @@ $("#demo").dragend(options);
 new Dragend(document.getElementById("demo"), options);
 ```
 
+## update and jump to page
+
 You can call the dragend method a second time to trigger some actions. When you want to go to a page when you click on a link you could do something like this:
 
 ```javascript
 $("#container").dragend();
-  $("#my-link").on("click", function(){
+  $("#my-link").on("click", function() {
      $("#container").dragend({
       scrollToPage: 2
     });
