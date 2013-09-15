@@ -74,7 +74,7 @@
 
     // Default setting
     defaultSettings = {
-      pageElements       : "li",
+      pageClass          : "dragend-page",
       direction          : "horizontal",
       minDragDistance    : "40",
       onSwipeStart       : noop,
@@ -101,7 +101,8 @@
     },
 
     errors = {
-      handling: "Dragend JS detected some problems with the event handling. Maybe the user-drag CSS attribute on images can help"
+      handling: "Dragend JS detected some problems with the event handling. Maybe the user-drag CSS attribute on images can help",
+      pages: "No pages found"
     },
 
     containerStyles = {
@@ -142,6 +143,17 @@
       return function() {
         return fn.apply( context, Array.prototype.slice.call(arguments) );
       };
+    },
+
+    getElementsByClassName = function(cn, root) {
+
+      for (var r=[], e=root.getElementsByTagName('*'), i=e.length; i--;) {
+        if ((' '+e[i].className+' ').indexOf(' '+cn+' ')>-1) {
+          r.push(e[i]);
+        }
+      }
+
+      return r;
     },
 
     Dragend = function( container, settings ) {
@@ -200,7 +212,7 @@
       // ### Animated scroll with translate support
 
       _animateScroll: function() {
-        this.activeElement = this.pages.eq( this.page );
+        this.activeElement = this.pages[this.page];
 
         setStyles(this.pageContainer, {
           "-webkit-transition": "-webkit-transform " + this.settings.duration + "ms ease-out"
@@ -255,7 +267,7 @@
       _animateScroll: function() {
         var css;
 
-        this.activeElement = this.pages.eq( this.page );
+        this.activeElement = this.pages[this.page];
 
         switch ( this.settings.direction ) {
           case "horizontal":
@@ -501,7 +513,7 @@
         });
       }
 
-      this.pages.each(proxy(function(index, element) {
+      $.each(this.pages, proxy(function(index, element) {
           setStyles(element, this.pageCssProperties);
       }, this));
 
@@ -576,7 +588,7 @@
 
     _onSwipeEnd: function() {
       this.preventScroll = false;
-      this.activeElement.trigger( "active" );
+      $(this.activeElement).trigger( "active" );
 
       // Call onSwipeEnd callback function
       this.settings.onSwipeEnd(this.container, this.activeElement, this.page);
@@ -621,7 +633,7 @@
     // ================
 
     swipe: function( direction ) {
-      this.activeElement = this.pages.eq( this.page );
+      this.activeElement = this.pages[this.page];
 
       // Call onSwipeStart callback function
       this.settings.onSwipeStart( this.container, this.activeElement, this.page );
@@ -637,13 +649,19 @@
         this.page = this.settings.scrollToPage;
       }
 
-      this.pages = $(this.container).find( this.settings.pageElements );
-      this.pagesCount = this.pages.length / this.settings.itemsInPage;
+      this.pages = getElementsByClassName(this.settings.pageClass, this.pageContainer);
 
-      this.activeElement = this.pages.eq( this.page );
+      if (this.pages.length) {
+        this.pagesCount = this.pages.length / this.settings.itemsInPage;
+      } else {
+        throw new Error(errors.pages);
+      }
+
+      this.activeElement = this.pages[this.page];
 
       this._sizePages();
     }
+
   });
 
     if ( $ ) {
