@@ -435,8 +435,11 @@
     _onDragend: function( event ) {
       var gesture;
 
-      event.stopPropagation();
-      event.preventDefault();
+        if (event.preventDefault) {
+          event.preventDefault();
+        } else if (event.preventManipulation) {
+          event.preventManipulation();
+        }
 
       if (event.gesture) {
         gesture = event.gesture;
