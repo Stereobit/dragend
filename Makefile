@@ -1,8 +1,8 @@
 VERSION = $(shell cat VERSION)
 
-JS_OUTPUT = "dist/jquery.dragend-${VERSION}.js"
+JS_OUTPUT = "dist/dragend-${VERSION}.js"
 
-JS_FILE = jquery.dragend.js
+JS_FILE = dragend.js
 
 all: bundle minify
 
