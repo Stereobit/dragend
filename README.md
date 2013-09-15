@@ -47,11 +47,12 @@ You can call the dragend method a second time to trigger some actions. When you 
 
 ```javascript
 $("#container").dragend();
-  $("#my-link").on("click", function() {
-     $("#container").dragend({
-      scrollToPage: 2
-    });
+
+$("#my-link").on("click", function() {
+   $("#container").dragend({
+    scrollToPage: 2
   });
+});
 ```
 
 instead of scrollToPage you can use jumpToPage to get to a page without a animation. Or
