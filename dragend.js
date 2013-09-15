@@ -106,8 +106,7 @@
 
     containerStyles = {
       overflow: "hidden",
-      padding : 0,
-      cursor: "grab"
+      padding : 0
     },
 
     extend = function(destination, source) {
