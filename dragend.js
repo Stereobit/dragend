@@ -506,6 +506,8 @@
     // ### Size pages
 
     _sizePages: function() {
+      var pagesCount = this.pages.length,
+          i;
 
       this._setPageDimentions();
 
@@ -523,9 +525,9 @@
         });
       }
 
-      $.each(this.pages, proxy(function(index, element) {
-          setStyles(element, this.pageCssProperties);
-      }, this));
+      for (i = 0; i < pagesCount; i++) {
+        setStyles(this.pages[i], this.pageCssProperties);
+      }
 
       if ( this.settings.scrollToPage !== undefined ) {
         this._scrollToPage( "page", this.page );
@@ -533,6 +535,7 @@
       } else {
         this._jumpToPage( "page", this.page );
       }
+
     },
 
     // ### Callculate new page
