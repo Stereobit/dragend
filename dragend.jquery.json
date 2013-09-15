@@ -1,0 +1,36 @@
+{
+  "name": "dragend",
+  "title": "dragend JS",
+  "description": "a jQuery plugin for content swiping",
+  "keywords": [
+    "mobile",
+    "touch",
+    "jquery",
+    "slider",
+    "slideshow",
+    "responsive"
+  ],
+  "version": "0.2.0",
+  "author": {
+    "name": "Tobias Otte",
+    "url": "https://github.com/Stereobit/dragend"
+  },
+  "maintainers": [
+    {
+      "name": "Tobias Otte",
+      "email": "t@stereob.it",
+      "url": "http://stereob.it"
+    }
+  ],
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/stereobit/dragend/blob/master/MIT-LICENSE.txt"
+    }
+  ],
+  "bugs": "https://github.com/Stereobit/dragend/issues",
+  "homepage": "http://stereobit.github.io/dragend/",
+  "dependencies": {
+    "hammerjs": ">=1.0"
+  }
+}

@@ -23,10 +23,6 @@
       height: 500px;
       display: none;
       margin: 100px auto;
-    }
-
-    #demo ul {
-      list-style: none;
       background: #457;
       cursor: hand;
       cursor: -moz-grab;
@@ -34,11 +30,15 @@
       cursor: grab;
     }
 
-    #demo li:first-child {
+    #demo li.first {
       background: #577;
     }
 
-    #demo li:last-child {
+    #demo li.middle {
+      background: #1e8;
+    }
+
+    #demo li.last {
       background: #e8b;
     }
 
@@ -66,7 +66,7 @@
     }
 
   </style>
-  
+
   <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
   <link href='http://fonts.googleapis.com/css?family=Arvo:400,700' rel='stylesheet' type='text/css'>
 
@@ -75,25 +75,27 @@
 
   <div id="demo">
     <ul>
-      <li></li>
-      <li></li>
-      <li></li>
+      <li class="first dragend-page"></li>
+      <li class="dragend-page"></li>
+      <li class="middle dragend-page"></li>
+      <li class="dragend-page"></li>
+      <li class="last dragend-page"></li>
     </ul>
   </div>
 
   <div id="dragend">
     <h1>A simple <a href="http://stereobit.github.io/dragend/">dragend JS</a> demo</h1>
   </div>
-  
 
-  <script type="text/javascript" src="../lib/jquery-1.9.1.min.js"></script>
-  <script type="text/javascript" src="../lib/jquery.hammer-1.0.5.min.js"></script>
-  <script type="text/javascript" src="../../dist/jquery.dragend-0.1.3.min.js"></script>
+  <script type="text/javascript" src="../lib/jquery.min.js"></script>
+  <script type="text/javascript" src="../lib/hammer.min.js"></script>
+  <script type="text/javascript" src="../../dragend.js"></script>
 
   <script>
 
     $(function() {
-      $("#demo").dragend().fadeIn();
+      new Dragend($("#demo").get(0))
+      $("#demo").fadeIn();
     });
 
     var _gaq = _gaq || [];

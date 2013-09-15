@@ -19,6 +19,7 @@
     }
 
     #demo {
+<<<<<<< HEAD
       width: 500px;
       height: 500px;
       display: none;
@@ -27,6 +28,12 @@
 
     #demo ul {
       list-style: none;
+=======
+      width: 100%;
+      height: 500px;
+      display: none;
+      margin: 100px auto;
+>>>>>>> master
       background: #457;
       cursor: hand;
       cursor: -moz-grab;
@@ -35,6 +42,7 @@
     }
 
     #demo .item {
+<<<<<<< HEAD
       background: #1e5799; /* Old browsers */
       background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzFlNTc5OSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiM3ZGI5ZTgiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
       background: -moz-linear-gradient(left,  #1e5799 0%, #7db9e8 100%); /* FF3.6+ */
@@ -50,6 +58,13 @@
       width: 33.333%;
       float: left;
       height: 100%;
+=======
+      background: #354;
+    }
+
+    #demo .item:nth-child(2n+0) {
+      background: #333;
+>>>>>>> master
     }
 
     #dragend {
@@ -84,6 +99,7 @@
 <body id="desktop">
 
   <div id="demo">
+<<<<<<< HEAD
     <div id="container">
       <div class="desktop">
         <div class="item"></div>
@@ -101,15 +117,32 @@
         <div class="item"></div>
       </div>
     </div>
+=======
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+>>>>>>> master
   </div>
 
   <div id="dragend">
     <h1>A responsive <a href="http://stereobit.github.io/dragend/">dragend JS</a> demo</h1>
   </div>
 
+<<<<<<< HEAD
   <script type="text/javascript" src="../lib/jquery-1.9.1.min.js"></script>
   <script type="text/javascript" src="../lib/jquery.hammer-1.0.5.min.js"></script>
   <script type="text/javascript" src="../../dist/jquery.dragend-0.1.3.min.js"></script>
+=======
+  <script type="text/javascript" src="../lib/jquery.min.js"></script>
+  <script type="text/javascript" src="../lib/hammer.min.js"></script>
+  <script type="text/javascript" src="../../dragend.js"></script>
+>>>>>>> master
 
   <script>
 
@@ -120,6 +153,7 @@
 
       $(window).on("ready resize", function(event) {
 
+<<<<<<< HEAD
         if (BODY.width() > 700) {
           BODY.addClass("desktop");
           pageElements = ".desktop";
@@ -133,6 +167,23 @@
         container.dragend({
           pageContainer: "#container",
           pageElements: pageElements
+=======
+        var width = $(this).width(),
+            itemsInPage = 1;
+
+        if (width > 1000) {
+          itemsInPage = 4
+        } else if (width > 600) {
+          itemsInPage = 3;
+        } else if (width > 400) {
+          itemsInPage = 2;
+        }
+
+        container.dragend({
+          pageContainer: "#container",
+          itemsInPage: itemsInPage,
+          pageClass: "item",
+>>>>>>> master
         }).fadeIn();
 
       });
