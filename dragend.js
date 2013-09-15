@@ -150,13 +150,12 @@
     getElementsByClassName = function(className, root) {
       var elements = [];
 
-      if( !document.querySelector && document.querySelectorAll ) {
+      if( document.querySelector && document.querySelectorAll ) {
          elements = root.getElementsByClassName(className);
       } else {
-        var allElements = root.getElementsByTagName('*'),
-            i = allElements.length;
+        var allElements = root.getElementsByTagName('*');
 
-        for (i; i--;) {
+        for (var i = 0; i < allElements.length; i++) {
           if ((' ' + allElements[i].className + ' ').indexOf(' ' + className +' ') > -1 ) {
             elements.push(allElements[i]);
           }
@@ -540,8 +539,7 @@
     // ### Size pages
 
     _sizePages: function() {
-      var pagesCount = this.pages.length,
-          i;
+      var pagesCount = this.pages.length;
 
       this._setPageDimentions();
 
@@ -559,7 +557,7 @@
         });
       }
 
-      for (i = 0; i < pagesCount; i++) {
+      for (var i = 0; i < pagesCount; i++) {
         setStyles(this.pages[i], this.pageCssProperties);
       }
 
