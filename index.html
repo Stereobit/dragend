@@ -2,7 +2,7 @@
 <html>
 <head>
 
-  <title>dragend JS &ndash; a jQuery plugin for content swiping</title>
+  <title>dragend JS &ndash; a touch ready, full responsive, content swipe script</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
 
@@ -18,7 +18,7 @@
 
   <header>
     <div class="confine">
-      <h1 class="logo">dragend <span>JS</span> </h1><h2>a jQuery plugin for content swiping</h2>
+      <h1 class="logo">dragend <span>JS</span> </h1><h2>a touch ready, full responsive, content swipe script</h2>
     </div>
   </header>
 
@@ -29,18 +29,19 @@
           <div class="page-content">
             <div class="left">
               <div class="content">
-                <p>dragend JS is a swipe plugin for <a href="http://jquery.com/">jQuery</a>. It's <a href="https://github.com/Stereobit/dragend">open source</a> and uses <a href="http://eightmedia.github.com/hammer.js/">hammer.js</a> for observing multi-touch gestures.</p>
-                <p class="space">The current version is 0.1.3</p>
+                <p>dragend JS is a touch ready, full responsive, content swipe script. It's <a href="https://github.com/Stereobit/dragend">open source</a> and uses <a href="http://eightmedia.github.com/hammer.js/">hammer.js</a> for observing multi-touch gestures. It also can, but don't have to, be used as a <a href="http://jquery.com/">jQuery</a> plugin</p>
+                <p class="space">The current version is 0.2.0 release candidate 1</p>
                 <h3>Features</h3>
                 <ul>
                   <li>horizontal and vertical swiping</li>
                   <li>mobile and desktop ready</li>
-                  <li>lightweight (2.6KB gzipped)</li>
+                  <li>lightweight</li>
                   <li>keyboard navigation</li>
                   <li>fullscreen or boxed</li>
                   <li>contend scribe</li>
                   <li>resize adjustment</li>
                   <li>overscroll</li>
+                  <li>full responsive</li>
                 </ul>
               </div>
             </div>
@@ -49,8 +50,8 @@
               <div class="content">
                 <h3>Download</h3>
                 <ul class="download space">
-                  <li><a href="https://raw.github.com/Stereobit/dragend/master/dist/jquery.dragend-0.1.3.js">Download development version (unminified, with comments)</a></li>
-                  <li><a href="https://raw.github.com/Stereobit/dragend/master/dist/jquery.dragend-0.1.3.min.js">Download production version (1.55KB minified &amp; compressed)</a></li>
+                  <li><a href="https://raw.github.com/Stereobit/dragend/master/dist/jquery.dragend-0.2.0_rc1.js">Download development version (unminified, with comments)</a></li>
+                  <li><a href="https://raw.github.com/Stereobit/dragend/master/dist/jquery.dragend-0.2.0_rc1.min.js">Download production version (2.55KB minified &amp; compressed)</a></li>
                 </ul>
                 <h3>Browser Support</h3>
                 <ul class="space">
@@ -128,11 +129,11 @@
     </div>
   </footer>
 
-  <a href="https://github.com/Stereobit/dragend"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png" alt="Fork me on GitHub"></a>
+  <a href="https://github.com/Stereobit/dragend"><img style="position: absolute; top: 0; right: 0; border: 0; z-index: 1;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png" alt="Fork me on GitHub"></a>
 
-  <script type="text/javascript" src="./src/lib/jquery-1.9.1.min.js"></script>
-  <script type="text/javascript" src="./src/lib/jquery.hammer-1.0.5.min.js"></script>
-  <script type="text/javascript" src="./dist/jquery.dragend-0.1.3.min.js"></script>
+  <script type="text/javascript" src="src/lib/jquery-1.9.1.min.js"></script>
+  <script type="text/javascript" src="src/lib/hammer-1.0.5.min.js"></script>
+  <script type="text/javascript" src="dist/jquery.dragend-0.2.0_rc1.min.js"></script>
 
   <script>
 
@@ -140,10 +141,9 @@
       var container = $("#swipe-container");
 
       container.dragend({
-        "minTouchDistance"  : "60",
-        "keyboardNavigation": true,
-        "pageContainer"     : "ul#pages",
-        "pageElements"      : "li.page"
+        minTouchDistance  : "60",
+        keyboardNavigation: true,
+        pageClass         : "page"
       });
 
       $("#demo").dragend({
