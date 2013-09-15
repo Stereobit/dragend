@@ -142,7 +142,7 @@
       var defaultSettingsCopy = extend( {}, defaultSettings );
 
       this.settings      = extend( defaultSettingsCopy, settings );
-      this.container     = $(container);
+      this.container     = container;
       this.pageContainer = document.createElement("div");
       this.scrollBorder  = { x: 0, y: 0 };
       this.page          = 0;
@@ -151,17 +151,23 @@
         margin: 0
       };
 
-      this.pageContainer.innerHTML = this.container.html();
-      this.container.html(this.pageContainer);
+      this.pageContainer.innerHTML = this.container.innerHTML;
+      this.container.innerHTML = null;
+      this.container.appendChild(this.pageContainer);
+
 
       // Keep old settings naming working
       this.settings.minDragDistance = this.settings.minTouchDistance || "40";
 
       // Initialisation
 
-      setStyles(this.container.get(0), containerStyles);
-      this.updateInstance( settings );
+      setStyles(this.container, containerStyles);
       this._observe();
+
+      // Give the DOM some time to update ...
+      window.setTimeout($.proxy(function() {
+          this.updateInstance( settings );
+      }, this), 10);
 
     },
 
@@ -336,7 +342,7 @@
     // Sets the observers for drag, resize and key events
 
     _observe: function() {
-      this.container.hammer()
+      $(this.container).hammer()
         .on( "drag", this.settings.hammerSettings, $.proxy( this._onDrag, this ) )
         .on( "dragend", this.settings.hammerSettings, $.proxy( this._onDragend, this ) );
 
@@ -457,9 +463,10 @@
     // Updates the page dimentions values
 
     _setPageDimentions: function() {
+      console.log(this.container.offsetWidth)
 
-      var width  = this.container.width(),
-          height = this.container.height();
+      var width  = this.container.offsetWidth,
+          height = this.container.offsetHeight;
 
       if ( this.settings.direction === "horizontal" ) {
         width = width - parseInt( this.settings.scribe, 10 );
@@ -630,7 +637,7 @@
         this.page = this.settings.scrollToPage;
       }
 
-      this.pages = this.container.find( this.settings.pageElements );
+      this.pages = $(this.container).find( this.settings.pageElements );
       this.pagesCount = this.pages.length / this.settings.itemsInPage;
 
       this.activeElement = this.pages.eq( this.page );
@@ -650,6 +657,7 @@
             if ( instance ) {
               instance.updateInstance( settings );
             } else {
+              console.log(this)
               instance = new Dragend( this, settings );
               $(this).data( "dragend", instance );
             }
