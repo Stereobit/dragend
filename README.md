@@ -8,7 +8,11 @@ dragend.js is a touch ready, full responsive, content swipe script. It uses [ham
 
 The current version is 0.2.0 release candidate 1
 
-For further informations and demos check out the [demo page](http://stereobit.github.com/dragend/).
+# Demos
+
+* [Simple demo](http://stereobit.github.io/dragend/demos/simple/index.html)
+* [Responsive demo](http://stereobit.github.io/dragend/demos/responsive/index.html)
+* [Yahoo weather app like page swiping demo](http://stereobit.github.io/dragend/demos/yahoo-swipe/index.html)
 
 # Featues
 
@@ -75,12 +79,6 @@ to swipe left or right.
   * borderBetweenPages: if you need space between pages add a pixel value
   * duration
   * hammerSettings
-
-# Demos
-
-* [Simple demo](http://stereobit.github.io/dragend/demos/simple/index.html)
-* [Responsive demo](http://stereobit.github.io/dragend/demos/responsive/index.html)
-* [Yahoo weather app like page swiping demo](http://stereobit.github.io/dragend/demos/yahoo-swipe/index.html)
 
 # CHANGELOG
 
