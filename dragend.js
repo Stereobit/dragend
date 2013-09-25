@@ -35,7 +35,7 @@
   // (http://eightmedia.github.com/hammer.js/) for observing multi-touch
   // gestures. You can use dragend JS in fullscreen or boxed mode.
   //
-  // The current version is 0.1.3
+  // The current version is 0.2.0_rc1
   //
   // Usage
   // =====================
@@ -121,8 +121,8 @@
           switch (property) {
             case "height":
             case "width":
-            case "margin-left":
-            case "margin-top":
+            case "marginLeft":
+            case "marginTop":
               value += "px";
           }
 
@@ -250,8 +250,6 @@
       _animateScroll: function() {
         this.activeElement = this.pages[this.page * this.settings.itemsInPage];
 
-        console.log();
-
         setStyles(this.pageContainer, {
           "-webkit-transition": "-webkit-transform " + this.settings.duration + "ms ease-out"
         });
@@ -286,7 +284,7 @@
           case "horizontal":
 
             setStyles(this.pageContainer, {
-              "margin-left": coordinates.x
+              "marginLeft": coordinates.x
             });
 
             break;
@@ -294,7 +292,7 @@
           case "vertical":
 
             setStyles(this.pageContainer, {
-              "margin-top": coordinates.y
+              "marginTop": coordinates.y
             });
 
             break;
@@ -311,12 +309,12 @@
 
         switch ( this.settings.direction ) {
           case "horizontal":
-            property = "margin-left";
+            property = "marginLeft";
             value = - this.scrollBorder.x;
             break;
 
           case "vertical":
-            property = "margin-top";
+            property = "marginTop";
             value = - this.scrollBorder.y;
             break;
         }
@@ -473,17 +471,17 @@
 
     setHorizontalContainerCssValues: function() {
       extend( this.pageCssProperties, {
-        "float"   : "left",
-        "overflow-y": "auto",
-        "overflow-x": "hidden",
-        "padding"   : 0,
-        "display"   : "block"
+        "cssFloat" : "left",
+        "overflowY": "auto",
+        "overflowX": "hidden",
+        "padding"  : 0,
+        "display"  : "block"
       });
 
       setStyles(this.pageContainer, {
         "overflow"                   : "hidden",
         "width"                      : (this.pageDimentions.width + this.settings.borderBetweenPages) * this.pagesCount,
-        "box-sizing"                 : "content-box",
+        "boxSizing"                  : "content-box",
         "-webkit-backface-visibility": "hidden",
         "-webkit-perspective"        : 1000,
         "margin"                     : 0,
@@ -500,7 +498,7 @@
 
       setStyles(this.pageContainer, {
         "padding-bottom"              : this.settings.scribe,
-        "box-sizing"                  : "content-box",
+        "boxSizing"                   : "content-box",
         "-webkit-backface-visibility" : "hidden",
         "-webkit-perspective"         : 1000,
         "margin"                      : 0
