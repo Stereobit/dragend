@@ -274,8 +274,6 @@
     // ### Animated scroll with translate support
 
     _animateScrollTransform = function() {
-      this.activeElement = this.pages[this.page * this.settings.itemsInPage];
-
       setStyles(this.pageContainer, {
         "-webkit-transition": "-webkit-transform " + this.settings.duration + "ms ease-out",
         "-moz-transition": "-moz-transform " + this.settings.duration + "ms ease-out",
@@ -589,13 +587,6 @@
         setStyles(this.pages[i], this.pageCssProperties);
       }
 
-      if ( this.settings.scrollToPage !== undefined ) {
-        this._scrollToPage( "page", this.page );
-        delete this.settings.scrollToPage;
-      } else {
-        this._jumpToPage( "page", this.page );
-      }
-
     },
 
     // ### Callculate new page
@@ -662,6 +653,8 @@
     _onSwipeEnd: function() {
       this.preventScroll = false;
 
+      this.activeElement = this.pages[this.page * this.settings.itemsInPage];
+
       // Call onSwipeEnd callback function
       this.settings.onSwipeEnd.call( this, this.container, this.activeElement, this.page);
     },
@@ -705,8 +698,6 @@
     // ================
 
     swipe: function( direction ) {
-      this.activeElement = this.pages[this.page * this.settings.itemsInPage];
-
       // Call onSwipeStart callback function
       this.settings.onSwipeStart.call( this, this.container, this.activeElement, this.page );
       this._scrollToPage( direction );
@@ -714,12 +705,6 @@
 
     updateInstance: function( settings ) {
       if ( typeof settings === "object" ) extend( this.settings, settings );
-
-      if ( this.settings.jumpToPage !== undefined ) {
-        this.page = this.settings.jumpToPage;
-      } else if ( this.settings.scrollToPage !== undefined ) {
-        this.page = this.settings.scrollToPage;
-      }
 
       this.pages = getElementsByClassName(this.settings.pageClass, this.pageContainer);
 
@@ -731,41 +716,49 @@
 
       this.activeElement = this.pages[this.page * this.settings.itemsInPage];
       this._sizePages();
+    },
+
+    scrollToPage: function(page) {
+      this._scrollToPage( "page", page - 1);
+    },
+
+    jumpToPage: function(page) {
+      this._jumpToPage( "page", page - 1);
     }
 
   });
 
-    if ( $ ) {
+  if ( $ ) {
 
-        // Register jQuery plugin
-        $.fn.dragend = function( settings ) {
+      // Register jQuery plugin
+      $.fn.dragend = function( settings ) {
 
-          this.each(function() {
-            var instance = $(this).data( "dragend" );
+        this.each(function() {
+          var instance = $(this).data( "dragend" );
 
-            // check if instance already created
-            if ( instance ) {
-              instance.updateInstance( settings );
-            } else {
-              instance = new Dragend( this, settings );
-              $(this).data( "dragend", instance );
-            }
+          // check if instance already created
+          if ( instance ) {
+            instance.updateInstance( settings );
+          } else {
+            instance = new Dragend( this, settings );
+            $(this).data( "dragend", instance );
+          }
 
-            // check if should trigger swipe
-            if ( typeof settings === "string" ) instance.swipe( settings );
+          // check if should trigger swipe
+          if ( typeof settings === "string" ) instance.swipe( settings );
 
-          });
+        });
 
-          // jQuery functions should always return the intance
-          return this;
-        };
+        // jQuery functions should always return the intance
+        return this;
+      };
 
-    }
+  }
 
-    if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) {
-        define(function() { return Dragend; });
-    } else {
-        window.Dragend = Dragend;
-    }
+  if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) {
+      define(function() { return Dragend; });
+  } else {
+      window.Dragend = Dragend;
+  }
 
 })( window.jQuery || window.Zepto, window );
