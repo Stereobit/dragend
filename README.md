@@ -84,6 +84,15 @@ to swipe left or right.
 
 # CHANGELOG
 
+* 2013-09-30
+  0.2.0_rc2 release
+
+  Changes:
+  - better cross browser css transition support
+  - moved jumpToPage and scrollToPage to public instance methodes
+  - callbacks are now called in the instace context
+  - better initalisation handling with module loaders
+
 * 2013-06-14
   0.2.0_rc1 release
 
