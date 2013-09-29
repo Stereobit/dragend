@@ -333,7 +333,7 @@
       } else if ( this.settings.direction === "vertical" ) {
           property = "marginTop";
           value = - this.scrollBorder.y;
-      };
+      }
 
       animate(this.pageContainer, property, value, this.settings.duration, proxy( this._onSwipeEnd, this ));
 
@@ -445,7 +445,7 @@
       if ( event.gesture ) {
         gesture = event.gesture;
         coordinates = this._checkOverscroll( gesture.direction, gesture.deltaX, gesture.deltaY );
-        this.settings.onDrag( this.activeElement, gesture, coordinates.overscroll );
+        this.settings.onDrag.call( this, this.activeElement, gesture, coordinates.overscroll );
       } else {
         throw new Error(errors.handling);
       }
@@ -477,7 +477,7 @@
         this._scrollToPage();
       }
 
-      this.settings.onDragEnd( this.container, this.activeElement, this.page );
+      this.settings.onDragEnd.call( this, this.container, this.activeElement, this.page );
     },
 
     _onKeydown: function( event ) {
@@ -663,7 +663,7 @@
       this.preventScroll = false;
 
       // Call onSwipeEnd callback function
-      this.settings.onSwipeEnd(this.container, this.activeElement, this.page);
+      this.settings.onSwipeEnd.call( this, this.container, this.activeElement, this.page);
     },
 
     // Jump to page
@@ -708,7 +708,7 @@
       this.activeElement = this.pages[this.page * this.settings.itemsInPage];
 
       // Call onSwipeStart callback function
-      this.settings.onSwipeStart( this.container, this.activeElement, this.page );
+      this.settings.onSwipeStart.call( this, this.container, this.activeElement, this.page );
       this._scrollToPage( direction );
     },
 
@@ -730,7 +730,6 @@
       }
 
       this.activeElement = this.pages[this.page * this.settings.itemsInPage];
-
       this._sizePages();
     }
 
