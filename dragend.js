@@ -744,6 +744,9 @@
             $(this).data( "dragend", instance );
           }
 
+          if ( settings.jumpToPage ) instance.jumpToPage( settings.jumpToPage );
+          if ( settings.scrollToPage ) instance.scrollToPage( settings.scrollToPage );
+
           // check if should trigger swipe
           if ( typeof settings === "string" ) instance.swipe( settings );
 

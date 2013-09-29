@@ -158,7 +158,7 @@
   <script>
 
     $(function() {
-      var dragend = new Dragend($("#demo").get(0), {
+      $("#demo").dragend({
         onSwipeEnd: function() {
           var first = this.pages[0],
               last = this.pages[this.pages.length - 1];
@@ -177,21 +177,22 @@
           $(".nav li").eq(this.page).addClass("active");
 
         }
-      })
-      $("#demo").fadeIn();
+      }).fadeIn();
 
       $(".prev").click(function() {
-        dragend.swipe("right");
+        $("#demo").dragend("right");
       });
 
       $(".next").click(function() {
-        dragend.swipe("left");
+        $("#demo").dragend("left");
       });
 
       $(".nav").click(function() {
         var page = $(event.target).data("page");
 
-        dragend.scrollToPage(page);
+        $("#demo").dragend({
+          scrollToPage: page
+        });
 
         $(event.target).addClass("active");
 
