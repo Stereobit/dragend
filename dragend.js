@@ -767,9 +767,7 @@
 
     return Dragend;
 
-  };
-
-   // body...
+  }
 
   if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) {
       define(["jquery", "hammer"], function(jquery, hammer) { return init(jquery, hammer); });
