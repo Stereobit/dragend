@@ -6,13 +6,15 @@ dragend.js, Readme File:
 
 dragend.js is a touch ready, full responsive, content swipe script. It uses [hammer.js](http://eightmedia.github.com/hammer.js/) for observing multi-touch gestures. It also can, but don't has to, used as a [jQuery](https://github.com/jquery/jquery/) plugin.
 
-The current version is 0.2.0 release candidate 1
+The current version is 0.2.0 release candidate 2
 
 # Demos
 
-* [Simple demo](http://stereobit.github.io/dragend/demos/simple/index.html)
-* [Responsive demo](http://stereobit.github.io/dragend/demos/responsive/index.html)
-* [Yahoo weather app like page swiping demo](http://stereobit.github.io/dragend/demos/yahoo-swipe/index.html)
+* [Simple demo](http://stereobit.github.io/dragend/demos/simple/)
+* [Responsive demo](http://stereobit.github.io/dragend/demos/responsive/)
+* [Yahoo weather app like page swiping demo](http://stereobit.github.io/dragend/demos/yahoo-swipe/)
+* [Demo with navigation buttons and a page overview](http://stereobit.github.io/dragend/demos/with-control-elements/)
+* [Demo with infinit swiping through pages](http://stereobit.github.io/dragend/demos/infinit/)
 
 # Featues
 
