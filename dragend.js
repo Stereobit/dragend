@@ -149,7 +149,7 @@
     getElementsByClassName = function(className, root) {
       var elements = [];
 
-      if( document.querySelector && document.querySelectorAll ) {
+      if ( document.querySelector && document.querySelectorAll ) {
          elements = root.getElementsByClassName(className);
       } else {
         var allElements = root.getElementsByTagName('*');
@@ -192,6 +192,29 @@
 
     },
 
+    supports = (function() {
+       var div = document.createElement('div'),
+           vendors = 'Khtml Ms O Moz Webkit'.split(' '),
+           len = vendors.length;
+
+       return function(prop) {
+          if ( prop in div.style ) return true;
+
+          prop = prop.replace(/^[a-z]/, function(val) {
+             return val.toUpperCase();
+          });
+
+          while(len--) {
+             if ( vendors[len] + prop in div.style ) {
+                // browser supports box-shadow. Do what you need.
+                // Or use a bang (!) to test if the browser doesn't.
+                return true;
+             }
+          }
+          return false;
+       };
+    })(),
+
     Dragend = function( container, settings ) {
       var defaultSettingsCopy = extend( {}, defaultSettings );
 
@@ -221,118 +244,121 @@
 
     },
 
-    withTranslateMethodes = {
-      // ### Scroll translate
-      //
-      // Animation when translate is supported
-      //
-      // Takes:
-      // x and y values to go with
+    // ### Scroll translate
+    //
+    // Animation when translate is supported
+    //
+    // Takes:
+    // x and y values to go with
 
-      _scroll: function( coordinates ) {
-        switch ( this.settings.direction ) {
-          case "horizontal":
-            setStyles(this.pageContainer, {
-              "-webkit-transform": "translate3d(" + coordinates.x + "px, 0, 0)"
-            });
-            break;
-
-          case "vertical":
-            setStyles(this.pageContainer, {
-              "-webkit-transform": "translate3d(0, " + coordinates.y + "px, 0)"
-            });
-            break;
-        }
-      },
-
-      // ### Animated scroll with translate support
-
-      _animateScroll: function() {
-        this.activeElement = this.pages[this.page * this.settings.itemsInPage];
-
+    _scrollTransform = function( coordinates ) {
+      if ( this.settings.direction === "horizontal" ) {
         setStyles(this.pageContainer, {
-          "-webkit-transition": "-webkit-transform " + this.settings.duration + "ms ease-out"
+          "-webkit-transform": "translateX(" + coordinates.x + "px)",
+          "-moz-transform": "translateX(" + coordinates.x + "px)",
+          "-ms-transform": "translateX(" + coordinates.x + "px)",
+          "-0-transform": "translateX(" + coordinates.x + "px)",
+          "transform": "translateX(" + coordinates.x + "px)"
         });
-
-        this._scroll({
-          x: - this.scrollBorder.x,
-          y: - this.scrollBorder.y
-        });
-
-        window.setTimeout( proxy( this.afterScroll, this ), this.settings.duration );
-      },
-
-      afterScroll: function() {
-        this._onSwipeEnd();
+      } else if (this.settings.direction === "vertical" ) {
         setStyles(this.pageContainer, {
-          "-webkit-transition": "-webkit-transform 0"
+          "-webkit-transform": "translateY(" + coordinates.y + "px)",
+          "-moz-transform": "translateY(" + coordinates.y + "px)",
+          "-ms-transform": "translateY(" + coordinates.y + "px)",
+          "-o-transform": "translateY(" + coordinates.y + "px)",
+          "transform": "translateY(" + coordinates.y + "px)"
         });
       }
     },
 
-    withoutTranslateMethodes = {
-      // ### Scroll fallback
-      //
-      // Animation lookup table  when translate isn't supported
-      //
-      // Takes:
-      // x and y values to go with
+    // ### Animated scroll with translate support
 
-      _scroll: function( coordinates ) {
+    _animateScrollTransform = function() {
+      this.activeElement = this.pages[this.page * this.settings.itemsInPage];
 
-        switch ( this.settings.direction ) {
-          case "horizontal":
+      setStyles(this.pageContainer, {
+        "-webkit-transition": "-webkit-transform " + this.settings.duration + "ms ease-out",
+        "-moz-transition": "-moz-transform " + this.settings.duration + "ms ease-out",
+        "-ms-transition": "-ms-transform " + this.settings.duration + "ms ease-out",
+        "-o-transition": "-o-transform " + this.settings.duration + "ms ease-out",
+        "transition": "transform " + this.settings.duration + "ms ease-out"
+      });
 
-            setStyles(this.pageContainer, {
-              "marginLeft": coordinates.x
-            });
+      this._scroll({
+        x: - this.scrollBorder.x,
+        y: - this.scrollBorder.y
+      });
 
-            break;
+      window.setTimeout( proxy(afterScrollTranslate, this), this.settings.duration );
+    },
 
-          case "vertical":
+    afterScrollTranslate = function() {
+      this._onSwipeEnd();
+      setStyles(this.pageContainer, {
+        "-webkit-transition": "-webkit-transform 0"
+      });
+    },
 
-            setStyles(this.pageContainer, {
-              "marginTop": coordinates.y
-            });
+    // ### Scroll fallback
+    //
+    // Animation lookup table  when translate isn't supported
+    //
+    // Takes:
+    // x and y values to go with
 
-            break;
-        }
-      },
+    _scrollWithoutTranslate = function( coordinates ) {
 
-      // ### Animated scroll without translate support
-
-      _animateScroll: function() {
-        var property,
-            value;
-
-        this.activeElement = this.pages[this.page * this.settings.itemsInPage];
-
-        switch ( this.settings.direction ) {
-          case "horizontal":
-            property = "marginLeft";
-            value = - this.scrollBorder.x;
-            break;
-
-          case "vertical":
-            property = "marginTop";
-            value = - this.scrollBorder.y;
-            break;
-        }
-
-        animate(this.pageContainer, property, value, this.settings.duration, proxy( this._onSwipeEnd, this ));
-
+      if ( this.settings.direction === "horizontal") {
+        setStyles(this.pageContainer, {
+          "marginLeft": coordinates.x
+        });
+      } else if ( this.settings.direction === "vertical" ) {
+        setStyles(this.pageContainer, {
+          "marginTop": coordinates.y
+        });
       }
+    },
+
+    // ### Animated scroll without translate support
+
+    _animateScrollWithoutTranslate = function() {
+      var property,
+          value;
+
+      this.activeElement = this.pages[this.page * this.settings.itemsInPage];
+
+      if ( this.settings.direction === "horizontal") {
+          property = "marginLeft";
+          value = - this.scrollBorder.x;
+      } else if ( this.settings.direction === "vertical" ) {
+          property = "marginTop";
+          value = - this.scrollBorder.y;
+      };
+
+      animate(this.pageContainer, property, value, this.settings.duration, proxy( this._onSwipeEnd, this ));
 
     };
 
   // ### Check translate support
-  ( function checkTranslateSupport() {
-    if ( "WebKitCSSMatrix" in window && "m11" in new WebKitCSSMatrix() ) {
-      extend( Dragend.prototype, withTranslateMethodes );
+  ( function() {
+
+    var scroll,
+        animateScroll;
+
+    if ( supports('transform') ) {
+      scroll = _scrollTransform;
+      animateScroll = _animateScrollTransform;
     } else {
-      extend( Dragend.prototype, withoutTranslateMethodes );
+      scroll = _scrollWithoutTransform;
+      animateScroll = _animateScrollWithoutTranslate;
     }
-  } )();
+
+    extend( Dragend.prototype, {
+      "_scroll": scroll,
+      "_animateScroll": animateScroll
+    });
+
+  })();
 
 
   extend(Dragend.prototype, {
@@ -742,6 +768,5 @@
     } else {
         window.Dragend = Dragend;
     }
-
 
 })( window.jQuery || window.Zepto, window );
