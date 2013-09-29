@@ -723,6 +723,8 @@
 
         this.activeElement = this.pages[this.page * this.settings.itemsInPage];
         this._sizePages();
+
+        if ( settings.jumpToPage ) this.jumpToPage( settings.jumpToPage );
       },
 
       scrollToPage: function(page) {
@@ -740,18 +742,20 @@
         // Register jQuery plugin
         $.fn.dragend = function( settings ) {
 
+          settings = settings || {};
+
           this.each(function() {
             var instance = $(this).data( "dragend" );
 
             // check if instance already created
             if ( instance ) {
               instance.updateInstance( settings );
+              if ( settings.jumpToPage ) instance.jumpToPage( settings.jumpToPage );
             } else {
               instance = new Dragend( this, settings );
               $(this).data( "dragend", instance );
             }
 
-            if ( settings.jumpToPage ) instance.jumpToPage( settings.jumpToPage );
             if ( settings.scrollToPage ) instance.scrollToPage( settings.scrollToPage );
 
             // check if should trigger swipe
