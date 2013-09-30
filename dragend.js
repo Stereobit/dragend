@@ -248,7 +248,6 @@
         // Initialisation
 
         setStyles(this.container, containerStyles);
-        console.log(this)
         this._observe();
 
         // Give the DOM some time to update ...
