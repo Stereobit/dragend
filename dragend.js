@@ -241,8 +241,8 @@
           margin: 0
         };
 
-        this.pageContainer.innerHTML = this.container.innerHTML;
-        this.container.innerHTML = null;
+        this.pageContainer.innerHTML = this.container.cloneNode(true).innerHTML;
+        this.container.innerHTML = "";
         this.container.appendChild( this.pageContainer );
 
         // Initialisation
