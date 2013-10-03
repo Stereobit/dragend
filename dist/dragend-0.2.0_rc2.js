@@ -1,7 +1,7 @@
-/**
+/*!
  * ---------------------------- DRAGEND JS -------------------------------------
  *
- * Version: 0.2.0_rc1
+ * Version: 0.2.0_rc2
  * https://github.com/Stereobit/dragend
  * Copyright (c) 2012 Tobias Otte, t@stereob.it
  *
@@ -241,8 +241,8 @@
           margin: 0
         };
 
-        this.pageContainer.innerHTML = this.container.innerHTML;
-        this.container.innerHTML = null;
+        this.pageContainer.innerHTML = this.container.cloneNode(true).innerHTML;
+        this.container.innerHTML = "";
         this.container.appendChild( this.pageContainer );
 
         // Initialisation
@@ -300,10 +300,10 @@
           y: - this.scrollBorder.y
         });
 
-        window.setTimeout( proxy(afterScrollTranslate, this), this.settings.duration );
+        window.setTimeout( proxy(afterScrollTransform, this), this.settings.duration );
       },
 
-      afterScrollTranslate = function() {
+      afterScrollTransform = function() {
         this._onSwipeEnd();
         setStyles( this.pageContainer, {
           "-webkit-transition": "",
@@ -321,7 +321,7 @@
       // Takes:
       // x and y values to go with
 
-      _scrollWithoutTranslate = function( coordinates ) {
+      _scrollWithoutTransform = function( coordinates ) {
 
         if ( this.settings.direction === "horizontal") {
           setStyles(this.pageContainer, {
@@ -336,7 +336,7 @@
 
       // ### Animated scroll without translate support
 
-      _animateScrollWithoutTranslate = function() {
+      _animateScrollWithoutTransform = function() {
         var property,
             value;
 
@@ -365,7 +365,7 @@
         animateScroll = _animateScrollTransform;
       } else {
         scroll = _scrollWithoutTransform;
-        animateScroll = _animateScrollWithoutTranslate;
+        animateScroll = _animateScrollWithoutTransform;
       }
 
       extend( Dragend.prototype, {
