@@ -300,7 +300,7 @@
           y: - this.scrollBorder.y
         });
 
-        window.setTimeout( proxy(afterScrollTranslate, this), this.settings.duration );
+        window.setTimeout( proxy(afterScrollTransform, this), this.settings.duration );
       },
 
       afterScrollTransform = function() {
@@ -336,7 +336,7 @@
 
       // ### Animated scroll without translate support
 
-      _animateScrollWithoutTranslate = function() {
+      _animateScrollWithoutTransform = function() {
         var property,
             value;
 
@@ -365,7 +365,7 @@
         animateScroll = _animateScrollTransform;
       } else {
         scroll = _scrollWithoutTransform;
-        animateScroll = _animateScrollWithoutTranslate;
+        animateScroll = _animateScrollWithoutTransform;
       }
 
       extend( Dragend.prototype, {
