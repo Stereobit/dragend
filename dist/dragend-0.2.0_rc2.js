@@ -306,7 +306,11 @@
       afterScrollTranslate = function() {
         this._onSwipeEnd();
         setStyles( this.pageContainer, {
-          "-webkit-transition": "-webkit-transform 0"
+          "-webkit-transition": "",
+          "-moz-transition": "",
+          "-ms-transition": "",
+          "-o-transition": "",
+          "transition": ""
         });
       },
 
