@@ -303,7 +303,7 @@
         window.setTimeout( proxy(afterScrollTranslate, this), this.settings.duration );
       },
 
-      afterScrollTranslate = function() {
+      afterScrollTransform = function() {
         this._onSwipeEnd();
         setStyles( this.pageContainer, {
           "-webkit-transition": "",
@@ -321,7 +321,7 @@
       // Takes:
       // x and y values to go with
 
-      _scrollWithoutTranslate = function( coordinates ) {
+      _scrollWithoutTransform = function( coordinates ) {
 
         if ( this.settings.direction === "horizontal") {
           setStyles(this.pageContainer, {
