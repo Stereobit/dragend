@@ -19,22 +19,12 @@
     "name": "Tobias Otte",
     "email": "t@stereob.it"
   },
-  "repositories": [
-    {
-      "type": "git",
-      "url": "http://github.com/stereobit/dragend.git"
-    }
-  ],
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/stereobit/dragend.git"
+  },
   "bugs": {
     "url": "https://github.com/stereobit/dragend/issues"
   },
-  "dependencies": {
-    "hammerjs": "1.0.5"
-  },
-  "main": "dragend.js",
-  "devDependencies": {
-    "grunt": "0.4.x",
-    "mocha": "~1.12.1",
-    "expect.js": "~0.2.0"
-  }
+  "main": "dragend.js"
 }
