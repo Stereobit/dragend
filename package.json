@@ -15,10 +15,7 @@
       "url": "https://github.com/stereobit/dragend/blob/master/MIT-LICENSE.txt"
     }
   ],
-  "author": {
-    "name": "Tobias Otte",
-    "email": "t@stereob.it"
-  },
+  "author": "Tobias Otte <t@stereob.it>",
   "repository": {
     "type": "git",
     "url": "http://github.com/stereobit/dragend.git"
@@ -26,5 +23,21 @@
   "bugs": {
     "url": "https://github.com/stereobit/dragend/issues"
   },
-  "main": "dragend.js"
+  "main": "dragend.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "hammerjs": "~1.0.5"
+  },
+  "devDependencies": {
+    "expect.js": "~0.2.0",
+    "grunt": "~0.4.1",
+    "hammerjs": "~1.0.5",
+    "mocha": "~1.12.1"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "license": "MIT"
 }
