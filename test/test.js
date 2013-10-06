@@ -1,14 +1,37 @@
-describe('Instantiation', function() {
-  describe('Settings', function() {
+function createDom() {
+  var dom = $("<div><div class='dragend-page'></div><div class='dragend-page'></div><div class='dragend-page'></div></div>");
+
+  return dom.get(0);
+};
+
+describe('instantiation', function() {
+  describe('settings', function() {
+    var inheritedDragend,
+        updateInstanceDragend;
 
     before(function(){
-      dragend = new Dragend($('#dragend').get(0));
+
+      inheritedDragend = new Dragend(createDom(), {
+        duration: 14,
+        onDrag: function() {}
+      });
+
+      updateInstanceDragend = new Dragend(createDom());
+      updateInstanceDragend.updateInstance({
+        duration: 14,
+        onDrag: function() {}
+      });
+
     });
 
-    it('should return -1 when the value is not present', function() {
-      console.log(dragend)
-      expect([1,2,3].indexOf(5)).to.be(-1);
-      expect([1,2,3].indexOf(0)).to.be(-1);
+    it('check if settings are inherited', function() {
+      expect(inheritedDragend.settings.duration).to.be(14);
+      expect(inheritedDragend.settings.onDrag).to.be.a('function');
+    });
+
+    it('check if settings updated', function() {
+      expect(updateInstanceDragend.settings.duration).to.be(14);
+      expect(updateInstanceDragend.settings.onDrag).to.be.a('function');
     });
 
   });
