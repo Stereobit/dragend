@@ -1,7 +1,7 @@
-/**
+/*!
  * ---------------------------- DRAGEND JS -------------------------------------
  *
- * Version: 0.2.0_rc1
+ * Version: 0.2.0_rc2
  * https://github.com/Stereobit/dragend
  * Copyright (c) 2012 Tobias Otte, t@stereob.it
  *
@@ -24,10 +24,10 @@
  *
  */
 
- ;(function(window) {
+ ;(function( window ) {
+  "use strict";
 
   function init( $, Hammer ) {
-    "use strict";
 
     // Welcome To dragend JS
     // =====================
@@ -112,16 +112,17 @@
         padding : 0
       },
 
-      setStyles = function(element, styles) {
+      setStyles = function( element, styles ) {
+
         var property,
             value;
 
-        for (property in styles) {
+        for ( property in styles ) {
 
-          if(styles.hasOwnProperty(property)) {
+          if ( styles.hasOwnProperty(property) ) {
             value = styles[property];
 
-            switch (property) {
+            switch ( property ) {
               case "height":
               case "width":
               case "marginLeft":
@@ -137,61 +138,70 @@
 
       },
 
-      extend = function(destination, source) {
-        for (var property in source)
+      extend = function( destination, source ) {
+
+        var property;
+
+        for ( property in source ) {
           destination[property] = source[property];
+        }
+
         return destination;
+
       },
 
       proxy = function( fn, context ) {
+
         return function() {
           return fn.apply( context, Array.prototype.slice.call(arguments) );
         };
+
       },
 
-      getElementsByClassName = function(className, root) {
-        var elements = [];
+      getElementsByClassName = function( className, root ) {
+        var elements = [],
+            allElements;
 
         if ( document.querySelector && document.querySelectorAll ) {
-           elements = root.getElementsByClassName(className);
+           elements = root.getElementsByClassName( className );
         } else {
-          var allElements = root.getElementsByTagName('*');
+          allElements = root.getElementsByTagName('*');
 
-          for (var i = 0; i < allElements.length; i++) {
+          for ( var i = 0; i < allElements.length; i++ ) {
             if ((' ' + allElements[i].className + ' ').indexOf(' ' + className +' ') > -1 ) {
-              elements.push(allElements[i]);
+              elements.push( allElements[i] );
             }
           }
 
         }
 
-        return Array.prototype.slice.call(elements);
+        return Array.prototype.slice.call( elements );
       },
 
-      animate = function(element, propery, to, speed, callback) {
+      animate = function( element, propery, to, speed, callback ) {
 
         var start = + new Date(),
-            from = parseInt(element.style[propery], 10);
+            from = parseInt(element.style[propery], 10),
 
-        var timer = setInterval(function() {
+            timer = setInterval(function() {
 
-          var timeGone = + new Date() - start,
-              value;
+            var timeGone = + new Date() - start,
+                value;
 
-          if (timeGone >= speed) {
+            if (timeGone >= speed) {
 
-            value = to;
-            callback();
+              value = to;
+              callback();
 
-            clearInterval(timer);
+              clearInterval( timer );
 
-          } else {
-            value = Math.round((( (to - from) * (Math.floor((timeGone / speed) * 100) / 100) ) + from));
-          }
+            } else {
+              value = Math.round((( (to - from) * (Math.floor((timeGone / speed) * 100) / 100) ) + from));
+            }
 
-          element.style[propery] = value + "px";
+            element.style[propery] = value + "px";
 
-        }, 5);
+          }, 5);
 
       },
 
@@ -200,14 +210,14 @@
              vendors = 'Khtml Ms O Moz Webkit'.split(' '),
              len = vendors.length;
 
-         return function(prop) {
+         return function( prop ) {
             if ( prop in div.style ) return true;
 
             prop = prop.replace(/^[a-z]/, function(val) {
                return val.toUpperCase();
             });
 
-            while(len--) {
+            while( len-- ) {
                if ( vendors[len] + prop in div.style ) {
                   // browser supports box-shadow. Do what you need.
                   // Or use a bang (!) to test if the browser doesn't.
@@ -223,7 +233,7 @@
 
         this.settings      = extend( defaultSettingsCopy, settings );
         this.container     = container;
-        this.pageContainer = document.createElement("div");
+        this.pageContainer = document.createElement( "div" );
         this.scrollBorder  = { x: 0, y: 0 };
         this.page          = 0;
         this.preventScroll = false;
@@ -231,9 +241,9 @@
           margin: 0
         };
 
-        this.pageContainer.innerHTML = this.container.innerHTML;
-        this.container.innerHTML = null;
-        this.container.appendChild(this.pageContainer);
+        this.pageContainer.innerHTML = this.container.cloneNode(true).innerHTML;
+        this.container.innerHTML = "";
+        this.container.appendChild( this.pageContainer );
 
         // Initialisation
 
@@ -241,9 +251,9 @@
         this._observe();
 
         // Give the DOM some time to update ...
-        window.setTimeout(proxy(function() {
+        window.setTimeout( proxy(function() {
             this.updateInstance( settings );
-        }, this), 10);
+        }, this), 10 );
 
       },
 
@@ -256,7 +266,7 @@
 
       _scrollTransform = function( coordinates ) {
         if ( this.settings.direction === "horizontal" ) {
-          setStyles(this.pageContainer, {
+          setStyles( this.pageContainer, {
             "-webkit-transform": "translateX(" + coordinates.x + "px)",
             "-moz-transform": "translateX(" + coordinates.x + "px)",
             "-ms-transform": "translateX(" + coordinates.x + "px)",
@@ -264,7 +274,7 @@
             "transform": "translateX(" + coordinates.x + "px)"
           });
         } else if (this.settings.direction === "vertical" ) {
-          setStyles(this.pageContainer, {
+          setStyles( this.pageContainer, {
             "-webkit-transform": "translateY(" + coordinates.y + "px)",
             "-moz-transform": "translateY(" + coordinates.y + "px)",
             "-ms-transform": "translateY(" + coordinates.y + "px)",
@@ -277,7 +287,7 @@
       // ### Animated scroll with translate support
 
       _animateScrollTransform = function() {
-        setStyles(this.pageContainer, {
+        setStyles( this.pageContainer, {
           "-webkit-transition": "-webkit-transform " + this.settings.duration + "ms ease-out",
           "-moz-transition": "-moz-transform " + this.settings.duration + "ms ease-out",
           "-ms-transition": "-ms-transform " + this.settings.duration + "ms ease-out",
@@ -290,13 +300,17 @@
           y: - this.scrollBorder.y
         });
 
-        window.setTimeout( proxy(afterScrollTranslate, this), this.settings.duration );
+        window.setTimeout( proxy(afterScrollTransform, this), this.settings.duration );
       },
 
-      afterScrollTranslate = function() {
+      afterScrollTransform = function() {
         this._onSwipeEnd();
-        setStyles(this.pageContainer, {
-          "-webkit-transition": "-webkit-transform 0"
+        setStyles( this.pageContainer, {
+          "-webkit-transition": "",
+          "-moz-transition": "",
+          "-ms-transition": "",
+          "-o-transition": "",
+          "transition": ""
         });
       },
 
@@ -307,7 +321,7 @@
       // Takes:
       // x and y values to go with
 
-      _scrollWithoutTranslate = function( coordinates ) {
+      _scrollWithoutTransform = function( coordinates ) {
 
         if ( this.settings.direction === "horizontal") {
           setStyles(this.pageContainer, {
@@ -322,7 +336,7 @@
 
       // ### Animated scroll without translate support
 
-      _animateScrollWithoutTranslate = function() {
+      _animateScrollWithoutTransform = function() {
         var property,
             value;
 
@@ -336,7 +350,7 @@
             value = - this.scrollBorder.y;
         }
 
-        animate(this.pageContainer, property, value, this.settings.duration, proxy( this._onSwipeEnd, this ));
+        animate( this.pageContainer, property, value, this.settings.duration, proxy( this._onSwipeEnd, this ));
 
       };
 
@@ -351,7 +365,7 @@
         animateScroll = _animateScrollTransform;
       } else {
         scroll = _scrollWithoutTransform;
-        animateScroll = _animateScrollWithoutTranslate;
+        animateScroll = _animateScrollWithoutTransform;
       }
 
       extend( Dragend.prototype, {
@@ -711,6 +725,9 @@
       },
 
       updateInstance: function( settings ) {
+
+        settings = settings || {};
+
         if ( typeof settings === "object" ) extend( this.settings, settings );
 
         this.pages = getElementsByClassName(this.settings.pageClass, this.pageContainer);
@@ -727,11 +744,11 @@
         if ( settings.jumpToPage ) this.jumpToPage( settings.jumpToPage );
       },
 
-      scrollToPage: function(page) {
+      scrollToPage: function( page ) {
         this._scrollToPage( "page", page - 1);
       },
 
-      jumpToPage: function(page) {
+      jumpToPage: function( page ) {
         this._jumpToPage( "page", page - 1);
       }
 
@@ -773,10 +790,12 @@
 
   }
 
-  if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) {
-      define(["jquery", "hammer"], function(jquery, hammer) { return init(jquery, hammer); });
+  if ( typeof define == 'function' && typeof define.amd == 'object' && define.amd ) {
+      define( ["jquery", "hammer"], function( jquery, hammer ) {
+        return init( jquery, hammer );
+      } );
   } else {
-      window.Dragend = init(window.jQuery || window.Zepto, window.Hammer);
+      window.Dragend = init( window.jQuery || window.Zepto, window.Hammer );
   }
 
-})(window);
+})( window );
