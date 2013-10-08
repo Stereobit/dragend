@@ -219,8 +219,6 @@
 
             while( len-- ) {
                if ( vendors[len] + prop in div.style ) {
-                  // browser supports box-shadow. Do what you need.
-                  // Or use a bang (!) to test if the browser doesn't.
                   return true;
                }
             }
@@ -265,34 +263,34 @@
       // x and y values to go with
 
       _scrollTransform = function( coordinates ) {
+        var style;
+
         if ( this.settings.direction === "horizontal" ) {
-          setStyles( this.pageContainer, {
-            "-webkit-transform": "translateX(" + coordinates.x + "px)",
-            "-moz-transform": "translateX(" + coordinates.x + "px)",
-            "-ms-transform": "translateX(" + coordinates.x + "px)",
-            "-0-transform": "translateX(" + coordinates.x + "px)",
-            "transform": "translateX(" + coordinates.x + "px)"
-          });
+          style = "translateX(" + coordinates.x + "px)";
         } else if (this.settings.direction === "vertical" ) {
-          setStyles( this.pageContainer, {
-            "-webkit-transform": "translateY(" + coordinates.y + "px)",
-            "-moz-transform": "translateY(" + coordinates.y + "px)",
-            "-ms-transform": "translateY(" + coordinates.y + "px)",
-            "-o-transform": "translateY(" + coordinates.y + "px)",
-            "transform": "translateY(" + coordinates.y + "px)"
-          });
+          style = "translateY(" + coordinates.y + "px)";
         }
+
+        setStyles( this.pageContainer, {
+          "-webkit-transform": style,
+          "-moz-transform": style,
+          "-ms-transform": style,
+          "-o-transform": style,
+          "transform": style
+        });
       },
 
       // ### Animated scroll with translate support
 
       _animateScrollTransform = function() {
+        var style = "-webkit-transform " + this.settings.duration + "ms ease-out";
+
         setStyles( this.pageContainer, {
-          "-webkit-transition": "-webkit-transform " + this.settings.duration + "ms ease-out",
-          "-moz-transition": "-moz-transform " + this.settings.duration + "ms ease-out",
-          "-ms-transition": "-ms-transform " + this.settings.duration + "ms ease-out",
-          "-o-transition": "-o-transform " + this.settings.duration + "ms ease-out",
-          "transition": "transform " + this.settings.duration + "ms ease-out"
+          "-webkit-transition": style,
+          "-moz-transition": style,
+          "-ms-transition": style,
+          "-o-transition": style,
+          "transition": style
         });
 
         this._scroll({
@@ -305,6 +303,7 @@
 
       afterScrollTransform = function() {
         this._onSwipeEnd();
+
         setStyles( this.pageContainer, {
           "-webkit-transition": "",
           "-moz-transition": "",
