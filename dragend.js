@@ -608,7 +608,7 @@
           setStyles(this.pages[i], this.pageCssProperties);
         }
 
-        this._scrollToPage( "page", this.page);
+        this._scrollToPage( "page", this.page );
 
       },
 
@@ -618,7 +618,7 @@
       //
       // Takes direction and, if specific page is used the pagenumber
 
-      _calcNewPage: function(direction, pageNumber) {
+      _calcNewPage: function( direction, pageNumber ) {
         switch ( direction ) {
           case "up":
             if ( this.page < this.pagesCount - 1 ) {
