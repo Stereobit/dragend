@@ -6,8 +6,7 @@ env:
     - SAUCE_USERNAME: stereobit
     - SAUCE_ACCESS_KEY: c17048ea-eb72-41c9-9894-1c53922055b8
 install:
-  - git submodule update --init --recursive
   - git clone --recursive https://github.com/Stereobit/dragend.git
   - cd dragend
   - npm install
-script: make test
+script: node node_modules/intern/runner.js config=tests/internt
