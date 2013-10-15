@@ -15,6 +15,7 @@ The current version is 0.2.0 release candidate 2
 * [Yahoo weather app like page swiping demo](http://stereobit.github.io/dragend/demos/yahoo-swipe/)
 * [Demo with navigation buttons and a page overview](http://stereobit.github.io/dragend/demos/with-control-elements/)
 * [Demo with infinit swiping through pages](http://stereobit.github.io/dragend/demos/infinit/)
+* [Mobile demo](http://stereobit.github.io/dragend/demos/mobile/)
 
 # Featues
 
