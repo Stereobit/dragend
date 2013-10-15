@@ -608,6 +608,8 @@
           setStyles(this.pages[i], this.pageCssProperties);
         }
 
+        this._scrollToPage( "page", this.page);
+
       },
 
       // ### Callculate new page
