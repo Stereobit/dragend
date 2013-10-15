@@ -90,7 +90,7 @@
         hammerSettings     : {
           drag_min_distance: 0,
           css_hacks        : false,
-          prevent_default  : true
+          prevent_default  : false
         }
       },
 
@@ -457,8 +457,6 @@
       _onDrag: function( event ) {
         var gesture,
             coordinates;
-
-        event.stopPropagation();
 
         if ( event.gesture ) {
           gesture = event.gesture;
