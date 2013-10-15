@@ -148,7 +148,12 @@
       container.dragend({
         minTouchDistance  : "60",
         keyboardNavigation: true,
-        pageClass         : "page"
+        pageClass         : "page",
+        hammerSettings     : {
+          drag_min_distance: 0,
+          css_hacks        : false,
+          prevent_default  : false
+        }
       });
 
       $("#demo").dragend({
