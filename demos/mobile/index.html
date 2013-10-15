@@ -3,7 +3,7 @@
 <html>
 <head>
 
-  <title>Dragend JS simple demo</title>
+  <title>Dragend JS mobile demo</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
@@ -133,7 +133,7 @@
   </div>
 
   <div id="dragend">
-    <h1>A simple <a href="http://stereobit.github.io/dragend/">dragend JS</a> demo</h1>
+    <h1>A mobile <a href="http://stereobit.github.io/dragend/">dragend JS</a> demo</h1>
     <iframe src="http://ghbtns.com/github-btn.html?user=stereobit&amp;repo=dragend&amp;type=watch&amp;count=true"
   allowtransparency="true" frameborder="0" scrolling="0" width="110" height="20"></iframe>
   </div>
@@ -145,7 +145,13 @@
   <script>
 
     $(function() {
-      new Dragend($("#demo").get(0))
+      new Dragend($("#demo").get(0), {
+        hammerSettings     : {
+          drag_min_distance: 0,
+          css_hacks        : false,
+          prevent_default  : false
+        }
+      })
       $("#demo").fadeIn();
     });
 
