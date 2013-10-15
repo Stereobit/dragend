@@ -239,13 +239,13 @@
           margin: 0
         };
 
-        this.pageContainer.innerHTML = this.container.cloneNode(true).innerHTML;
-        this.container.innerHTML = "";
-        this.container.appendChild( this.pageContainer );
+        this.pageContainer.innerHTML = container.cloneNode(true).innerHTML;
+        container.innerHTML = "";
+        container.appendChild( this.pageContainer );
 
         // Initialisation
 
-        setStyles(this.container, containerStyles);
+        setStyles(container, containerStyles);
         this._observe();
 
         // Give the DOM some time to update ...
