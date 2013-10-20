@@ -475,7 +475,7 @@
 
         console.log(parsedEvent);
 
-        coordinates = this._checkOverscroll( parsedEvent.polarization , - parsedEvent.distanceX, - parsedEvent.distanceY );
+        coordinates = this._checkOverscroll( parsedEvent.direction , - parsedEvent.distanceX, - parsedEvent.distanceY );
         this.settings.onDrag.call( this, this.activeElement, event, coordinates.overscroll );
 
         if ( !this.preventScroll ) {
@@ -505,31 +505,20 @@
       },
 
       _parseEvent: function( event ) {
-        var distanceX = this.startPageX - event.pageX,
-            distanceY = this.startPageY - event.pageY,
-            polarization = "horizontal",
-            direction;
+        var eventData = {
+          distanceX: 0,
+          distanceY: 0
+        };
 
         if ( this.settings.direction === "horizontal" ) {
-          if ( distanceX > 0 ) {
-            direction = "left";
-          } else {
-            direction = "right";
-          }
+          eventData.distanceX = this.startPageX - event.pageX;
+          eventData.direction = eventData.distanceX > 0 ? "left" : "right";
         } else {
-          if ( distanceY > 0 ) {
-            direction = "up";
-          } else {
-            direction = "down";
-          }
+          eventData.distanceY = this.startPageY - event.pageY;
+          eventData.direction = eventData.distanceY > 0 ? "up" : "down";
         }
 
-        return {
-          distanceX: distanceX,
-          distanceY: distanceY,
-          polarization : polarization,
-          direction: direction
-        };
+        return eventData;
       },
 
       _onKeydown: function( event ) {
