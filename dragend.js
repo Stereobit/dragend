@@ -397,7 +397,7 @@
         switch ( direction ) {
 
           case "right":
-            if ( !this.scrollBorder.x && this._checkGestureDirection( direction ) ) {
+            if ( !this.scrollBorder.x ) {
               Math.round( coordinates.x = (x - this.scrollBorder.x) / 5 );
               return coordinates;
             }
@@ -411,7 +411,7 @@
             break;
 
           case "down":
-            if ( !this.scrollBorder.y && this._checkGestureDirection( direction )) {
+            if ( !this.scrollBorder.y ) {
               coordinates.y = Math.round( (y - this.scrollBorder.y) / 5 );
               return coordinates;
             }
@@ -495,7 +495,7 @@
           event.preventManipulation();
         }
 
-        if ( Math.abs(event.offsetX) > this.settings.minDragDistance && this._checkGestureDirection( "left" )) {
+        if ( Math.abs(event.offsetX) > this.settings.minDragDistance ) {
           this.swipe( "left" );
         } else {
           this._scrollToPage();
@@ -510,18 +510,17 @@
             polarization = "horizontal",
             direction;
 
-        if ( Math.abs(distanceX) < Math.abs(distanceY) ) {
-          polarization = "vertical";
-          if ( distanceY > 0 ) {
-            direction = "up";
-          } else {
-            direction = "down";
-          }
-        } else {
+        if ( this.settings.direction === "horizontal" ) {
           if ( distanceX > 0 ) {
             direction = "left";
           } else {
             direction = "right";
+          }
+        } else {
+          if ( distanceY > 0 ) {
+            direction = "up";
+          } else {
+            direction = "down";
           }
         }
 
@@ -538,13 +537,6 @@
 
         if ( direction ) {
           this._scrollToPage(direction);
-        }
-      },
-
-      _checkGestureDirection: function( direction ) {
-        if (((direction === "left" || direction === "right") && this.settings.direction === "horizontal") ||
-            ((direction === "up" || direction === "down") && this.settings.direction === "vertical") ) {
-          return true;
         }
       },
 
