@@ -441,30 +441,42 @@
           throw new Error(errors.hammer);
         }
 
-        var hammer = new Hammer(this.container, this.settings.hammerSettings);
+        this.container.draggable = true;
+        this.container.addEventListener("dragstart", proxy( this._onDragStart, this ), false);
+        this.container.addEventListener("drag", proxy( this._onDrag, this ), false);
+        this.container.addEventListener("dragend", proxy( this._onDragend, this ), false);
 
-        hammer.on("drag", proxy( this._onDrag, this ))
-              .on( "dragend", proxy( this._onDragend, this ));
+        // var hammer = new Hammer(this.container, this.settings.hammerSettings);
 
-        Hammer.event.bindDom(window, "resize", proxy( this._sizePages, this ));
+        // hammer.on("drag", proxy( this._onDrag, this ))
+        //       .on( "dragend", proxy( this._onDragend, this ));
 
-        if ( this.settings.keyboardNavigation ) {
-          Hammer.event.bindDom(document.body, "keydown", proxy( this._onKeydown, this ));
-        }
+        // Hammer.event.bindDom(window, "resize", proxy( this._sizePages, this ));
+
+        // if ( this.settings.keyboardNavigation ) {
+        //   Hammer.event.bindDom(document.body, "keydown", proxy( this._onKeydown, this ));
+        // }
 
       },
 
-      _onDrag: function( event ) {
-        var gesture,
-            coordinates;
+      _onDragStart: function(event) {
+        this.startPageX = event.pageX;
+        this.startPageY = event.pageY;
+      },
 
-        if ( event.gesture ) {
-          gesture = event.gesture;
-          coordinates = this._checkOverscroll( gesture.direction, gesture.deltaX, gesture.deltaY );
-          this.settings.onDrag.call( this, this.activeElement, gesture, coordinates.overscroll );
-        } else {
-          throw new Error(errors.handling);
+      _onDrag: function( event ) {
+        var coordinates,
+            parsedEvent = this._parseEvent(event);
+
+        // filter out the last drag event and return
+        if (!event.pageX && !event.pageY) {
+          return;
         }
+
+        console.log(parsedEvent);
+
+        coordinates = this._checkOverscroll( parsedEvent.polarization , - parsedEvent.distanceX, - parsedEvent.distanceY );
+        this.settings.onDrag.call( this, this.activeElement, event, coordinates.overscroll );
 
         if ( !this.preventScroll ) {
           this._scroll( coordinates );
@@ -473,27 +485,52 @@
       },
 
       _onDragend: function( event ) {
-        var gesture;
 
-          if (event.preventDefault) {
-            event.preventDefault();
-          } else if (event.preventManipulation) {
-            event.preventManipulation();
-          }
+        this.startOffsetX = 0;
+        this.startOffsetY = 0;
 
-        if (event.gesture) {
-          gesture = event.gesture;
-        } else {
-          throw new Error(errors.handling);
+        if (event.preventDefault) {
+          event.preventDefault();
+        } else if (event.preventManipulation) {
+          event.preventManipulation();
         }
 
-        if ( event.gesture.distance > this.settings.minDragDistance && this._checkGestureDirection( gesture.direction )) {
-          this.swipe( gesture.direction );
+        if ( Math.abs(event.offsetX) > this.settings.minDragDistance && this._checkGestureDirection( "left" )) {
+          this.swipe( "left" );
         } else {
           this._scrollToPage();
         }
 
         this.settings.onDragEnd.call( this, this.container, this.activeElement, this.page );
+      },
+
+      _parseEvent: function( event ) {
+        var distanceX = this.startPageX - event.pageX,
+            distanceY = this.startPageY - event.pageY,
+            polarization = "horizontal",
+            direction;
+
+        if ( Math.abs(distanceX) < Math.abs(distanceY) ) {
+          polarization = "vertical";
+          if ( distanceY > 0 ) {
+            direction = "up";
+          } else {
+            direction = "down";
+          }
+        } else {
+          if ( distanceX > 0 ) {
+            direction = "left";
+          } else {
+            direction = "right";
+          }
+        }
+
+        return {
+          distanceX: distanceX,
+          distanceY: distanceY,
+          polarization : polarization,
+          direction: direction
+        };
       },
 
       _onKeydown: function( event ) {
