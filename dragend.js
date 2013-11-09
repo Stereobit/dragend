@@ -473,8 +473,6 @@
           return;
         }
 
-        console.log(parsedEvent);
-
         coordinates = this._checkOverscroll( parsedEvent.direction , - parsedEvent.distanceX, - parsedEvent.distanceY );
         this.settings.onDrag.call( this, this.activeElement, event, coordinates.overscroll );
 
@@ -486,17 +484,17 @@
 
       _onDragend: function( event ) {
 
+        var parsedEvent = this._parseEvent(event);
+
         this.startOffsetX = 0;
         this.startOffsetY = 0;
 
         if (event.preventDefault) {
           event.preventDefault();
-        } else if (event.preventManipulation) {
-          event.preventManipulation();
         }
 
         if ( Math.abs(event.offsetX) > this.settings.minDragDistance ) {
-          this.swipe( "left" );
+          this.swipe( parsedEvent.direction );
         } else {
           this._scrollToPage();
         }
@@ -511,10 +509,10 @@
         };
 
         if ( this.settings.direction === "horizontal" ) {
-          eventData.distanceX = this.startPageX - event.pageX;
+          eventData.distanceX = event.type === "dragend" ? - event.pageX : this.startPageX - event.pageX;
           eventData.direction = eventData.distanceX > 0 ? "left" : "right";
         } else {
-          eventData.distanceY = this.startPageY - event.pageY;
+          eventData.distanceY = event.type === "dragend" ? - event.pageY : this.startPageY - event.pageY;
           eventData.direction = eventData.distanceY > 0 ? "up" : "down";
         }
 
