@@ -446,16 +446,19 @@
         this.container.addEventListener("drag", proxy( this._onDrag, this ), false);
         this.container.addEventListener("dragend", proxy( this._onDragend, this ), false);
 
+        this.container.addEventListener("touchstart", proxy( this._onDragStart, this ), false);
+        this.container.addEventListener("touchmove", proxy( this._onDrag, this ), false);
+        this.container.addEventListener("touchend", proxy( this._onDragend, this ), false);
+
+        if ( this.settings.keyboardNavigation ) {
+          document.body.addEventListener("keydown", proxy( this._onKeydown, this ));
+        }
+        window.addEventListener("resize", proxy( this._sizePages, this ));
+
         // var hammer = new Hammer(this.container, this.settings.hammerSettings);
 
         // hammer.on("drag", proxy( this._onDrag, this ))
         //       .on( "dragend", proxy( this._onDragend, this ));
-
-        // Hammer.event.bindDom(window, "resize", proxy( this._sizePages, this ));
-
-        // if ( this.settings.keyboardNavigation ) {
-        //   Hammer.event.bindDom(document.body, "keydown", proxy( this._onKeydown, this ));
-        // }
 
       },
 
@@ -489,9 +492,7 @@
         this.startOffsetX = 0;
         this.startOffsetY = 0;
 
-        if (event.preventDefault) {
-          event.preventDefault();
-        }
+        event.preventDefault();
 
         if ( Math.abs(event.offsetX) > this.settings.minDragDistance ) {
           this.swipe( parsedEvent.direction );
