@@ -137,6 +137,8 @@
 
       },
 
+
+
       extend = function( destination, source ) {
 
         var property;
@@ -350,6 +352,14 @@
 
         animate( this.pageContainer, property, value, this.settings.duration, proxy( this._onSwipeEnd, this ));
 
+      },
+
+      addEventListener = function(container, event, callback) {
+        if ($) {
+          $(container).on(event, callback);
+        } else {
+          container.addEventListener(event, callback, false);
+        }
       };
 
     // ### Check translate support
@@ -437,24 +447,28 @@
 
       _observe: function() {
 
-        this.container.draggable = true;
-        this.container.addEventListener("dragstart", proxy( this._onDragStart, this ), false);
-        this.container.addEventListener("drag", proxy( this._onDrag, this ), false);
-        this.container.addEventListener("dragend", proxy( this._onDragend, this ), false);
+        if (!Hammer) {
+          if ('ontouchstart' in document.documentElement) {
+            addEventListener(this.container, "touchstart", proxy( this._onDragStart, this ));
+            addEventListener(this.container, "touchmove", proxy( this._onDrag, this ));
+            addEventListener(this.container, "touchend", proxy( this._onDragend, this ));
+          } else {
+            this.container.draggable = true;
+            addEventListener(this.container, "dragstart", proxy( this._onDragStart, this ));
+            addEventListener(this.container, "drag", proxy( this._onDrag, this ));
+            addEventListener(this.container, "dragend", proxy( this._onDragend, this ));
+          }
+        } else {
+          var hammer = new Hammer(this.container, this.settings.hammerSettings);
 
-        this.container.addEventListener("touchstart", proxy( this._onDragStart, this ), false);
-        this.container.addEventListener("touchmove", proxy( this._onDrag, this ), false);
-        this.container.addEventListener("touchend", proxy( this._onDragend, this ), false);
+          hammer.on("drag", proxy( this._onDrag, this ))
+              .on( "dragend", proxy( this._onDragend, this ));
+        }
 
         if ( this.settings.keyboardNavigation ) {
-          document.body.addEventListener("keydown", proxy( this._onKeydown, this ));
+          addEventListener(document.body, "keydown", proxy( this._onKeydown, this ));
         }
-        window.addEventListener("resize", proxy( this._sizePages, this ));
-
-        // var hammer = new Hammer(this.container, this.settings.hammerSettings);
-
-        // hammer.on("drag", proxy( this._onDrag, this ))
-        //       .on( "dragend", proxy( this._onDragend, this ));
+        addEventListener("resize", proxy( this._sizePages, this ));
 
       },
 
@@ -465,7 +479,7 @@
 
       _onDrag: function( event ) {
         // filter out the last drag event
-        if (!event.pageX && !event.pageY) {
+        if (event.type === 'dragend' && !event.pageX && !event.pageY) {
           return;
         }
 
@@ -504,14 +518,24 @@
           distanceX: 0,
           distanceY: 0
         },
-        x = event.changedTouches ? event.changedTouches[0].pageX : event.pageX,
-        y = event.changedTouches ? event.changedTouches[0].pageY : event.pageY;
+        x,
+        y;
 
         if ( this.settings.direction === "horizontal" ) {
-          eventData.distanceX = event.type === "dragend" ? - x : this.startPageX - x;
+          if (!event.gesture) {
+            x = event.changedTouches ? event.changedTouches[0].pageX : event.pageX;
+            eventData.distanceX = event.type === "dragend" ? - x : this.startPageX - x;
+          } else {
+            eventData.distanceX = - event.gesture.deltaX;
+          }
           eventData.direction = eventData.distanceX > 0 ? "left" : "right";
         } else {
-          eventData.distanceY = event.type === "dragend" ? - y : this.startPageY - y;
+          if (!event.gesture) {
+            y = event.changedTouches ? event.changedTouches[0].pageY : event.pageY;
+            eventData.distanceY = event.type === "dragend" ? - y : this.startPageY - y;
+          } else {
+            eventData.distanceY = - event.gesture.deltaY;
+          }
           eventData.direction = eventData.distanceY > 0 ? "up" : "down";
         }
 
