@@ -103,8 +103,7 @@
 
       errors = {
         handling: "Dragend JS detected some problems with the event handling. Maybe the user-drag CSS attribute on images can help",
-        pages: "No pages found",
-        hammer: "It seems like Hammer JS is not be included before dragend JS"
+        pages: "No pages found"
       },
 
       containerStyles = {
@@ -437,9 +436,6 @@
       // Sets the observers for drag, resize and key events
 
       _observe: function() {
-        if (!Hammer) {
-          throw new Error(errors.hammer);
-        }
 
         this.container.draggable = true;
         this.container.addEventListener("dragstart", proxy( this._onDragStart, this ), false);
