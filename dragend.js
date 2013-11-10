@@ -468,13 +468,13 @@
       },
 
       _onDrag: function( event ) {
-        var coordinates,
-            parsedEvent = this._parseEvent(event);
-
-        // filter out the last drag event and return
+        // filter out the last drag event
         if (!event.pageX && !event.pageY) {
           return;
         }
+
+        var coordinates,
+            parsedEvent = this._parseEvent(event);
 
         coordinates = this._checkOverscroll( parsedEvent.direction , - parsedEvent.distanceX, - parsedEvent.distanceY );
         this.settings.onDrag.call( this, this.activeElement, event, coordinates.overscroll );
@@ -494,7 +494,7 @@
 
         event.preventDefault();
 
-        if ( Math.abs(event.offsetX) > this.settings.minDragDistance ) {
+        if ( Math.abs(parsedEvent.distanceX) > this.settings.minDragDistance ) {
           this.swipe( parsedEvent.direction );
         } else {
           this._scrollToPage();
@@ -507,13 +507,15 @@
         var eventData = {
           distanceX: 0,
           distanceY: 0
-        };
+        },
+        x = event.changedTouches ? event.changedTouches[0].pageX : event.pageX,
+        y = event.changedTouches ? event.changedTouches[0].pageY : event.pageY;
 
         if ( this.settings.direction === "horizontal" ) {
-          eventData.distanceX = event.type === "dragend" ? - event.pageX : this.startPageX - event.pageX;
+          eventData.distanceX = event.type === "dragend" ? - x : this.startPageX - x;
           eventData.direction = eventData.distanceX > 0 ? "left" : "right";
         } else {
-          eventData.distanceY = event.type === "dragend" ? - event.pageY : this.startPageY - event.pageY;
+          eventData.distanceY = event.type === "dragend" ? - y : this.startPageY - y;
           eventData.direction = eventData.distanceY > 0 ? "up" : "down";
         }
 
