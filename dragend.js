@@ -137,8 +137,6 @@
 
       },
 
-
-
       extend = function( destination, source ) {
 
         var property;
