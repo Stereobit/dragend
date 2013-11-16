@@ -1,7 +1,7 @@
 /*!
  * ---------------------------- DRAGEND JS -------------------------------------
  *
- * Version: 0.2.0_rc2
+ * Version: 0.2.0_rc3
  * https://github.com/Stereobit/dragend
  * Copyright (c) 2012 Tobias Otte, t@stereob.it
  *
@@ -37,7 +37,7 @@
     // (http://eightmedia.github.com/hammer.js/) for observing multi-touch
     // gestures. You can use dragend JS in fullscreen or boxed mode.
     //
-    // The current version is 0.2.0_rc2
+    // The current version is 0.2.0_rc3
     //
     // Usage
     // =====================
