@@ -435,7 +435,7 @@
       _onDrag: function( event ) {
 
         // filter out the last drag event
-        if (event.type === 'drag' && event.pageX === 0 && event.pageY  === 0) {
+        if (event.type === 'drag' && event.x === 0 && event.y  === 0) {
           this._onDragend(cachedEvent);
           return;
         }
