@@ -292,7 +292,7 @@
       // x and y values to go with
 
       _scrollWithoutTransform = function( coordinates ) {
-        var styles = this.settings.direction === "horizontal" ? { "marginLeft": coordinates.x } : { "marginTop": coordinates.y }
+        var styles = this.settings.direction === "horizontal" ? { "marginLeft": coordinates.x } : { "marginTop": coordinates.y };
 
         setStyles(this.pageContainer, styles);
       },
@@ -417,6 +417,14 @@
       },
 
       _onDragStart: function(event) {
+        var img = document.createElement('img'),
+            dataTransfer = event.dataTransfer;
+
+        // create fake transparent image to prevent drag preview
+        img.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+
+        dataTransfer.setDragImage(img, 0 , 0);
+
         this.startPageX = event.pageX;
         this.startPageY = event.pageY;
       },
@@ -446,7 +454,7 @@
         this.startOffsetX = 0;
         this.startOffsetY = 0;
 
-        event.preventDefault();
+        console.log(parsedEvent)
 
         if ( Math.abs(parsedEvent.distanceX) > this.settings.minDragDistance ) {
           this.swipe( parsedEvent.direction );
