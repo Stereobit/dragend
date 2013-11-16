@@ -317,11 +317,11 @@
     // ### Check translate support
     ( function() {
 
-      var supports = supports('transform');
+      var support = supports('transform');
 
       extend( Dragend.prototype, {
-        "_scroll": supports ? _scrollTransform : _scrollWithoutTransform,
-        "_animateScroll": supports ? _animateScrollTransform : _animateScrollWithoutTransform
+        "_scroll": support ? _scrollTransform : _scrollWithoutTransform,
+        "_animateScroll": support ? _animateScrollTransform : _animateScrollWithoutTransform
       });
 
     })();
