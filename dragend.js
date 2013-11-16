@@ -178,29 +178,15 @@
       },
 
       animate = function( element, propery, to, speed, callback ) {
+        var propertyObj = {};
 
-        var start = + new Date(),
-            from = parseInt(element.style[propery], 10),
+        propertyObj[propery] = to;
 
-            timer = setInterval(function() {
-
-            var timeGone = + new Date() - start,
-                value;
-
-            if (timeGone >= speed) {
-
-              value = to;
-              callback();
-
-              clearInterval( timer );
-
-            } else {
-              value = Math.round((( (to - from) * (Math.floor((timeGone / speed) * 100) / 100) ) + from));
-            }
-
-            element.style[propery] = value + "px";
-
-          }, 5);
+        if ($) {
+          $(element).animate(propertyObj, speed, callback);
+        } else {
+          setStyles(element, propertyObj);
+        }
 
       },
 
@@ -282,13 +268,13 @@
       // ### Animated scroll with translate support
 
       _animateScrollTransform = function() {
-        var style = "-webkit-transform " + this.settings.duration + "ms ease-out";
+        var style = "transform " + this.settings.duration + "ms ease-out";
 
         setStyles( this.pageContainer, {
-          "-webkit-transition": style,
-          "-moz-transition": style,
-          "-ms-transition": style,
-          "-o-transition": style,
+          "-webkit-transition": "-webkit-" + style,
+          "-moz-transition": "-moz-" + style,
+          "-ms-transition": "-ms-" + style,
+          "-o-transition": "-o-" + style,
           "transition": style
         });
 
@@ -330,26 +316,16 @@
             "marginTop": coordinates.y
           });
         }
+
       },
 
       // ### Animated scroll without translate support
 
       _animateScrollWithoutTransform = function() {
-        var property,
-            value;
-
-        this.activeElement = this.pages[this.page * this.settings.itemsInPage];
-
-        if ( this.settings.direction === "horizontal") {
-            property = "marginLeft";
-            value = - this.scrollBorder.x;
-        } else if ( this.settings.direction === "vertical" ) {
-            property = "marginTop";
-            value = - this.scrollBorder.y;
-        }
+        var property = this.settings.direction === "horizontal" ? "marginLeft" : "marginTop",
+            value = this.settings.direction === "horizontal" ? - this.scrollBorder.x : - this.scrollBorder.y;
 
         animate( this.pageContainer, property, value, this.settings.duration, proxy( this._onSwipeEnd, this ));
-
       },
 
       addEventListener = function(container, event, callback) {
@@ -466,6 +442,7 @@
         if ( this.settings.keyboardNavigation ) {
           addEventListener(document.body, "keydown", proxy( this._onKeydown, this ));
         }
+
         addEventListener(window, "resize", proxy( this._sizePages, this ));
 
       },
@@ -748,6 +725,8 @@
         this.preventScroll = true;
 
         if ( options ) this._calcNewPage( options, pageNumber );
+
+        console.log(this.scrollBorder.x)
         this._animateScroll();
       },
 
