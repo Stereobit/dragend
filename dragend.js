@@ -466,7 +466,7 @@
         if ( this.settings.keyboardNavigation ) {
           addEventListener(document.body, "keydown", proxy( this._onKeydown, this ));
         }
-        addEventListener("resize", proxy( this._sizePages, this ));
+        addEventListener(window, "resize", proxy( this._sizePages, this ));
 
       },
 
