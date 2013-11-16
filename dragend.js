@@ -240,13 +240,7 @@
       // x and y values to go with
 
       _scrollTransform = function( coordinates ) {
-        var style;
-
-        if ( this.settings.direction === "horizontal" ) {
-          style = "translateX(" + coordinates.x + "px)";
-        } else if (this.settings.direction === "vertical" ) {
-          style = "translateY(" + coordinates.y + "px)";
-        }
+        var style = this.settings.direction === "horizontal" ? "translateX(" + coordinates.x + "px)" : "translateY(" + coordinates.y + "px)";
 
         setStyles( this.pageContainer, {
           "-webkit-transform": style,
@@ -298,17 +292,9 @@
       // x and y values to go with
 
       _scrollWithoutTransform = function( coordinates ) {
+        var styles = this.settings.direction === "horizontal" ? { "marginLeft": coordinates.x } : { "marginTop": coordinates.y }
 
-        if ( this.settings.direction === "horizontal") {
-          setStyles(this.pageContainer, {
-            "marginLeft": coordinates.x
-          });
-        } else if ( this.settings.direction === "vertical" ) {
-          setStyles(this.pageContainer, {
-            "marginTop": coordinates.y
-          });
-        }
-
+        setStyles(this.pageContainer, styles);
       },
 
       // ### Animated scroll without translate support
@@ -331,20 +317,11 @@
     // ### Check translate support
     ( function() {
 
-      var scroll,
-          animateScroll;
-
-      if ( supports('transform') ) {
-        scroll = _scrollTransform;
-        animateScroll = _animateScrollTransform;
-      } else {
-        scroll = _scrollWithoutTransform;
-        animateScroll = _animateScrollWithoutTransform;
-      }
+      var supports = supports('transform');
 
       extend( Dragend.prototype, {
-        "_scroll": scroll,
-        "_animateScroll": animateScroll
+        "_scroll": supports ? _scrollTransform : _scrollWithoutTransform,
+        "_animateScroll": supports ? _animateScrollTransform : _animateScrollWithoutTransform
       });
 
     })();
@@ -554,14 +531,10 @@
       },
 
       setContainerCssValues: function(){
-        switch ( this.settings.direction ) {
-          case "horizontal":
+        if ( this.settings.direction === "horizontal") {
             this.setHorizontalContainerCssValues();
-            break;
-
-          case "vertical":
+        } else {
             this.setVerticalContainerCssValues();
-            break;
         }
       },
 
