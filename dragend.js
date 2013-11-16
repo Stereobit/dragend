@@ -158,16 +158,15 @@
       },
 
       getElementsByClassName = function( className, root ) {
-        var elements = [],
-            allElements;
+        var elements;
 
         if ( $ ) {
           elements = $(root).find("." + className);
         } else {
-          elements = root.getElementsByClassName( className );
+          elements = Array.prototype.slice.call(root.getElementsByClassName( className ));
         }
 
-        return Array.prototype.slice.call( elements );
+        return elements;
       },
 
       animate = function( element, propery, to, speed, callback ) {
