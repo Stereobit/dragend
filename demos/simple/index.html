@@ -93,11 +93,11 @@
 
   <script>
 
-    window.onload = function() {
+    document.addEventListener("DOMContentLoaded", function() {
       var container = document.getElementById("demo");
       new Dragend(container);
       container.style.display = "block";
-    }
+    }, false)
 
     var _gaq = _gaq || [];
     _gaq.push(['_setAccount', 'UA-219062-10']);

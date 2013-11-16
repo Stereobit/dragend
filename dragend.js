@@ -73,6 +73,8 @@
 
       noop = function() {},
 
+      cachedEvent,
+
       // Default setting
       defaultSettings = {
         pageClass          : "dragend-page",
@@ -399,7 +401,6 @@
             this.container.draggable = true;
             addEventListener(this.container, "dragstart", proxy( this._onDragStart, this ));
             addEventListener(this.container, "drag", proxy( this._onDrag, this ));
-            addEventListener(this.container, "dragend", proxy( this._onDragend, this ));
           }
         } else {
           var hammer = new Hammer(this.container, this.settings.hammerSettings);
@@ -424,19 +425,25 @@
         img.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
 
         dataTransfer.setDragImage(img, 0 , 0);
+        dataTransfer.effectAllowed = "none";
+        dataTransfer.dropEffect = "none";
 
         this.startPageX = event.pageX;
         this.startPageY = event.pageY;
       },
 
       _onDrag: function( event ) {
+
         // filter out the last drag event
-        if (event.type === 'dragend' && !event.pageX && !event.pageY) {
+        if (event.type === 'drag' && event.pageX === 0 && event.pageY  === 0) {
+          this._onDragend(cachedEvent);
           return;
         }
 
         var coordinates,
             parsedEvent = this._parseEvent(event);
+
+        cachedEvent = event;
 
         coordinates = this._checkOverscroll( parsedEvent.direction , - parsedEvent.distanceX, - parsedEvent.distanceY );
         this.settings.onDrag.call( this, this.activeElement, event, coordinates.overscroll );
@@ -448,15 +455,12 @@
       },
 
       _onDragend: function( event ) {
-
         var parsedEvent = this._parseEvent(event);
 
         this.startOffsetX = 0;
         this.startOffsetY = 0;
 
-        console.log(parsedEvent)
-
-        if ( Math.abs(parsedEvent.distanceX) > this.settings.minDragDistance ) {
+        if ( Math.abs(parsedEvent.distanceX) > this.settings.minDragDistance || Math.abs(parsedEvent.distanceY) > this.settings.minDragDistance) {
           this.swipe( parsedEvent.direction );
         } else {
           this._scrollToPage();
@@ -476,7 +480,7 @@
         if ( this.settings.direction === "horizontal" ) {
           if (!event.gesture) {
             x = event.changedTouches ? event.changedTouches[0].pageX : event.pageX;
-            eventData.distanceX = event.type === "dragend" ? - x : this.startPageX - x;
+            eventData.distanceX = this.startPageX - x;
           } else {
             eventData.distanceX = - event.gesture.deltaX;
           }
@@ -484,7 +488,7 @@
         } else {
           if (!event.gesture) {
             y = event.changedTouches ? event.changedTouches[0].pageY : event.pageY;
-            eventData.distanceY = event.type === "dragend" ? - y : this.startPageY - y;
+            eventData.distanceY = this.startPageY - y;
           } else {
             eventData.distanceY = - event.gesture.deltaY;
           }
