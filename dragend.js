@@ -161,17 +161,10 @@
         var elements = [],
             allElements;
 
-        if ( document.querySelector && document.querySelectorAll ) {
-           elements = root.getElementsByClassName( className );
+        if ( $ ) {
+          elements = $(root).find("." + className);
         } else {
-          allElements = root.getElementsByTagName('*');
-
-          for ( var i = 0; i < allElements.length; i++ ) {
-            if ((' ' + allElements[i].className + ' ').indexOf(' ' + className +' ') > -1 ) {
-              elements.push( allElements[i] );
-            }
-          }
-
+          elements = root.getElementsByClassName( className );
         }
 
         return Array.prototype.slice.call( elements );
@@ -726,7 +719,6 @@
 
         if ( options ) this._calcNewPage( options, pageNumber );
 
-        console.log(this.scrollBorder.x)
         this._animateScroll();
       },
 

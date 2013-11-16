@@ -89,16 +89,15 @@
   allowtransparency="true" frameborder="0" scrolling="0" width="110" height="20"></iframe>
   </div>
 
-  <script type="text/javascript" src="../lib/jquery.min.js"></script>
-  <script type="text/javascript" src="../lib/hammer.min.js"></script>
   <script type="text/javascript" src="../../dragend.js"></script>
 
   <script>
 
-    $(function() {
-      new Dragend($("#demo").get(0))
-      $("#demo").fadeIn();
-    });
+    window.onLoad = function() {
+      var container = document.getElementById("demo");
+      new Dragend(container);
+      container.styles.display = block;
+    }
 
     var _gaq = _gaq || [];
     _gaq.push(['_setAccount', 'UA-219062-10']);
