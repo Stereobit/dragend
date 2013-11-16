@@ -401,12 +401,13 @@
             this.container.draggable = true;
             addEventListener(this.container, "dragstart", proxy( this._onDragStart, this ));
             addEventListener(this.container, "drag", proxy( this._onDrag, this ));
+            addEventListener(this.container, "dragend", proxy( this._onDragend, this ));
           }
         } else {
           var hammer = new Hammer(this.container, this.settings.hammerSettings);
 
           hammer.on("drag", proxy( this._onDrag, this ))
-              .on( "dragend", proxy( this._onDragend, this ));
+                .on( "dragend", proxy( this._onDragend, this ));
         }
 
         if ( this.settings.keyboardNavigation ) {
@@ -424,7 +425,7 @@
         // create fake transparent image to prevent drag preview
         img.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
 
-        dataTransfer.setDragImage(img, 0 , 0);
+        dataTransfer.setDragImage && dataTransfer.setDragImage(img, 0 , 0);
         dataTransfer.effectAllowed = "none";
         dataTransfer.dropEffect = "none";
 
@@ -437,6 +438,7 @@
         // filter out the last drag event
         if (event.type === 'drag' && event.x === 0 && event.y  === 0) {
           this._onDragend(cachedEvent);
+          cachedEvent = null;
           return;
         }
 
@@ -456,6 +458,8 @@
 
       _onDragend: function( event ) {
         var parsedEvent = this._parseEvent(event);
+
+        if (!cachedEvent) return;
 
         this.startOffsetX = 0;
         this.startOffsetY = 0;
