@@ -231,8 +231,8 @@
         window.setTimeout( proxy(function() {
             this.updateInstance( settings );
             this._observe();
-            this.settings.afterInitialize();
-        }, this), 10 );
+            this.settings.afterInitialize.call(this);
+        }, this), 1000 );
 
       },
 
@@ -422,6 +422,8 @@
 
       _onDragStart: function(event) {
 
+        event = event.originalEvent || event;
+
         var img = document.createElement('img'),
             dataTransfer = event.dataTransfer;
 
@@ -440,6 +442,8 @@
       },
 
       _onDrag: function( event ) {
+
+        event = event.originalEvent || event;
 
         // filter out the last drag event
         if (event.type === 'drag' && event.x === 0 && event.y  === 0) {
@@ -463,6 +467,9 @@
       },
 
       _onDragend: function( event ) {
+
+        event = event.originalEvent || event;
+
         var parsedEvent = this._parseEvent(event);
 
         if (!cachedEvent) return;
