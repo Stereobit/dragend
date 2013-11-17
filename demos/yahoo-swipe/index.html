@@ -24,7 +24,7 @@
       height: 534px;
       background: url(img/phone.png) no-repeat;
       margin: 0 auto;
-      display: none;
+      visibility: hidden;
     }
 
     #gallery {
@@ -123,7 +123,6 @@
 
 
   <script type="text/javascript" src="../lib/jquery.min.js"></script>
-  <script type="text/javascript" src="../lib/hammer.min.js"></script>
   <script type="text/javascript" src="../../dragend.js"></script>
 
   <script>
@@ -131,8 +130,11 @@
     $(function() {
       $("#gallery").dragend({
         borderBetweenPages: 5,
-        onDrag: function( activeElement, gesture, overscroll ) {
-          var deltaX = parseInt( - gesture.deltaX / 2 );
+        afterInitialize: function() {
+          $("#phone").css("visibility", "visible");
+        },
+        onDrag: function( activeElement, event, overscroll ) {
+          var deltaX = parseInt( event.distanceX / 2 );
 
           if ( overscroll ) {
             deltaX = deltaX / 5;
@@ -154,8 +156,6 @@
           }, 300);
         }
       });
-
-      $("#phone").fadeIn();
 
       $(document).on("dragstart", function(event) {
         if (event.target.nodeName.toUpperCase() == "IMG") {

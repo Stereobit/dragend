@@ -459,7 +459,7 @@
         cachedEvent = event;
 
         coordinates = this._checkOverscroll( parsedEvent.direction , - parsedEvent.distanceX, - parsedEvent.distanceY );
-        this.settings.onDrag.call( this, this.activeElement, event, coordinates.overscroll );
+        this.settings.onDrag.call( this, this.activeElement, parsedEvent, coordinates.overscroll );
 
         if ( !this.preventScroll ) {
           this._scroll( coordinates );
