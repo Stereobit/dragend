@@ -4,13 +4,14 @@ dragend.js, Readme File:
 
 # DESCRIPTION
 
-dragend.js is a touch ready, full responsive, content swipe script. It uses [hammer.js](http://eightmedia.github.com/hammer.js/) for observing multi-touch gestures. It also can, but don't has to, used as a [jQuery](https://github.com/jquery/jquery/) plugin.
+dragend.js is a touch ready, full responsive, content swipe script. It has no dependencies but you can use [hammer.js](http://eightmedia.github.com/hammer.js/) for crossbrowser support of touch gestures. It also can, but don't has to, used as a [jQuery](https://github.com/jquery/jquery/) plugin.
 
-The current version is 0.2.0 release candidate 2
+The current version is 0.2.0 release candidate 3
 
 # Demos
 
 * [Simple demo](http://stereobit.github.io/dragend/demos/simple/)
+* [jQuery and content scribe demo](http://stereobit.github.io/dragend/demos/scribe/)
 * [Responsive demo](http://stereobit.github.io/dragend/demos/responsive/)
 * [Yahoo weather app like page swiping demo](http://stereobit.github.io/dragend/demos/yahoo-swipe/)
 * [Demo with navigation buttons and a page overview](http://stereobit.github.io/dragend/demos/with-control-elements/)
@@ -21,13 +22,21 @@ The current version is 0.2.0 release candidate 2
 
 * horizontal and vertical swiping
 * mobile and desktop ready
-* lightweight (2.6KB gzipped)
+* lightweight (2.9KB gzipped)
 * keyboard navigation
 * fullscreen or boxed
 * contend scribe
 * resize adjustment
 * overscroll
 * full responsive
+
+# Browser support
+* Firefox 3.5+
+* Chrome 4+
+* IE 8+ (8 and 9 need hammer JS and jQuery)
+* Safari 4+
+* Safari on iOS 5+
+* Android 2+
 
 # How to
 
@@ -79,11 +88,19 @@ to swipe left or right.
   * onSwipeEnd: callback function after the animation
   * onDrag: callback on drag
   * onDragEnd: callback on dragend
+  * afterInitialize:
   * borderBetweenPages: if you need space between pages add a pixel value
   * duration
   * hammerSettings
 
 # CHANGELOG
+
+* 2013-1-17
+  0.2.0_rc3 release
+
+  Changes:
+  - removed hammer as dependency
+  - fixed several bugs
 
 * 2013-09-30
   0.2.0_rc2 release

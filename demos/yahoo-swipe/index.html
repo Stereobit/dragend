@@ -24,7 +24,7 @@
       height: 534px;
       background: url(img/phone.png) no-repeat;
       margin: 0 auto;
-      display: none;
+      visibility: hidden;
     }
 
     #gallery {
@@ -116,14 +116,13 @@
 
   <div id="dragend">
     <h1>A Yahoo weather app like page swiping demo with <a href="http://stereobit.github.io/dragend/">dragend JS</a></h1>
-    For more details checkout <a href="https://coderwall.com/p/hkdqsa">this blog post</a>
-    <iframe src="http://ghbtns.com/github-btn.html?user=stereobit&amp;repo=dragend&amp;type=watch&amp;count=true"
-  allowtransparency="true" frameborder="0" scrolling="0" width="110" height="20"></iframe>
+    <p>For more details checkout <a href="https://coderwall.com/p/hkdqsa">this blog post</a><br><br></p>
+    <div><iframe src="http://ghbtns.com/github-btn.html?user=stereobit&amp;repo=dragend&amp;type=watch&amp;count=true"
+  allowtransparency="true" frameborder="0" scrolling="0" width="110" height="20"></iframe></div>
   </div>
 
 
   <script type="text/javascript" src="../lib/jquery.min.js"></script>
-  <script type="text/javascript" src="../lib/hammer.min.js"></script>
   <script type="text/javascript" src="../../dragend.js"></script>
 
   <script>
@@ -131,8 +130,11 @@
     $(function() {
       $("#gallery").dragend({
         borderBetweenPages: 5,
-        onDrag: function( activeElement, gesture, overscroll ) {
-          var deltaX = parseInt( - gesture.deltaX / 2 );
+        afterInitialize: function() {
+          $("#phone").css("visibility", "visible");
+        },
+        onDrag: function( activeElement, event, overscroll ) {
+          var deltaX = parseInt( event.distanceX / 2 );
 
           if ( overscroll ) {
             deltaX = deltaX / 5;
@@ -154,8 +156,6 @@
           }, 300);
         }
       });
-
-      $("#phone").fadeIn();
 
       $(document).on("dragstart", function(event) {
         if (event.target.nodeName.toUpperCase() == "IMG") {

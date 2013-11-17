@@ -3,7 +3,7 @@
 <html>
 <head>
 
-  <title>Dragend JS simple demo</title>
+  <title>Dragend JS infinit demo</title>
 
   <style type="text/css">
     * {
@@ -21,7 +21,7 @@
     #demo {
       width: 500px;
       height: 500px;
-      display: none;
+      visibility: hidden;
       margin: 100px auto;
       background: #457;
       cursor: hand;
@@ -92,12 +92,12 @@
   </div>
 
   <script type="text/javascript" src="../lib/jquery.min.js"></script>
-  <script type="text/javascript" src="../lib/hammer.min.js"></script>
   <script type="text/javascript" src="../../dragend.js"></script>
 
   <script>
 
     $(function() {
+
       var firstChild = $("#demo li:first-child").clone(),
           lastChild  = $("#demo li:last-child").clone(),
           container  = $("#demo ul");
@@ -119,8 +119,11 @@
             this.jumpToPage(2);
           }
 
+        },
+        afterInitialize: function() {
+          this.container.style.visibility = "visible";
         }
-      }).fadeIn();
+      });
     });
 
     var _gaq = _gaq || [];

@@ -22,3 +22,9 @@ minify:
 
 clean:
 	@@git co ${JS_OUTPUT}
+
+test:
+	./node_modules/.bin/mocha \
+	--reporter list
+
+.PHONY: test

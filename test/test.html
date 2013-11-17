@@ -7,6 +7,7 @@
 <body>
   <div id="mocha"></div>
   <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+  <script src="../node_modules/hammerjs/dist/hammer.js"></script>
   <script src="../dragend.js"></script>
   <script src="../node_modules/mocha/mocha.js"></script>
   <script src="../node_modules/expect.js/expect.js"></script>
@@ -17,5 +18,10 @@
     mocha.globals(['jQuery']);
     mocha.run();
   </script>
+  <div id="dragend">
+    <div class="dragend-page"></div>
+    <div class="dragend-page"></div>
+    <div class="dragend-page"></div>
+  </div>
 </body>
 </html>

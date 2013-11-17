@@ -21,7 +21,7 @@
     #demo {
       width: 500px;
       height: 350px;
-      display: none;
+      visibility: hidden;
       margin: 100px auto 0;
       background: #457;
       cursor: hand;
@@ -154,13 +154,15 @@
   </div>
 
   <script type="text/javascript" src="../lib/jquery.min.js"></script>
-  <script type="text/javascript" src="../lib/hammer.min.js"></script>
   <script type="text/javascript" src="../../dragend.js"></script>
 
   <script>
 
     $(function() {
       $("#demo").dragend({
+        afterInitialize: function() {
+          this.container.style.visibility = "visible";
+        },
         onSwipeEnd: function() {
           var first = this.pages[0],
               last = this.pages[this.pages.length - 1];
@@ -179,7 +181,7 @@
           $(".nav li").eq(this.page).addClass("active");
 
         }
-      }).fadeIn();
+      });
 
       $(".prev").click(function() {
         $("#demo").dragend("right");

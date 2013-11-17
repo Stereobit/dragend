@@ -21,7 +21,7 @@
     #demo {
       width: 500px;
       height: 500px;
-      display: none;
+      visibility: hidden;
       margin: 100px auto;
       background: #457;
       cursor: hand;
@@ -89,16 +89,18 @@
   allowtransparency="true" frameborder="0" scrolling="0" width="110" height="20"></iframe>
   </div>
 
-  <script type="text/javascript" src="../lib/jquery.min.js"></script>
-  <script type="text/javascript" src="../lib/hammer.min.js"></script>
   <script type="text/javascript" src="../../dragend.js"></script>
 
   <script>
 
-    $(function() {
-      new Dragend($("#demo").get(0))
-      $("#demo").fadeIn();
-    });
+    document.addEventListener("DOMContentLoaded", function() {
+      var container = document.getElementById("demo");
+      new Dragend(container, {
+        afterInitialize: function() {
+          container.style.visibility = "visible";
+        }
+      });
+    }, false)
 
     var _gaq = _gaq || [];
     _gaq.push(['_setAccount', 'UA-219062-10']);
