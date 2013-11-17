@@ -95,8 +95,11 @@
 
     document.addEventListener("DOMContentLoaded", function() {
       var container = document.getElementById("demo");
-      new Dragend(container);
-      container.style.display = "block";
+      new Dragend(container, {
+        afterInitialize: function() {
+          container.style.display = "block";
+        }
+      });
     }, false)
 
     var _gaq = _gaq || [];

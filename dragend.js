@@ -84,6 +84,7 @@
         onSwipeEnd         : noop,
         onDrag             : noop,
         onDragEnd          : noop,
+        afterInitialize    : noop,
         keyboardNavigation : false,
         itemsInPage        : 1,
         scribe             : 0,
@@ -230,6 +231,7 @@
         window.setTimeout( proxy(function() {
             this.updateInstance( settings );
             this._observe();
+            this.settings.afterInitialize();
         }, this), 10 );
 
       },
