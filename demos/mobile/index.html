@@ -26,7 +26,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      display: none;
+      visibility: hidden;
       background: #457;
       cursor: hand;
       cursor: -moz-grab;
@@ -139,20 +139,16 @@
   </div>
 
   <script type="text/javascript" src="../lib/jquery.min.js"></script>
-  <script type="text/javascript" src="../lib/hammer.min.js"></script>
   <script type="text/javascript" src="../../dragend.js"></script>
 
   <script>
 
     $(function() {
       new Dragend($("#demo").get(0), {
-        hammerSettings     : {
-          drag_min_distance: 0,
-          css_hacks        : false,
-          prevent_default  : false
+        afterInitialize: function() {
+          $("#demo").css("visibility", "visible");
         }
-      })
-      $("#demo").fadeIn();
+      });
     });
 
     var _gaq = _gaq || [];
