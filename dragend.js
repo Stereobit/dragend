@@ -68,6 +68,7 @@
     // * borderBetweenPages: if you need space between pages add a pixel value
     // * duration
     // * hammerSettings
+    // * afterInitialize called after the pages are size
 
     var
 
@@ -437,14 +438,19 @@
           dataTransfer.dropEffect = "none";
         }
 
-        this.startPageX = event.pageX;
-        this.startPageY = event.pageY;
+        this.startPageX = event.touches ? event.touches[0].pageX : event.pageX;
+        this.startPageY = event.touches ? event.touches[0].pageY : event.pageY;
 
       },
 
       _onDrag: function( event ) {
 
+        event.preventDefault();
+
         event = event.originalEvent || event;
+
+        // check if touch event and not pinch
+        if ( event.touches.length > 1 || event.scale && event.scale !== 1) return;
 
         // filter out the last drag event
         if (event.type === 'drag' && event.x === 0 && event.y  === 0) {
@@ -475,8 +481,8 @@
 
         if (!cachedEvent) return;
 
-        this.startOffsetX = 0;
-        this.startOffsetY = 0;
+        this.startPageX = 0;
+        this.startPageY = 0;
 
         if ( Math.abs(parsedEvent.distanceX) > this.settings.minDragDistance || Math.abs(parsedEvent.distanceY) > this.settings.minDragDistance) {
           this.swipe( parsedEvent.direction );
@@ -492,12 +498,13 @@
           distanceX: 0,
           distanceY: 0
         },
+        touches =  event.touches.length ? event.touches: event.changedTouches,
         x,
         y;
 
         if ( this.settings.direction === "horizontal" ) {
           if (!event.gesture) {
-            x = event.changedTouches ? event.changedTouches[0].pageX : event.pageX;
+            x = touches ? touches[0].pageX : event.pageX;
             eventData.distanceX = this.startPageX - x;
           } else {
             eventData.distanceX = - event.gesture.deltaX;
@@ -505,7 +512,7 @@
           eventData.direction = eventData.distanceX > 0 ? "left" : "right";
         } else {
           if (!event.gesture) {
-            y = event.changedTouches ? event.changedTouches[0].pageY : event.pageY;
+            y = touches ? touches[0].pageY : event.pageY;
             eventData.distanceY = this.startPageY - y;
           } else {
             eventData.distanceY = - event.gesture.deltaY;

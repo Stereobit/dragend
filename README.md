@@ -79,6 +79,7 @@ to swipe left or right.
   * onSwipeEnd: callback function after the animation
   * onDrag: callback on drag
   * onDragEnd: callback on dragend
+  * afterInitialize:
   * borderBetweenPages: if you need space between pages add a pixel value
   * duration
   * hammerSettings
