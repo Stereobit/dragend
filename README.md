@@ -30,6 +30,14 @@ The current version is 0.2.0 release candidate 3
 * overscroll
 * full responsive
 
+# Browser support
+* Firefox 3.5+
+* Chrome 4+
+* IE 8+ (8 and 9 need hammer JS and jQuery)
+* Safari 4+
+* Safari on iOS 5+
+* Android 2+
+
 # How to
 
 ```html
