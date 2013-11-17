@@ -21,7 +21,7 @@
     #demo {
       width: 500px;
       height: 500px;
-      display: none;
+      visibility: hidden;
       margin: 100px auto;
       background: #457;
       cursor: hand;
@@ -97,7 +97,7 @@
       var container = document.getElementById("demo");
       new Dragend(container, {
         afterInitialize: function() {
-          container.style.display = "block";
+          container.style.visibility = "visible";
         }
       });
     }, false)
