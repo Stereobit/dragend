@@ -446,6 +446,8 @@
           return;
         }
 
+        console.log(event);
+
         var coordinates,
             parsedEvent = this._parseEvent(event);
 
@@ -739,7 +741,7 @@
         }
 
         this.activeElement = this.pages[this.page * this.settings.itemsInPage];
-        // this._sizePages();
+        this._sizePages();
 
         if ( this.settings.jumpToPage ) {
           this.jumpToPage( settings.jumpToPage );
