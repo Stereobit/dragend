@@ -29,8 +29,8 @@
           <div class="page-content">
             <div class="left">
               <div class="content">
-                <p>dragend JS is a touch ready, full responsive, content swipe script. It's <a href="https://github.com/Stereobit/dragend">open source</a> and uses <a href="http://eightmedia.github.com/hammer.js/">hammer.js</a> for observing multi-touch gestures. It also can, but don't has to, used as a <a href="http://jquery.com/">jQuery</a> plugin</p>
-                <p class="space">The current version is 0.2.0 release candidate 2</p>
+                <p>dragend JS is a touch ready, full responsive, content swipe script. It's <a href="https://github.com/Stereobit/dragend">open source</a> and it has no dependencies but you can use <a href="http://eightmedia.github.com/hammer.js/">hammer.js</a> for crossbrowser support of touch gestures. It also can, but don't has to, used as a <a href="http://jquery.com/">jQuery</a> plugin</p>
+                <p class="space">The current version is 0.2.0 release candidate 3</p>
                 <h3>Features</h3>
                 <ul>
                   <li>horizontal and vertical swiping</li>
@@ -50,16 +50,17 @@
               <div class="content">
                 <h3>Download</h3>
                 <ul class="download space">
-                  <li><a href="https://raw.github.com/Stereobit/dragend/master/dist/dragend-0.2.0_rc2.js">Download development version (unminified, with comments)</a></li>
-                  <li><a href="https://raw.github.com/Stereobit/dragend/master/dist/dragend-0.2.0_rc2.min.js">Download production version</a></li>
+                  <li><a href="https://raw.github.com/Stereobit/dragend/master/dist/dragend-0.2.0_rc3.js">Download development version (unminified, with comments)</a></li>
+                  <li><a href="https://raw.github.com/Stereobit/dragend/master/dist/dragend-0.2.0_rc3.min.js">Download production version</a></li>
                 </ul>
                 <h3>Browser Support</h3>
                 <ul class="space">
                   <li>Firefox 3.5+</li>
-                  <li>Chrome</li>
-                  <li>IE 9+</li>
+                  <li>Chrome 4+</li>
+                  <li>IE 8+ (8 and 9 need hammer JS and jQuery)</li>
                   <li>Safari 4+</li>
                   <li>Safari on iOS 5+</li>
+                  <li>Android 2+</li>
                 </ul>
                 <div class="overflow">
                   <a class="nav next">Getting started</a>
@@ -137,8 +138,7 @@
   <a href="https://github.com/Stereobit/dragend"><img style="position: absolute; top: 0; right: 0; border: 0; z-index: 1;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png" alt="Fork me on GitHub"></a>
 
   <script type="text/javascript" src="./demos/lib/jquery.min.js"></script>
-  <script type="text/javascript" src="./demos/lib/hammer.min.js"></script>
-  <script type="text/javascript" src="./dist/dragend-0.2.0_rc2.js"></script>
+  <script type="text/javascript" src="./dist/dragend-0.2.0_rc3.js"></script>
 
   <script>
 
@@ -148,12 +148,7 @@
       container.dragend({
         minTouchDistance  : "60",
         keyboardNavigation: true,
-        pageClass         : "page",
-        hammerSettings     : {
-          drag_min_distance: 0,
-          css_hacks        : false,
-          prevent_default  : false
-        }
+        pageClass         : "page"
       });
 
       $("#demo").dragend({
