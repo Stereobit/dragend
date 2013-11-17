@@ -32,10 +32,10 @@
     // Welcome To dragend JS
     // =====================
     //
-    // dragend JS is a swipe plugin for jQuery (http://jquery.com/). It's open
-    // source (https://github.com/Stereobit/dragend) and uses hammer.js
-    // (http://eightmedia.github.com/hammer.js/) for observing multi-touch
-    // gestures. You can use dragend JS in fullscreen or boxed mode.
+    // dragend.js is a touch ready, full responsive, content swipe script. It has no dependencies
+    // but you can use hammer.js (http://eightmedia.github.com/hammer.js/) for crossbrowser support
+    // of touch gestures. It also can, but don't has to, used as a jQuery
+    // (https://github.com/jquery/jquery/) plugin.
     //
     // The current version is 0.2.0_rc3
     //
@@ -450,7 +450,7 @@
         event = event.originalEvent || event;
 
         // check if touch event and not pinch
-        if ( event.touches.length > 1 || event.scale && event.scale !== 1) return;
+        if ( event.touches && event.touches.length > 1 || event.scale && event.scale !== 1) return;
 
         // filter out the last drag event
         if (event.type === 'drag' && event.x === 0 && event.y  === 0) {
@@ -498,7 +498,7 @@
           distanceX: 0,
           distanceY: 0
         },
-        touches =  event.touches.length ? event.touches: event.changedTouches,
+        touches = event.touches && event.touches.length ? event.touches: event.changedTouches,
         x,
         y;
 

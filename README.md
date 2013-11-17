@@ -11,6 +11,7 @@ The current version is 0.2.0 release candidate 3
 # Demos
 
 * [Simple demo](http://stereobit.github.io/dragend/demos/simple/)
+* [jQuery and content scribe demo](http://stereobit.github.io/dragend/demos/scribe/)
 * [Responsive demo](http://stereobit.github.io/dragend/demos/responsive/)
 * [Yahoo weather app like page swiping demo](http://stereobit.github.io/dragend/demos/yahoo-swipe/)
 * [Demo with navigation buttons and a page overview](http://stereobit.github.io/dragend/demos/with-control-elements/)
@@ -21,7 +22,7 @@ The current version is 0.2.0 release candidate 3
 
 * horizontal and vertical swiping
 * mobile and desktop ready
-* lightweight (2.6KB gzipped)
+* lightweight (2.9KB gzipped)
 * keyboard navigation
 * fullscreen or boxed
 * contend scribe
@@ -85,6 +86,13 @@ to swipe left or right.
   * hammerSettings
 
 # CHANGELOG
+
+* 2013-1-17
+  0.2.0_rc3 release
+
+  Changes:
+  - removed hammer as dependency
+  - fixed several bugs
 
 * 2013-09-30
   0.2.0_rc2 release
