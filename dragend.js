@@ -258,6 +258,7 @@
       // ### Animated scroll with translate support
 
       _animateScrollTransform = function() {
+
         var style = "transform " + this.settings.duration + "ms ease-out";
 
         setStyles( this.pageContainer, {
@@ -614,7 +615,7 @@
           setStyles(this.pages[i], this.pageCssProperties);
         }
 
-        this._scrollToPage( "page", this.page );
+        this._jumpToPage( "page", this.page );
 
       },
 
