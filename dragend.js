@@ -225,11 +225,11 @@
         // Initialisation
 
         setStyles(container, containerStyles);
-        this._observe();
 
         // Give the DOM some time to update ...
         window.setTimeout( proxy(function() {
             this.updateInstance( settings );
+            this._observe();
         }, this), 10 );
 
       },
@@ -419,18 +419,22 @@
       },
 
       _onDragStart: function(event) {
+
         var img = document.createElement('img'),
             dataTransfer = event.dataTransfer;
 
-        // create fake transparent image to prevent drag preview
-        img.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+        if (dataTransfer) {
+          // create fake transparent image to prevent drag preview
+          img.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
 
-        dataTransfer.setDragImage && dataTransfer.setDragImage(img, 0 , 0);
-        dataTransfer.effectAllowed = "none";
-        dataTransfer.dropEffect = "none";
+          dataTransfer.setDragImage && dataTransfer.setDragImage(img, 0 , 0);
+          dataTransfer.effectAllowed = "none";
+          dataTransfer.dropEffect = "none";
+        }
 
         this.startPageX = event.pageX;
         this.startPageY = event.pageY;
+
       },
 
       _onDrag: function( event ) {
@@ -578,6 +582,7 @@
       // ### Size pages
 
       _sizePages: function() {
+
         var pagesCount = this.pages.length;
 
         this._setPageDimentions();
@@ -734,7 +739,7 @@
         }
 
         this.activeElement = this.pages[this.page * this.settings.itemsInPage];
-        this._sizePages();
+        // this._sizePages();
 
         if ( this.settings.jumpToPage ) {
           this.jumpToPage( settings.jumpToPage );
