@@ -434,6 +434,7 @@
           img.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
 
           dataTransfer.setDragImage && dataTransfer.setDragImage(img, 0 , 0);
+          dataTransfer.setData && dataTransfer.setData('text/html', null);
           dataTransfer.effectAllowed = "none";
           dataTransfer.dropEffect = "none";
         }
@@ -444,8 +445,6 @@
       },
 
       _onDrag: function( event ) {
-
-        event.preventDefault();
 
         event = event.originalEvent || event;
 
@@ -493,6 +492,7 @@
         this.settings.onDragEnd.call( this, this.container, this.activeElement, this.page );
       },
 
+      // TODO: split between touch and drg events
       _parseEvent: function( event ) {
         var eventData = {
           distanceX: 0,
@@ -519,6 +519,9 @@
           }
           eventData.direction = eventData.distanceY > 0 ? "up" : "down";
         }
+
+                // console.log(event);
+
 
         return eventData;
       },
