@@ -404,7 +404,12 @@
           } else {
             this.container.draggable = true;
             addEventListener(this.container, "dragstart", proxy( this._onDragStart, this ));
-            addEventListener(this.container, "drag", proxy( this._onDrag, this ));
+            if (typeof InstallTrigger !== 'undefined') {
+              addEventListener(document, "dragover", proxy( this._onDrag, this ));
+            } else {
+              addEventListener(this.container, "drag", proxy( this._onDrag, this ));
+            }
+
             addEventListener(this.container, "dragend", proxy( this._onDragend, this ));
           }
         } else {
@@ -504,24 +509,22 @@
 
         if ( this.settings.direction === "horizontal" ) {
           if (!event.gesture) {
-            x = touches ? touches[0].pageX : event.pageX;
+            x = touches ? touches[0].pageX : event.screenX;
             eventData.distanceX = this.startPageX - x;
           } else {
             eventData.distanceX = - event.gesture.deltaX;
           }
+
           eventData.direction = eventData.distanceX > 0 ? "left" : "right";
         } else {
           if (!event.gesture) {
-            y = touches ? touches[0].pageY : event.pageY;
+            y = touches ? touches[0].pageY : event.screenY;
             eventData.distanceY = this.startPageY - y;
           } else {
             eventData.distanceY = - event.gesture.deltaY;
           }
           eventData.direction = eventData.distanceY > 0 ? "up" : "down";
         }
-
-                // console.log(event);
-
 
         return eventData;
       },
