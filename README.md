@@ -25,7 +25,7 @@ The current version is 0.2.0 release candidate 3
 * lightweight (2.9KB gzipped)
 * keyboard navigation
 * fullscreen or boxed
-* contend scribe
+* contend scribe (Sometimes you need to indicate to the user that there is more content to see. Especially on mobile devices. One easy approach to this problem is to show a bit of the next page)
 * resize adjustment
 * overscroll
 * full responsive
