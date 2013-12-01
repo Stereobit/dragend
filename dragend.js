@@ -63,11 +63,13 @@
     // * scribe: pixel value for a possible scribe
     // * onSwipeStart: callback function before the animation
     // * onSwipeEnd: callback function after the animation
+    // * onDragStart: called on drag start
     // * onDrag: callback on drag
     // * onDragEnd: callback on dragend
     // * borderBetweenPages: if you need space between pages add a pixel value
     // * duration
     // * hammerSettings
+    // * stopPropagation
     // * afterInitialize called after the pages are size
 
     var
@@ -83,10 +85,12 @@
         minDragDistance    : "40",
         onSwipeStart       : noop,
         onSwipeEnd         : noop,
+        onDragStart        : noop,
         onDrag             : noop,
         onDragEnd          : noop,
         afterInitialize    : noop,
         keyboardNavigation : false,
+        stopPropagation    : false,
         itemsInPage        : 1,
         scribe             : 0,
         borderBetweenPages : 0,
@@ -219,6 +223,8 @@
         this.pageCssProperties = {
           margin: 0
         };
+
+        console.log(this.settings)
 
         this.pageContainer.innerHTML = container.cloneNode(true).innerHTML;
         container.innerHTML = "";
@@ -431,6 +437,8 @@
 
         event = event.originalEvent || event;
 
+        this.settings.stopPropagation && event.stopPropagation();
+
         var img = document.createElement('img'),
             dataTransfer = event.dataTransfer;
 
@@ -447,17 +455,21 @@
         this.startPageX = event.touches ? event.touches[0].pageX : event.pageX;
         this.startPageY = event.touches ? event.touches[0].pageY : event.pageY;
 
+        this.settings.onDragStart.call( this, event );
+
       },
 
       _onDrag: function( event ) {
 
         event = event.originalEvent || event;
 
+        this.settings.stopPropagation && event.stopPropagation();
+
         // check if touch event and not pinch
         if ( event.touches && event.touches.length > 1 || event.scale && event.scale !== 1) return;
 
         // filter out the last drag event
-        if (event.type === 'drag' && event.x === 0 && event.y  === 0) {
+        if (cachedEvent && event.type === 'drag' && event.x === 0 && event.y  === 0) {
           this._onDragend(cachedEvent);
           cachedEvent = null;
           return;
@@ -467,9 +479,8 @@
             parsedEvent = this._parseEvent(event);
 
         cachedEvent = event;
-
         coordinates = this._checkOverscroll( parsedEvent.direction , - parsedEvent.distanceX, - parsedEvent.distanceY );
-        this.settings.onDrag.call( this, this.activeElement, parsedEvent, coordinates.overscroll );
+        this.settings.onDrag.call( this, this.activeElement, parsedEvent, coordinates.overscroll, event );
 
         if ( !this.preventScroll ) {
           this._scroll( coordinates );
@@ -480,6 +491,8 @@
       _onDragend: function( event ) {
 
         event = event.originalEvent || event;
+
+        this.settings.stopPropagation && event.stopPropagation();
 
         var parsedEvent = this._parseEvent(event);
 
@@ -494,7 +507,7 @@
           this._scrollToPage();
         }
 
-        this.settings.onDragEnd.call( this, this.container, this.activeElement, this.page );
+        this.settings.onDragEnd.call( this, this.container, this.activeElement, this.page, event );
       },
 
       // TODO: split between touch and drg events
