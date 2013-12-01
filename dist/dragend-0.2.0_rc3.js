@@ -450,8 +450,8 @@
           dataTransfer.dropEffect = "none";
         }
 
-        this.startPageX = event.touches ? event.touches[0].pageX : event.pageX;
-        this.startPageY = event.touches ? event.touches[0].pageY : event.pageY;
+        this.startPageX = event.touches ? event.touches[0].pageX : event.screenX;
+        this.startPageY = event.touches ? event.touches[0].pageY : event.screenY;
 
         this.settings.onDragStart.call( this, event );
 
