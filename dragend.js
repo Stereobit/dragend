@@ -224,8 +224,6 @@
           margin: 0
         };
 
-        console.log(this.settings)
-
         this.pageContainer.innerHTML = container.cloneNode(true).innerHTML;
         container.innerHTML = "";
         container.appendChild( this.pageContainer );
