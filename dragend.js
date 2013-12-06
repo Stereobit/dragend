@@ -143,6 +143,8 @@
 
         }
 
+        return element;
+
       },
 
       extend = function( destination, source ) {
@@ -210,6 +212,11 @@
             return false;
          };
       })(),
+
+      fakeDiv = setStyles(document.body.appendChild(document.createElement('div')), {
+        width : "1",
+        height: "1"
+      }),
 
       Dragend = function( container, settings ) {
         var defaultSettingsCopy = extend( {}, defaultSettings );
@@ -437,14 +444,10 @@
 
         this.settings.stopPropagation && event.stopPropagation();
 
-        var img = document.createElement('img'),
-            dataTransfer = event.dataTransfer;
+        var dataTransfer = event.dataTransfer;
 
         if (dataTransfer) {
-          // create fake transparent image to prevent drag preview
-          img.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
-
-          dataTransfer.setDragImage && dataTransfer.setDragImage(img, 0 , 0);
+          dataTransfer.setDragImage && dataTransfer.setDragImage(fakeDiv, 0 , 0);
           dataTransfer.setData && dataTransfer.setData('text/html', null);
           dataTransfer.effectAllowed = "none";
           dataTransfer.dropEffect = "none";
