@@ -40,5 +40,9 @@ describe('instantiation', function() {
       expect(jQueryDragend.data('dragend')).to.be.an(Dragend);
     });
 
+    it('check if content gets copied into new container', function() {
+      expect(inheritedDragend.container.childNodes[0].className).not.to.equal('dragend-page');
+    });
+
   });
 });

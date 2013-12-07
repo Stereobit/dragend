@@ -244,7 +244,7 @@
             this.updateInstance( settings );
             this._observe();
             this.settings.afterInitialize.call(this);
-        }, this), 1000 );
+        }, this), 10 );
 
       },
 
