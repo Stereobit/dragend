@@ -17,7 +17,7 @@ describe('instantiation', function() {
   describe('settings', function() {
     var inheritedDragend,
         updateInstanceDragend,
-        jQueryDragend
+        jQueryDragend;
 
     before(function(done){
 
@@ -62,15 +62,33 @@ describe('instantiation', function() {
   });
 
   describe('create pages and sizing', function() {
-    var instance;
+    var instance,
+        scribeInstance,
+        itemsInPageInstance;
 
     before(function(done) {
       instance = new Dragend(createDom());
+      scribeInstance = new Dragend(createDom(), {
+        scribe: "10px"
+      });
+      itemsInPageInstance = new Dragend(createDom(), {
+        itemsInPage: 2
+      });
       window.setTimeout(done, 20);
     });
 
+    after(clearDom);
+
     it('check if pages size got set right', function() {
       expect(instance.container.childNodes[0].childNodes[0].offsetWidth).to.eql(instance.container.offsetWidth);
+    });
+
+    it('scribe option', function() {
+      expect(scribeInstance.container.childNodes[0].childNodes[0].offsetWidth).to.eql(90);
+    });
+
+    it('itemsInPage option', function() {
+      expect(itemsInPageInstance.container.childNodes[0].childNodes[0].offsetWidth).to.eql(50);
     });
 
     it('check if pages are found', function() {
@@ -78,4 +96,90 @@ describe('instantiation', function() {
     });
 
   });
+
+  describe('jumpToPage', function() {
+    var instance;
+
+    before(function(done) {
+      instance = new Dragend(createDom(), {
+        jumpToPage: 2
+      });
+      window.setTimeout(done, 20);
+    });
+
+    after(clearDom);
+
+    it('scrollBorder is 100', function() {
+      expect(instance.scrollBorder.x).to.eql(100);
+    });
+
+    it('page number is right', function() {
+      expect(instance.page).to.eql(2);
+    });
+
+  });
+
+  describe('scrollToPage', function() {
+    describe('scrollToPage on init', function() {
+      var instance;
+
+      before(function(done) {
+        instance = new Dragend(createDom(), {
+          scrollToPage: 2
+        });
+        window.setTimeout(done, 20);
+      });
+
+      after(clearDom);
+
+      it('scrollBorder is still zero', function() {
+        expect(instance.scrollBorder.x).to.eql(0);
+      });
+
+      it('page number is still one', function() {
+        expect(instance.page).to.eql(1);
+      });
+
+    });
+
+    describe('scrollToPage after scroll', function() {
+      var instance;
+
+      before(function(done) {
+        instance = new Dragend(createDom(), {
+          scrollToPage: 2
+        });
+        window.setTimeout(done, 320);
+      });
+
+      after(clearDom);
+
+      it('scrollBorder is 100', function() {
+        expect(instance.scrollBorder.x).to.eql(100);
+      });
+
+      it('page number is right', function() {
+        expect(instance.page).to.eql(1);
+      });
+
+    });
+
+  });
+
+});
+
+describe('private methodes', function() {
+
+  describe('overscroll calculation', function() {
+    var instanceOverScrollLeft,
+        instanceOverScrollRight;
+
+    before(function(done) {
+      window.setTimeout(done, 20);
+    });
+
+    after(clearDom);
+
+  });
+
 });
