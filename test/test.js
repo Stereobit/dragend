@@ -93,6 +93,7 @@ describe('instantiation', function() {
 
     it('check if pages are found', function() {
       expect(instance.pages.length).to.be(3);
+      expect(instance.pagesCount).to.be(3);
     });
 
   });
@@ -165,6 +166,30 @@ describe('instantiation', function() {
     });
 
   });
+
+});
+
+describe('swipe', function() {
+
+    describe('swipe right', function() {
+      var instance;
+
+      before(function(done) {
+        instance = new Dragend(createDom());
+        instance.swipe("left");
+        window.setTimeout(done, 320);
+
+        console.log(instance)
+      });
+
+      after(clearDom);
+
+      it('scrollBorder is 100', function() {
+        console.log(instance.scrollBorder.x)
+        expect(instance.scrollBorder.x).to.eql(100);
+      });
+
+    });
 
 });
 
