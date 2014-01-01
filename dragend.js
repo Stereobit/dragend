@@ -78,6 +78,8 @@
 
       cachedEvent,
 
+      fakeDiv,
+
       // Default setting
       defaultSettings = {
         pageClass          : "dragend-page",
@@ -213,11 +215,6 @@
          };
       })(),
 
-      fakeDiv = setStyles(document.body.appendChild(document.createElement('div')), {
-        width : "1",
-        height: "1"
-      }),
-
       Dragend = function( container, settings ) {
         var defaultSettingsCopy = extend( {}, defaultSettings );
 
@@ -245,6 +242,11 @@
             this._observe();
             this.settings.afterInitialize.call(this);
         }, this), 10 );
+
+        fakeDiv = fakeDiv ? fakeDiv : setStyles(document.body.appendChild(document.createElement('div')), {
+          width : "1",
+          height: "1"
+        });
 
       },
 
