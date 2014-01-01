@@ -444,9 +444,9 @@
 
       _onDragStart: function(event) {
 
-        var dataTransfer = event.dataTransfer;
-
         event = event.originalEvent || event;
+
+        var dataTransfer = event.dataTransfer;
 
         this.settings.stopPropagation && event.stopPropagation();
 
@@ -484,6 +484,8 @@
           return;
         }
 
+        cachedEvent = event;
+
         this._onTouchMove( event );
 
       },
@@ -497,7 +499,6 @@
         var parsedEvent = isTouch ? this._parseTouchEvent(event) : this._parseDragEvent(event),
             coordinates = this._checkOverscroll( parsedEvent.direction , - parsedEvent.distanceX, - parsedEvent.distanceY );
 
-        cachedEvent = event;
         this.settings.onDrag.call( this, this.activeElement, parsedEvent, coordinates.overscroll, event );
 
         if ( !this.preventScroll ) {
