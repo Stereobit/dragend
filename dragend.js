@@ -269,6 +269,7 @@
           "-o-transform": style,
           "transform": style
         });
+
       },
 
       // ### Animated scroll with translate support
@@ -290,11 +291,18 @@
           y: - this.scrollBorder.y
         });
 
-       setTimeout( proxy(afterScrollTransform, this), this.settings.duration );
+        addEventListener(this.container, "webkitTransitionEnd", proxy(afterScrollTransform, this));
+        addEventListener(this.container, "oTransitionEnd", proxy(afterScrollTransform, this));
+        addEventListener(this.container, "transitionEnd", proxy(afterScrollTransform, this));
+
       },
 
       afterScrollTransform = function() {
         this._onSwipeEnd();
+
+        removeEventListener(this.container, "webkitTransitionEnd", proxy(afterScrollTransform, this));
+        removeEventListener(this.container, "oTransitionEnd", proxy(afterScrollTransform, this));
+        removeEventListener(this.container, "transitionEnd", proxy(afterScrollTransform, this));
 
         setStyles( this.pageContainer, {
           "-webkit-transition": "",
@@ -303,6 +311,8 @@
           "-o-transition": "",
           "transition": ""
         });
+
+
       },
 
       // ### Scroll fallback
@@ -332,6 +342,14 @@
           $(container).on(event, callback);
         } else {
           container.addEventListener(event, callback, false);
+        }
+      },
+
+      removeEventListener = function(container, event, callback) {
+        if ($) {
+          $(container).off(event, callback);
+        } else {
+          container.removeEventListener(event, callback, false);
         }
       };
 
@@ -371,7 +389,7 @@
 
           case "right":
             if ( !this.scrollBorder.x ) {
-              Math.round( coordinates.x = (x - this.scrollBorder.x) / 5 );
+              coordinates.x = Math.round((x - this.scrollBorder.x) / 5 );
               return coordinates;
             }
             break;
@@ -496,6 +514,10 @@
 
         event = event.originalEvent || event;
 
+        // ensure swiping with one touch and not pinching
+        if ( event.touches && event.touches.length > 1 || event.scale && event.scale !== 1) return;
+
+        event.preventDefault();
         this.settings.stopPropagation && event.stopPropagation();
 
         var parsedEvent = isTouch ? this._parseTouchEvent(event) : this._parseDragEvent(event),
@@ -677,6 +699,7 @@
       // Takes direction and, if specific page is used the pagenumber
 
       _calcNewPage: function( direction, pageNumber ) {
+
         switch ( direction ) {
           case "up":
             if ( this.page < this.pagesCount - 1 ) {
