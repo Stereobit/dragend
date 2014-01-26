@@ -239,7 +239,7 @@
         setStyles(container, containerStyles);
 
         // Give the DOM some time to update ...
-        window.setTimeout( proxy(function() {
+        setTimeout( proxy(function() {
             this.updateInstance( settings );
             this._observe();
             this.settings.afterInitialize.call(this);
@@ -290,7 +290,7 @@
           y: - this.scrollBorder.y
         });
 
-        window.setTimeout( proxy(afterScrollTransform, this), this.settings.duration );
+       setTimeout( proxy(afterScrollTransform, this), this.settings.duration );
       },
 
       afterScrollTransform = function() {
