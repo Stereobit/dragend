@@ -74,8 +74,6 @@
 
     var
 
-      noop = function() {},
-
       cachedEvent,
 
       fakeDiv,
@@ -123,79 +121,6 @@
         padding : 0
       },
 
-      setStyles = function( element, styles ) {
-
-        var property,
-            value;
-
-        for ( property in styles ) {
-
-          if ( styles.hasOwnProperty(property) ) {
-            value = styles[property];
-
-            switch ( property ) {
-              case "height":
-              case "width":
-              case "marginLeft":
-              case "marginTop":
-                value += "px";
-            }
-
-            element.style[property] = value;
-
-          }
-
-        }
-
-        return element;
-
-      },
-
-      extend = function( destination, source ) {
-
-        var property;
-
-        for ( property in source ) {
-          destination[property] = source[property];
-        }
-
-        return destination;
-
-      },
-
-      proxy = function( fn, context ) {
-
-        return function() {
-          return fn.apply( context, Array.prototype.slice.call(arguments) );
-        };
-
-      },
-
-      getElementsByClassName = function( className, root ) {
-        var elements;
-
-        if ( $ ) {
-          elements = $(root).find("." + className);
-        } else {
-          elements = Array.prototype.slice.call(root.getElementsByClassName( className ));
-        }
-
-        return elements;
-      },
-
-      animate = function( element, propery, to, speed, callback ) {
-        var propertyObj = {};
-
-        propertyObj[propery] = to;
-
-        if ($) {
-          $(element).animate(propertyObj, speed, callback);
-        } else {
-          setStyles(element, propertyObj);
-        }
-
-      },
-
       supports = (function() {
          var div = document.createElement('div'),
              vendors = 'Khtml Ms O Moz Webkit'.split(' '),
@@ -215,143 +140,218 @@
             }
             return false;
          };
-      })(),
+      })();
 
-      Dragend = function( container, settings ) {
-        var defaultSettingsCopy = extend( {}, defaultSettings );
+    function noop() {}
 
-        this.settings      = extend( defaultSettingsCopy, settings );
-        this.container     = container;
-        this.pageContainer = document.createElement( "div" );
-        this.scrollBorder  = { x: 0, y: 0 };
-        this.page          = 0;
-        this.preventScroll = false;
-        this.pageCssProperties = {
-          margin: 0
-        };
+    function setStyles( element, styles ) {
 
-        this.pageContainer.innerHTML = container.cloneNode(true).innerHTML;
-        container.innerHTML = "";
-        container.appendChild( this.pageContainer );
+      var property,
+          value;
 
-        // Initialisation
+      for ( property in styles ) {
 
-        setStyles(container, containerStyles);
+        if ( styles.hasOwnProperty(property) ) {
+          value = styles[property];
 
-        // Give the DOM some time to update ...
-        setTimeout( proxy(function() {
-            this.updateInstance( settings );
-            this._observe();
-            this.settings.afterInitialize.call(this);
-        }, this), 10 );
+          switch ( property ) {
+            case "height":
+            case "width":
+            case "marginLeft":
+            case "marginTop":
+              value += "px";
+          }
 
-        fakeDiv = fakeDiv ? fakeDiv : setStyles(document.body.appendChild(document.createElement('div')), {
-          width : "1",
-          height: "1"
-        });
+          element.style[property] = value;
 
-      },
-
-      // ### Scroll translate
-      //
-      // Animation when translate is supported
-      //
-      // Takes:
-      // x and y values to go with
-
-      _scrollTransform = function( coordinates ) {
-        var style = this.settings.direction === "horizontal" ? "translateX(" + coordinates.x + "px)" : "translateY(" + coordinates.y + "px)";
-
-        setStyles( this.pageContainer, {
-          "-webkit-transform": style,
-          "-moz-transform": style,
-          "-ms-transform": style,
-          "-o-transform": style,
-          "transform": style
-        });
-
-      },
-
-      // ### Animated scroll with translate support
-
-      _animateScrollTransform = function() {
-
-        var style = "transform " + this.settings.duration + "ms ease-out";
-
-        setStyles( this.pageContainer, {
-          "-webkit-transition": "-webkit-" + style,
-          "-moz-transition": "-moz-" + style,
-          "-ms-transition": "-ms-" + style,
-          "-o-transition": "-o-" + style,
-          "transition": style
-        });
-
-        this._scroll({
-          x: - this.scrollBorder.x,
-          y: - this.scrollBorder.y
-        });
-
-        addEventListener(this.container, "webkitTransitionEnd", proxy(afterScrollTransform, this));
-        addEventListener(this.container, "oTransitionEnd", proxy(afterScrollTransform, this));
-        addEventListener(this.container, "transitionEnd", proxy(afterScrollTransform, this));
-
-      },
-
-      afterScrollTransform = function() {
-        this._onSwipeEnd();
-
-        removeEventListener(this.container, "webkitTransitionEnd", proxy(afterScrollTransform, this));
-        removeEventListener(this.container, "oTransitionEnd", proxy(afterScrollTransform, this));
-        removeEventListener(this.container, "transitionEnd", proxy(afterScrollTransform, this));
-
-        setStyles( this.pageContainer, {
-          "-webkit-transition": "",
-          "-moz-transition": "",
-          "-ms-transition": "",
-          "-o-transition": "",
-          "transition": ""
-        });
-
-
-      },
-
-      // ### Scroll fallback
-      //
-      // Animation lookup table  when translate isn't supported
-      //
-      // Takes:
-      // x and y values to go with
-
-      _scrollWithoutTransform = function( coordinates ) {
-        var styles = this.settings.direction === "horizontal" ? { "marginLeft": coordinates.x } : { "marginTop": coordinates.y };
-
-        setStyles(this.pageContainer, styles);
-      },
-
-      // ### Animated scroll without translate support
-
-      _animateScrollWithoutTransform = function() {
-        var property = this.settings.direction === "horizontal" ? "marginLeft" : "marginTop",
-            value = this.settings.direction === "horizontal" ? - this.scrollBorder.x : - this.scrollBorder.y;
-
-        animate( this.pageContainer, property, value, this.settings.duration, proxy( this._onSwipeEnd, this ));
-      },
-
-      addEventListener = function(container, event, callback) {
-        if ($) {
-          $(container).on(event, callback);
-        } else {
-          container.addEventListener(event, callback, false);
         }
-      },
 
-      removeEventListener = function(container, event, callback) {
-        if ($) {
-          $(container).off(event, callback);
-        } else {
-          container.removeEventListener(event, callback, false);
-        }
+      }
+
+      return element;
+
+    }
+
+    function extend( destination, source ) {
+
+      var property;
+
+      for ( property in source ) {
+        destination[property] = source[property];
+      }
+
+      return destination;
+
+    }
+
+    function proxy( fn, context ) {
+
+      return function() {
+        return fn.apply( context, Array.prototype.slice.call(arguments) );
       };
+
+    }
+
+    function getElementsByClassName( className, root ) {
+      var elements;
+
+      if ( $ ) {
+        elements = $(root).find("." + className);
+      } else {
+        elements = Array.prototype.slice.call(root.getElementsByClassName( className ));
+      }
+
+      return elements;
+    }
+
+    function animate( element, propery, to, speed, callback ) {
+      var propertyObj = {};
+
+      propertyObj[propery] = to;
+
+      if ($) {
+        $(element).animate(propertyObj, speed, callback);
+      } else {
+        setStyles(element, propertyObj);
+      }
+
+    }
+
+    function Dragend( container, settings ) {
+      var defaultSettingsCopy = extend( {}, defaultSettings );
+
+      this.settings      = extend( defaultSettingsCopy, settings );
+      this.container     = container;
+      this.pageContainer = document.createElement( "div" );
+      this.scrollBorder  = { x: 0, y: 0 };
+      this.page          = 0;
+      this.preventScroll = false;
+      this.pageCssProperties = {
+        margin: 0
+      };
+
+      this.pageContainer.innerHTML = container.cloneNode(true).innerHTML;
+      container.innerHTML = "";
+      container.appendChild( this.pageContainer );
+
+      // Initialisation
+
+      setStyles(container, containerStyles);
+
+      // Give the DOM some time to update ...
+      setTimeout( proxy(function() {
+          this.updateInstance( settings );
+          this._observe();
+          this.settings.afterInitialize.call(this);
+      }, this), 10 );
+
+      fakeDiv = fakeDiv ? fakeDiv : setStyles(document.body.appendChild(document.createElement('div')), {
+        width : "1",
+        height: "1"
+      });
+
+    }
+
+    // ### Scroll translate
+    //
+    // Animation when translate is supported
+    //
+    // Takes:
+    // x and y values to go with
+
+    function _scrollTransform( coordinates ) {
+      var style = this.settings.direction === "horizontal" ? "translateX(" + coordinates.x + "px)" : "translateY(" + coordinates.y + "px)";
+
+      setStyles( this.pageContainer, {
+        "-webkit-transform": style,
+        "-moz-transform": style,
+        "-ms-transform": style,
+        "-o-transform": style,
+        "transform": style
+      });
+
+    }
+
+    // ### Animated scroll with translate support
+
+    function _animateScrollTransform() {
+
+      var style = "transform " + this.settings.duration + "ms ease-out";
+
+      setStyles( this.pageContainer, {
+        "-webkit-transition": "-webkit-" + style,
+        "-moz-transition": "-moz-" + style,
+        "-ms-transition": "-ms-" + style,
+        "-o-transition": "-o-" + style,
+        "transition": style
+      });
+
+      this._scroll({
+        x: - this.scrollBorder.x,
+        y: - this.scrollBorder.y
+      });
+
+      addEventListener(this.container, "webkitTransitionEnd", proxy(afterScrollTransform, this));
+      addEventListener(this.container, "oTransitionEnd", proxy(afterScrollTransform, this));
+      addEventListener(this.container, "transitionEnd", proxy(afterScrollTransform, this));
+
+    }
+
+    function afterScrollTransform() {
+      this._onSwipeEnd();
+
+      removeEventListener(this.container, "webkitTransitionEnd", proxy(afterScrollTransform, this));
+      removeEventListener(this.container, "oTransitionEnd", proxy(afterScrollTransform, this));
+      removeEventListener(this.container, "transitionEnd", proxy(afterScrollTransform, this));
+
+      setStyles( this.pageContainer, {
+        "-webkit-transition": "",
+        "-moz-transition": "",
+        "-ms-transition": "",
+        "-o-transition": "",
+        "transition": ""
+      });
+
+
+    }
+
+    // ### Scroll fallback
+    //
+    // Animation lookup table  when translate isn't supported
+    //
+    // Takes:
+    // x and y values to go with
+
+    function _scrollWithoutTransform( coordinates ) {
+      var styles = this.settings.direction === "horizontal" ? { "marginLeft": coordinates.x } : { "marginTop": coordinates.y };
+
+      setStyles(this.pageContainer, styles);
+    },
+
+    // ### Animated scroll without translate support
+
+    function _animateScrollWithoutTransform() {
+      var property = this.settings.direction === "horizontal" ? "marginLeft" : "marginTop",
+          value = this.settings.direction === "horizontal" ? - this.scrollBorder.x : - this.scrollBorder.y;
+
+      animate( this.pageContainer, property, value, this.settings.duration, proxy( this._onSwipeEnd, this ));
+    }
+
+    function addEventListener(container, event, callback) {
+      if ($) {
+        $(container).on(event, callback);
+      } else {
+        container.addEventListener(event, callback, false);
+      }
+    }
+
+    function removeEventListener(container, event, callback) {
+      if ($) {
+        $(container).off(event, callback);
+      } else {
+        container.removeEventListener(event, callback, false);
+      }
+    }
 
     // ### Check translate support
     ( function() {
@@ -700,31 +700,36 @@
 
       _calcNewPage: function( direction, pageNumber ) {
 
+        var borderBetweenPages = this.settings.borderBetweenPages,
+            height = this.pageDimentions.height,
+            width = this.pageDimentions.width,
+            page = this.page;
+
         switch ( direction ) {
           case "up":
-            if ( this.page < this.pagesCount - 1 ) {
-              this.scrollBorder.y = this.scrollBorder.y + this.pageDimentions.height + this.settings.borderBetweenPages;
+            if ( page < this.pagesCount - 1 ) {
+              this.scrollBorder.y = scrollBorderY + height + borderBetweenPages;
               this.page++;
             }
             break;
 
           case "down":
-            if ( this.page > 0 ) {
-              this.scrollBorder.y = this.scrollBorder.y - this.pageDimentions.height - this.settings.borderBetweenPages;
+            if ( page > 0 ) {
+              this.scrollBorder.y = this.scrollBorder.y - height - borderBetweenPages;
               this.page--;
             }
             break;
 
           case "left":
-            if ( this.page < this.pagesCount - 1 ) {
-              this.scrollBorder.x = this.scrollBorder.x + this.pageDimentions.width + this.settings.borderBetweenPages;
+            if ( page < this.pagesCount - 1 ) {
+              this.scrollBorder.x = this.scrollBorder.x + width + borderBetweenPages;
               this.page++;
             }
             break;
 
           case "right":
-            if ( this.page > 0 ) {
-              this.scrollBorder.x = this.scrollBorder.x - this.pageDimentions.width - this.settings.borderBetweenPages;
+            if ( page > 0 ) {
+              this.scrollBorder.x = this.scrollBorder.x - width - borderBetweenPages;
               this.page--;
             }
             break;
@@ -732,14 +737,14 @@
           case "page":
             switch ( this.settings.direction ) {
               case "horizontal":
-                this.scrollBorder.x = (this.pageDimentions.width + this.settings.borderBetweenPages) * pageNumber;
+                this.scrollBorder.x = (width + borderBetweenPages) * pageNumber;
                 break;
 
               case "vertical":
-                this.scrollBorder.y = (this.pageDimentions.height + this.settings.borderBetweenPages) * pageNumber;
+                this.scrollBorder.y = (height + borderBetweenPages) * pageNumber;
                 break;
             }
-            this.page = pageNumber;
+            page = pageNumber;
             break;
 
           default:
