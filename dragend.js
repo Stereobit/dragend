@@ -76,6 +76,8 @@
 
       cachedEvent,
 
+      cachedAfterScrollTransformProxy,
+
       fakeDiv,
 
       // Default setting
@@ -278,6 +280,8 @@
 
       var style = "transform " + this.settings.duration + "ms ease-out";
 
+      cachedAfterScrollTransformProxy = proxy(afterScrollTransform, this);
+
       setStyles( this.pageContainer, {
         "-webkit-transition": "-webkit-" + style,
         "-moz-transition": "-moz-" + style,
@@ -291,18 +295,18 @@
         y: - this.scrollBorder.y
       });
 
-      addEventListener(this.container, "webkitTransitionEnd", proxy(afterScrollTransform, this));
-      addEventListener(this.container, "oTransitionEnd", proxy(afterScrollTransform, this));
-      addEventListener(this.container, "transitionEnd", proxy(afterScrollTransform, this));
+      addEventListener(this.container, "webkitTransitionEnd", cachedAfterScrollTransformProxy);
+      addEventListener(this.container, "oTransitionEnd", cachedAfterScrollTransformProxy);
+      addEventListener(this.container, "transitionEnd", cachedAfterScrollTransformProxy);
 
     }
 
     function afterScrollTransform() {
       this._onSwipeEnd();
 
-      removeEventListener(this.container, "webkitTransitionEnd", proxy(afterScrollTransform, this));
-      removeEventListener(this.container, "oTransitionEnd", proxy(afterScrollTransform, this));
-      removeEventListener(this.container, "transitionEnd", proxy(afterScrollTransform, this));
+      removeEventListener(this.container, "webkitTransitionEnd", cachedAfterScrollTransformProxy);
+      removeEventListener(this.container, "oTransitionEnd", cachedAfterScrollTransformProxy);
+      removeEventListener(this.container, "transitionEnd", cachedAfterScrollTransformProxy);
 
       setStyles( this.pageContainer, {
         "-webkit-transition": "",
@@ -326,7 +330,7 @@
       var styles = this.settings.direction === "horizontal" ? { "marginLeft": coordinates.x } : { "marginTop": coordinates.y };
 
       setStyles(this.pageContainer, styles);
-    },
+    }
 
     // ### Animated scroll without translate support
 
