@@ -71,12 +71,16 @@
     // * hammerSettings
     // * stopPropagation
     // * afterInitialize called after the pages are size
+    // * preventDrag if want to prevent user interactions and only swipe manualy
 
     var
 
-      noop = function() {},
-
       cachedEvent,
+
+      afterScrollTransformProxy,
+      documentDragOverProxy,
+      documentkeydownProxy,
+      windowResizeProxy,
 
       fakeDiv,
 
@@ -97,6 +101,7 @@
         scribe             : 0,
         borderBetweenPages : 0,
         duration           : 300,
+        preventDrag        : false,
         hammerSettings     : {
           drag_min_distance: 0,
           css_hacks        : false,
@@ -104,7 +109,7 @@
         }
       },
 
-      isTouch = 'ontouchstart' in document.documentElement,
+      isTouch = 'ontouchstart' in window,
 
       keycodes = {
         37: "left",
@@ -121,79 +126,6 @@
       containerStyles = {
         overflow: "hidden",
         padding : 0
-      },
-
-      setStyles = function( element, styles ) {
-
-        var property,
-            value;
-
-        for ( property in styles ) {
-
-          if ( styles.hasOwnProperty(property) ) {
-            value = styles[property];
-
-            switch ( property ) {
-              case "height":
-              case "width":
-              case "marginLeft":
-              case "marginTop":
-                value += "px";
-            }
-
-            element.style[property] = value;
-
-          }
-
-        }
-
-        return element;
-
-      },
-
-      extend = function( destination, source ) {
-
-        var property;
-
-        for ( property in source ) {
-          destination[property] = source[property];
-        }
-
-        return destination;
-
-      },
-
-      proxy = function( fn, context ) {
-
-        return function() {
-          return fn.apply( context, Array.prototype.slice.call(arguments) );
-        };
-
-      },
-
-      getElementsByClassName = function( className, root ) {
-        var elements;
-
-        if ( $ ) {
-          elements = $(root).find("." + className);
-        } else {
-          elements = Array.prototype.slice.call(root.getElementsByClassName( className ));
-        }
-
-        return elements;
-      },
-
-      animate = function( element, propery, to, speed, callback ) {
-        var propertyObj = {};
-
-        propertyObj[propery] = to;
-
-        if ($) {
-          $(element).animate(propertyObj, speed, callback);
-        } else {
-          setStyles(element, propertyObj);
-        }
-
       },
 
       supports = (function() {
@@ -217,151 +149,228 @@
          };
       })(),
 
-      Dragend = function( container, settings ) {
-        var defaultSettingsCopy = extend( {}, defaultSettings );
+      scrollWithTransForm = {
+        // ### Scroll translate
+        //
+        // Animation when translate is supported
+        //
+        // Takes:
+        // x and y values to go with
 
-        this.settings      = extend( defaultSettingsCopy, settings );
-        this.container     = container;
-        this.pageContainer = document.createElement( "div" );
-        this.scrollBorder  = { x: 0, y: 0 };
-        this.page          = 0;
-        this.preventScroll = false;
-        this.pageCssProperties = {
-          margin: 0
-        };
+        _scroll: function ( coordinates ) {
+          var style = this.settings.direction === "horizontal" ? "translateX(" + coordinates.x + "px)" : "translateY(" + coordinates.y + "px)";
 
-        this.pageContainer.innerHTML = container.cloneNode(true).innerHTML;
-        container.innerHTML = "";
-        container.appendChild( this.pageContainer );
+          setStyles( this.pageContainer, {
+            "-webkit-transform": style,
+            "-moz-transform": style,
+            "-ms-transform": style,
+            "-o-transform": style,
+            "transform": style
+          });
 
-        // Initialisation
+        },
 
-        setStyles(container, containerStyles);
+        // ### Animated scroll with translate support
 
-        // Give the DOM some time to update ...
-        setTimeout( proxy(function() {
-            this.updateInstance( settings );
-            this._observe();
-            this.settings.afterInitialize.call(this);
-        }, this), 10 );
+        _animateScroll: function() {
 
-        fakeDiv = fakeDiv ? fakeDiv : setStyles(document.body.appendChild(document.createElement('div')), {
-          width : "1",
-          height: "1"
-        });
+          var style = "transform " + this.settings.duration + "ms ease-out";
 
-      },
+          afterScrollTransformProxy = proxy(this.afterScrollTransform, this);
 
-      // ### Scroll translate
-      //
-      // Animation when translate is supported
-      //
-      // Takes:
-      // x and y values to go with
+          setStyles( this.pageContainer, {
+            "-webkit-transition": "-webkit-" + style,
+            "-moz-transition": "-moz-" + style,
+            "-ms-transition": "-ms-" + style,
+            "-o-transition": "-o-" + style,
+            "transition": style
+          });
 
-      _scrollTransform = function( coordinates ) {
-        var style = this.settings.direction === "horizontal" ? "translateX(" + coordinates.x + "px)" : "translateY(" + coordinates.y + "px)";
+          this._scroll({
+            x: - this.scrollBorder.x,
+            y: - this.scrollBorder.y
+          });
 
-        setStyles( this.pageContainer, {
-          "-webkit-transform": style,
-          "-moz-transform": style,
-          "-ms-transform": style,
-          "-o-transform": style,
-          "transform": style
-        });
+          addEventListener(this.container, "webkitTransitionEnd", afterScrollTransformProxy);
+          addEventListener(this.container, "oTransitionEnd", afterScrollTransformProxy);
+          addEventListener(this.container, "transitionEnd", afterScrollTransformProxy);
 
-      },
+        },
 
-      // ### Animated scroll with translate support
+        afterScrollTransform: function() {
+          this._onSwipeEnd();
 
-      _animateScrollTransform = function() {
+          removeEventListener(this.container, "webkitTransitionEnd", afterScrollTransformProxy);
+          removeEventListener(this.container, "oTransitionEnd", afterScrollTransformProxy);
+          removeEventListener(this.container, "transitionEnd", afterScrollTransformProxy);
 
-        var style = "transform " + this.settings.duration + "ms ease-out";
+          setStyles( this.pageContainer, {
+            "-webkit-transition": "",
+            "-moz-transition": "",
+            "-ms-transition": "",
+            "-o-transition": "",
+            "transition": ""
+          });
 
-        setStyles( this.pageContainer, {
-          "-webkit-transition": "-webkit-" + style,
-          "-moz-transition": "-moz-" + style,
-          "-ms-transition": "-ms-" + style,
-          "-o-transition": "-o-" + style,
-          "transition": style
-        });
-
-        this._scroll({
-          x: - this.scrollBorder.x,
-          y: - this.scrollBorder.y
-        });
-
-        addEventListener(this.container, "webkitTransitionEnd", proxy(afterScrollTransform, this));
-        addEventListener(this.container, "oTransitionEnd", proxy(afterScrollTransform, this));
-        addEventListener(this.container, "transitionEnd", proxy(afterScrollTransform, this));
-
-      },
-
-      afterScrollTransform = function() {
-        this._onSwipeEnd();
-
-        removeEventListener(this.container, "webkitTransitionEnd", proxy(afterScrollTransform, this));
-        removeEventListener(this.container, "oTransitionEnd", proxy(afterScrollTransform, this));
-        removeEventListener(this.container, "transitionEnd", proxy(afterScrollTransform, this));
-
-        setStyles( this.pageContainer, {
-          "-webkit-transition": "",
-          "-moz-transition": "",
-          "-ms-transition": "",
-          "-o-transition": "",
-          "transition": ""
-        });
-
-
-      },
-
-      // ### Scroll fallback
-      //
-      // Animation lookup table  when translate isn't supported
-      //
-      // Takes:
-      // x and y values to go with
-
-      _scrollWithoutTransform = function( coordinates ) {
-        var styles = this.settings.direction === "horizontal" ? { "marginLeft": coordinates.x } : { "marginTop": coordinates.y };
-
-        setStyles(this.pageContainer, styles);
-      },
-
-      // ### Animated scroll without translate support
-
-      _animateScrollWithoutTransform = function() {
-        var property = this.settings.direction === "horizontal" ? "marginLeft" : "marginTop",
-            value = this.settings.direction === "horizontal" ? - this.scrollBorder.x : - this.scrollBorder.y;
-
-        animate( this.pageContainer, property, value, this.settings.duration, proxy( this._onSwipeEnd, this ));
-      },
-
-      addEventListener = function(container, event, callback) {
-        if ($) {
-          $(container).on(event, callback);
-        } else {
-          container.addEventListener(event, callback, false);
         }
       },
 
-      removeEventListener = function(container, event, callback) {
-        if ($) {
-          $(container).off(event, callback);
-        } else {
-          container.removeEventListener(event, callback, false);
+      scrollWithoutTransForm = {
+        // ### Scroll fallback
+        //
+        // Animation lookup table  when translate isn't supported
+        //
+        // Takes:
+        // x and y values to go with
+
+        _scroll: function( coordinates ) {
+          var styles = this.settings.direction === "horizontal" ? { "marginLeft": coordinates.x } : { "marginTop": coordinates.y };
+
+          setStyles(this.pageContainer, styles);
+        },
+
+        // ### Animated scroll without translate support
+
+        _animateScroll: function() {
+          var property = this.settings.direction === "horizontal" ? "marginLeft" : "marginTop",
+              value = this.settings.direction === "horizontal" ? - this.scrollBorder.x : - this.scrollBorder.y;
+
+          animate( this.pageContainer, property, value, this.settings.duration, proxy( this._onSwipeEnd, this ));
         }
       };
+
+    function noop() {}
+
+    function setStyles( element, styles ) {
+
+      var property,
+          value;
+
+      for ( property in styles ) {
+
+        if ( styles.hasOwnProperty(property) ) {
+          value = styles[property];
+
+          switch ( property ) {
+            case "height":
+            case "width":
+            case "marginLeft":
+            case "marginTop":
+              value += "px";
+          }
+
+          element.style[property] = value;
+
+        }
+
+      }
+
+      return element;
+
+    }
+
+    function extend( destination, source ) {
+
+      var property;
+
+      for ( property in source ) {
+        destination[property] = source[property];
+      }
+
+      return destination;
+
+    }
+
+    function proxy( fn, context ) {
+
+      return function() {
+        return fn.apply( context, Array.prototype.slice.call(arguments) );
+      };
+
+    }
+
+    function getElementsByClassName( className, root ) {
+      var elements;
+
+      if ( $ ) {
+        elements = $(root).find("." + className);
+      } else {
+        elements = Array.prototype.slice.call(root.getElementsByClassName( className ));
+      }
+
+      return elements;
+    }
+
+    function animate( element, propery, to, speed, callback ) {
+      var propertyObj = {};
+
+      propertyObj[propery] = to;
+
+      if ($) {
+        $(element).animate(propertyObj, speed, callback);
+      } else {
+        setStyles(element, propertyObj);
+      }
+
+    }
+
+    function Dragend( container, settings ) {
+      var defaultSettingsCopy = extend( {}, defaultSettings );
+
+      this.settings      = extend( defaultSettingsCopy, settings );
+      this.container     = container;
+      this.pageContainer = document.createElement( "div" );
+      this.scrollBorder  = { x: 0, y: 0 };
+      this.page          = 0;
+      this.preventScroll = false;
+      this.pageCssProperties = {
+        margin: 0
+      };
+
+      this.pageContainer.innerHTML = container.cloneNode(true).innerHTML;
+      container.innerHTML = "";
+      container.appendChild( this.pageContainer );
+
+      // Initialisation
+
+      setStyles(container, containerStyles);
+
+      // Give the DOM some time to update ...
+      setTimeout( proxy(function() {
+          this.updateInstance( settings );
+          !this.settings.preventDrag && this._observe();
+          this.settings.afterInitialize.call(this);
+      }, this), 10 );
+
+      fakeDiv = fakeDiv ? fakeDiv : setStyles(document.body.appendChild(document.createElement('div')), {
+        width : "1",
+        height: "1"
+      });
+
+    }
+
+    function addEventListener(container, event, callback) {
+      if ($) {
+        $(container).on(event, callback);
+      } else {
+        container.addEventListener(event, callback, false);
+      }
+    }
+
+    function removeEventListener(container, event, callback) {
+      if ($) {
+        $(container).off(event, callback);
+      } else {
+        container.removeEventListener(event, callback, false);
+      }
+    }
 
     // ### Check translate support
     ( function() {
 
       var support = supports('transform');
 
-      extend( Dragend.prototype, {
-        "_scroll": support ? _scrollTransform : _scrollWithoutTransform,
-        "_animateScroll": support ? _animateScrollTransform : _animateScrollWithoutTransform
-      });
+      extend( Dragend.prototype, support ? scrollWithTransForm : scrollWithoutTransForm );
 
     })();
 
@@ -429,6 +438,10 @@
 
       _observe: function() {
 
+        documentDragOverProxy = proxy( this._onDrag, this );
+        documentkeydownProxy = proxy( this._onKeydown, this );
+        windowResizeProxy = proxy( this._sizePages, this );
+
         if (!Hammer) {
           if (isTouch) {
             addEventListener(this.container, "touchstart", proxy( this._onTouchStart, this ));
@@ -438,7 +451,7 @@
             this.container.draggable = true;
             addEventListener(this.container, "dragstart", proxy( this._onDragStart, this ));
             if (typeof InstallTrigger !== 'undefined') {
-              addEventListener(document, "dragover", proxy( this._onDrag, this ));
+              addEventListener(document, "dragover", documentDragOverProxy);
             } else {
               addEventListener(this.container, "drag", proxy( this._onDrag, this ));
             }
@@ -446,17 +459,17 @@
             addEventListener(this.container, "dragend", proxy( this._onDragEnd, this ));
           }
         } else {
-          var hammer = new Hammer(this.container, this.settings.hammerSettings);
+          this.hammer = new Hammer(this.container, this.settings.hammerSettings);
 
           hammer.on("drag", proxy( this._onDrag, this ))
                 .on( "dragend", proxy( this._onDragEnd, this ));
         }
 
         if ( this.settings.keyboardNavigation ) {
-          addEventListener(document.body, "keydown", proxy( this._onKeydown, this ));
+          addEventListener(document.body, "keydown", documentkeydownProxy);
         }
 
-        addEventListener(window, "resize", proxy( this._sizePages, this ));
+        addEventListener(window, "resize", windowResizeProxy);
 
       },
 
@@ -597,7 +610,7 @@
         }
       },
 
-      setHorizontalContainerCssValues: function() {
+      _setHorizontalContainerCssValues: function() {
         extend( this.pageCssProperties, {
           "cssFloat" : "left",
           "overflowY": "auto",
@@ -617,7 +630,7 @@
         });
       },
 
-      setVerticalContainerCssValues: function() {
+      _setVerticalContainerCssValues: function() {
         extend( this.pageCssProperties, {
           "overflow": "hidden",
           "padding" : 0,
@@ -635,9 +648,9 @@
 
       setContainerCssValues: function(){
         if ( this.settings.direction === "horizontal") {
-            this.setHorizontalContainerCssValues();
+            this._setHorizontalContainerCssValues();
         } else {
-            this.setVerticalContainerCssValues();
+            this._setVerticalContainerCssValues();
         }
       },
 
@@ -700,31 +713,36 @@
 
       _calcNewPage: function( direction, pageNumber ) {
 
+        var borderBetweenPages = this.settings.borderBetweenPages,
+            height = this.pageDimentions.height,
+            width = this.pageDimentions.width,
+            page = this.page;
+
         switch ( direction ) {
           case "up":
-            if ( this.page < this.pagesCount - 1 ) {
-              this.scrollBorder.y = this.scrollBorder.y + this.pageDimentions.height + this.settings.borderBetweenPages;
+            if ( page < this.pagesCount - 1 ) {
+              this.scrollBorder.y = scrollBorderY + height + borderBetweenPages;
               this.page++;
             }
             break;
 
           case "down":
-            if ( this.page > 0 ) {
-              this.scrollBorder.y = this.scrollBorder.y - this.pageDimentions.height - this.settings.borderBetweenPages;
+            if ( page > 0 ) {
+              this.scrollBorder.y = this.scrollBorder.y - height - borderBetweenPages;
               this.page--;
             }
             break;
 
           case "left":
-            if ( this.page < this.pagesCount - 1 ) {
-              this.scrollBorder.x = this.scrollBorder.x + this.pageDimentions.width + this.settings.borderBetweenPages;
+            if ( page < this.pagesCount - 1 ) {
+              this.scrollBorder.x = this.scrollBorder.x + width + borderBetweenPages;
               this.page++;
             }
             break;
 
           case "right":
-            if ( this.page > 0 ) {
-              this.scrollBorder.x = this.scrollBorder.x - this.pageDimentions.width - this.settings.borderBetweenPages;
+            if ( page > 0 ) {
+              this.scrollBorder.x = this.scrollBorder.x - width - borderBetweenPages;
               this.page--;
             }
             break;
@@ -732,14 +750,14 @@
           case "page":
             switch ( this.settings.direction ) {
               case "horizontal":
-                this.scrollBorder.x = (this.pageDimentions.width + this.settings.borderBetweenPages) * pageNumber;
+                this.scrollBorder.x = (width + borderBetweenPages) * pageNumber;
                 break;
 
               case "vertical":
-                this.scrollBorder.y = (this.pageDimentions.height + this.settings.borderBetweenPages) * pageNumber;
+                this.scrollBorder.y = (height + borderBetweenPages) * pageNumber;
                 break;
             }
-            this.page = pageNumber;
+            page = pageNumber;
             break;
 
           default:
@@ -834,6 +852,34 @@
           this.scrollToPage( this.settings.scrollToPage );
           delete this.settings.scrollToPage;
         }
+
+      },
+
+      destroy: function() {
+
+        var container = this.container;
+
+        this.hammer && this.hammer.off("drag").off( "dragend");
+        removeEventListener(container, "touchstart");
+        removeEventListener(container, "touchmove");
+        removeEventListener(container, "touchend");
+        removeEventListener(container, "dragstart");
+        removeEventListener(container, "drag");
+        removeEventListener(container, "dragend");
+
+        removeEventListener(document, "dragover", documentDragOverProxy);
+
+        removeEventListener(document.body, "keydown", documentkeydownProxy);
+
+        removeEventListener(window, "resize", windowResizeProxy);
+
+        container.removeAttribute("style");
+
+        for (var i = 0; i < this.pages.length; i++) {
+          this.pages[i].removeAttribute("style");
+        }
+
+        container.innerHTML = this.pageContainer.innerHTML;
 
       },
 
