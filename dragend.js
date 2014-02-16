@@ -142,7 +142,97 @@
             }
             return false;
          };
-      })();
+      })(),
+
+      scrollWithTransForm = {
+        // ### Scroll translate
+        //
+        // Animation when translate is supported
+        //
+        // Takes:
+        // x and y values to go with
+
+        _scroll: function ( coordinates ) {
+          var style = this.settings.direction === "horizontal" ? "translateX(" + coordinates.x + "px)" : "translateY(" + coordinates.y + "px)";
+
+          setStyles( this.pageContainer, {
+            "-webkit-transform": style,
+            "-moz-transform": style,
+            "-ms-transform": style,
+            "-o-transform": style,
+            "transform": style
+          });
+
+        },
+
+        // ### Animated scroll with translate support
+
+        _animateScroll: function() {
+
+          var style = "transform " + this.settings.duration + "ms ease-out";
+
+          cachedAfterScrollTransformProxy = proxy(this.afterScrollTransform, this);
+
+          setStyles( this.pageContainer, {
+            "-webkit-transition": "-webkit-" + style,
+            "-moz-transition": "-moz-" + style,
+            "-ms-transition": "-ms-" + style,
+            "-o-transition": "-o-" + style,
+            "transition": style
+          });
+
+          this._scroll({
+            x: - this.scrollBorder.x,
+            y: - this.scrollBorder.y
+          });
+
+          addEventListener(this.container, "webkitTransitionEnd", cachedAfterScrollTransformProxy);
+          addEventListener(this.container, "oTransitionEnd", cachedAfterScrollTransformProxy);
+          addEventListener(this.container, "transitionEnd", cachedAfterScrollTransformProxy);
+
+        },
+
+        afterScrollTransform: function() {
+          this._onSwipeEnd();
+
+          removeEventListener(this.container, "webkitTransitionEnd", cachedAfterScrollTransformProxy);
+          removeEventListener(this.container, "oTransitionEnd", cachedAfterScrollTransformProxy);
+          removeEventListener(this.container, "transitionEnd", cachedAfterScrollTransformProxy);
+
+          setStyles( this.pageContainer, {
+            "-webkit-transition": "",
+            "-moz-transition": "",
+            "-ms-transition": "",
+            "-o-transition": "",
+            "transition": ""
+          });
+
+        }
+      },
+
+      scrollWithoutTransForm = {
+        // ### Scroll fallback
+        //
+        // Animation lookup table  when translate isn't supported
+        //
+        // Takes:
+        // x and y values to go with
+
+        _scroll: function( coordinates ) {
+          var styles = this.settings.direction === "horizontal" ? { "marginLeft": coordinates.x } : { "marginTop": coordinates.y };
+
+          setStyles(this.pageContainer, styles);
+        },
+
+        // ### Animated scroll without translate support
+
+        _animateScroll: function() {
+          var property = this.settings.direction === "horizontal" ? "marginLeft" : "marginTop",
+              value = this.settings.direction === "horizontal" ? - this.scrollBorder.x : - this.scrollBorder.y;
+
+          animate( this.pageContainer, property, value, this.settings.duration, proxy( this._onSwipeEnd, this ));
+        }
+      };
 
     function noop() {}
 
@@ -254,93 +344,6 @@
 
     }
 
-    // ### Scroll translate
-    //
-    // Animation when translate is supported
-    //
-    // Takes:
-    // x and y values to go with
-
-    function _scrollTransform( coordinates ) {
-      var style = this.settings.direction === "horizontal" ? "translateX(" + coordinates.x + "px)" : "translateY(" + coordinates.y + "px)";
-
-      setStyles( this.pageContainer, {
-        "-webkit-transform": style,
-        "-moz-transform": style,
-        "-ms-transform": style,
-        "-o-transform": style,
-        "transform": style
-      });
-
-    }
-
-    // ### Animated scroll with translate support
-
-    function _animateScrollTransform() {
-
-      var style = "transform " + this.settings.duration + "ms ease-out";
-
-      cachedAfterScrollTransformProxy = proxy(afterScrollTransform, this);
-
-      setStyles( this.pageContainer, {
-        "-webkit-transition": "-webkit-" + style,
-        "-moz-transition": "-moz-" + style,
-        "-ms-transition": "-ms-" + style,
-        "-o-transition": "-o-" + style,
-        "transition": style
-      });
-
-      this._scroll({
-        x: - this.scrollBorder.x,
-        y: - this.scrollBorder.y
-      });
-
-      addEventListener(this.container, "webkitTransitionEnd", cachedAfterScrollTransformProxy);
-      addEventListener(this.container, "oTransitionEnd", cachedAfterScrollTransformProxy);
-      addEventListener(this.container, "transitionEnd", cachedAfterScrollTransformProxy);
-
-    }
-
-    function afterScrollTransform() {
-      this._onSwipeEnd();
-
-      removeEventListener(this.container, "webkitTransitionEnd", cachedAfterScrollTransformProxy);
-      removeEventListener(this.container, "oTransitionEnd", cachedAfterScrollTransformProxy);
-      removeEventListener(this.container, "transitionEnd", cachedAfterScrollTransformProxy);
-
-      setStyles( this.pageContainer, {
-        "-webkit-transition": "",
-        "-moz-transition": "",
-        "-ms-transition": "",
-        "-o-transition": "",
-        "transition": ""
-      });
-
-
-    }
-
-    // ### Scroll fallback
-    //
-    // Animation lookup table  when translate isn't supported
-    //
-    // Takes:
-    // x and y values to go with
-
-    function _scrollWithoutTransform( coordinates ) {
-      var styles = this.settings.direction === "horizontal" ? { "marginLeft": coordinates.x } : { "marginTop": coordinates.y };
-
-      setStyles(this.pageContainer, styles);
-    }
-
-    // ### Animated scroll without translate support
-
-    function _animateScrollWithoutTransform() {
-      var property = this.settings.direction === "horizontal" ? "marginLeft" : "marginTop",
-          value = this.settings.direction === "horizontal" ? - this.scrollBorder.x : - this.scrollBorder.y;
-
-      animate( this.pageContainer, property, value, this.settings.duration, proxy( this._onSwipeEnd, this ));
-    }
-
     function addEventListener(container, event, callback) {
       if ($) {
         $(container).on(event, callback);
@@ -362,10 +365,7 @@
 
       var support = supports('transform');
 
-      extend( Dragend.prototype, {
-        "_scroll": support ? _scrollTransform : _scrollWithoutTransform,
-        "_animateScroll": support ? _animateScrollTransform : _animateScrollWithoutTransform
-      });
+      extend( Dragend.prototype, support ? scrollWithTransForm : scrollWithoutTransForm );
 
     })();
 
