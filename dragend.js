@@ -601,7 +601,7 @@
         }
       },
 
-      setHorizontalContainerCssValues: function() {
+      _setHorizontalContainerCssValues: function() {
         extend( this.pageCssProperties, {
           "cssFloat" : "left",
           "overflowY": "auto",
@@ -621,7 +621,7 @@
         });
       },
 
-      setVerticalContainerCssValues: function() {
+      _setVerticalContainerCssValues: function() {
         extend( this.pageCssProperties, {
           "overflow": "hidden",
           "padding" : 0,
@@ -639,9 +639,9 @@
 
       setContainerCssValues: function(){
         if ( this.settings.direction === "horizontal") {
-            this.setHorizontalContainerCssValues();
+            this._setHorizontalContainerCssValues();
         } else {
-            this.setVerticalContainerCssValues();
+            this._setVerticalContainerCssValues();
         }
       },
 
