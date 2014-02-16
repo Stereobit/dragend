@@ -107,7 +107,7 @@
         }
       },
 
-      isTouch = 'ontouchstart' in document.documentElement,
+      isTouch = 'ontouchstart' in window,
 
       keycodes = {
         37: "left",
@@ -855,13 +855,15 @@
 
       destroy: function() {
 
+        var container = this.container;
+
         this.hammer && this.hammer.off("drag").off( "dragend");
-        removeEventListener(this.container, "touchstart");
-        removeEventListener(this.container, "touchmove");
-        removeEventListener(this.container, "touchend");
-        removeEventListener(this.container, "dragstart");
-        removeEventListener(this.container, "drag");
-        removeEventListener(this.container, "dragend");
+        removeEventListener(container, "touchstart");
+        removeEventListener(container, "touchmove");
+        removeEventListener(container, "touchend");
+        removeEventListener(container, "dragstart");
+        removeEventListener(container, "drag");
+        removeEventListener(container, "dragend");
 
         removeEventListener(document, "dragover", documentDragOverProxy);
 
@@ -869,13 +871,13 @@
 
         removeEventListener(window, "resize", windowResizeProxy);
 
-        this.container.removeAttribute("style");
+        container.removeAttribute("style");
 
         for (var i = 0; i < this.pages.length; i++) {
           this.pages[i].removeAttribute("style");
         }
 
-        this.container.innerHTML = this.pageContainer.innerHTML;
+        container.innerHTML = this.pageContainer.innerHTML;
 
       },
 
