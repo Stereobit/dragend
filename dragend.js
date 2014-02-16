@@ -76,7 +76,10 @@
 
       cachedEvent,
 
-      cachedAfterScrollTransformProxy,
+      afterScrollTransformProxy,
+      documentDragOverProxy,
+      documentkeydownProxy,
+      windowResizeProxy,
 
       fakeDiv,
 
@@ -171,7 +174,7 @@
 
           var style = "transform " + this.settings.duration + "ms ease-out";
 
-          cachedAfterScrollTransformProxy = proxy(this.afterScrollTransform, this);
+          afterScrollTransformProxy = proxy(this.afterScrollTransform, this);
 
           setStyles( this.pageContainer, {
             "-webkit-transition": "-webkit-" + style,
@@ -186,18 +189,18 @@
             y: - this.scrollBorder.y
           });
 
-          addEventListener(this.container, "webkitTransitionEnd", cachedAfterScrollTransformProxy);
-          addEventListener(this.container, "oTransitionEnd", cachedAfterScrollTransformProxy);
-          addEventListener(this.container, "transitionEnd", cachedAfterScrollTransformProxy);
+          addEventListener(this.container, "webkitTransitionEnd", afterScrollTransformProxy);
+          addEventListener(this.container, "oTransitionEnd", afterScrollTransformProxy);
+          addEventListener(this.container, "transitionEnd", afterScrollTransformProxy);
 
         },
 
         afterScrollTransform: function() {
           this._onSwipeEnd();
 
-          removeEventListener(this.container, "webkitTransitionEnd", cachedAfterScrollTransformProxy);
-          removeEventListener(this.container, "oTransitionEnd", cachedAfterScrollTransformProxy);
-          removeEventListener(this.container, "transitionEnd", cachedAfterScrollTransformProxy);
+          removeEventListener(this.container, "webkitTransitionEnd", afterScrollTransformProxy);
+          removeEventListener(this.container, "oTransitionEnd", afterScrollTransformProxy);
+          removeEventListener(this.container, "transitionEnd", afterScrollTransformProxy);
 
           setStyles( this.pageContainer, {
             "-webkit-transition": "",
@@ -433,6 +436,10 @@
 
       _observe: function() {
 
+        documentDragOverProxy = proxy( this._onDrag, this );
+        documentkeydownProxy = proxy( this._onKeydown, this );
+        windowResizeProxy = proxy( this._sizePages, this );
+
         if (!Hammer) {
           if (isTouch) {
             addEventListener(this.container, "touchstart", proxy( this._onTouchStart, this ));
@@ -442,7 +449,7 @@
             this.container.draggable = true;
             addEventListener(this.container, "dragstart", proxy( this._onDragStart, this ));
             if (typeof InstallTrigger !== 'undefined') {
-              addEventListener(document, "dragover", proxy( this._onDrag, this ));
+              addEventListener(document, "dragover", documentDragOverProxy);
             } else {
               addEventListener(this.container, "drag", proxy( this._onDrag, this ));
             }
@@ -450,17 +457,17 @@
             addEventListener(this.container, "dragend", proxy( this._onDragEnd, this ));
           }
         } else {
-          var hammer = new Hammer(this.container, this.settings.hammerSettings);
+          this.hammer = new Hammer(this.container, this.settings.hammerSettings);
 
           hammer.on("drag", proxy( this._onDrag, this ))
                 .on( "dragend", proxy( this._onDragEnd, this ));
         }
 
         if ( this.settings.keyboardNavigation ) {
-          addEventListener(document.body, "keydown", proxy( this._onKeydown, this ));
+          addEventListener(document.body, "keydown", documentkeydownProxy);
         }
 
-        addEventListener(window, "resize", proxy( this._sizePages, this ));
+        addEventListener(window, "resize", windowResizeProxy);
 
       },
 
@@ -843,6 +850,33 @@
           this.scrollToPage( this.settings.scrollToPage );
           delete this.settings.scrollToPage;
         }
+
+      },
+
+      destroy: function() {
+
+        this.hammer && this.hammer.off("drag").off( "dragend");
+        removeEventListener(this.container, "touchstart");
+        removeEventListener(this.container, "touchmove");
+        removeEventListener(this.container, "touchend");
+        removeEventListener(this.container, "dragstart");
+        removeEventListener(this.container, "drag");
+        removeEventListener(this.container, "dragend");
+
+        removeEventListener(document, "dragover", documentDragOverProxy);
+
+        removeEventListener(document.body, "keydown", documentkeydownProxy);
+
+        removeEventListener(window, "resize", windowResizeProxy);
+
+        this.container.removeAttribute("style");
+
+        for (var i = 0; i < this.pages.length; i++) {
+          console.log(this.pages[i])
+          this.pages[i].removeAttribute("style");
+        }
+
+        this.container.innerHTML = this.pageContainer.innerHTML;
 
       },
 
