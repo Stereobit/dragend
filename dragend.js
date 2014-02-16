@@ -100,6 +100,7 @@
         scribe             : 0,
         borderBetweenPages : 0,
         duration           : 300,
+        preventDrag        : false,
         hammerSettings     : {
           drag_min_distance: 0,
           css_hacks        : false,
@@ -336,7 +337,7 @@
       // Give the DOM some time to update ...
       setTimeout( proxy(function() {
           this.updateInstance( settings );
-          this._observe();
+          !this.settings.preventDrag && this._observe();
           this.settings.afterInitialize.call(this);
       }, this), 10 );
 
