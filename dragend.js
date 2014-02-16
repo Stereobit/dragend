@@ -872,7 +872,6 @@
         this.container.removeAttribute("style");
 
         for (var i = 0; i < this.pages.length; i++) {
-          console.log(this.pages[i])
           this.pages[i].removeAttribute("style");
         }
 
