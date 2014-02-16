@@ -79,6 +79,15 @@ $("#container").dragend("left");
 
 to swipe left or right.
 
+## destroy
+
+Call the destroy method to unbind the events and reset the styles
+
+```javascript]
+var instance =  new Dragend();
+instance.destroy();
+```
+
 # Options
   * pageClass: classname selector for all elments that should provide a page
   * direction: "horizontal" or "vertical"
@@ -92,6 +101,7 @@ to swipe left or right.
   * borderBetweenPages: if you need space between pages add a pixel value
   * duration
   * hammerSettings
+  * preventDrag: if want to prevent user interactions and only swipe manualy
 
 # CHANGELOG
 

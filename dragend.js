@@ -71,6 +71,7 @@
     // * hammerSettings
     // * stopPropagation
     // * afterInitialize called after the pages are size
+    // * preventDrag if want to prevent user interactions and only swipe manualy
 
     var
 
