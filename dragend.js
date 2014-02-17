@@ -721,7 +721,7 @@
         switch ( direction ) {
           case "up":
             if ( page < this.pagesCount - 1 ) {
-              this.scrollBorder.y = scrollBorderY + height + borderBetweenPages;
+              this.scrollBorder.y = this.scrollBorder.y + height + borderBetweenPages;
               this.page++;
             }
             break;
