@@ -757,7 +757,7 @@
                 this.scrollBorder.y = (height + borderBetweenPages) * pageNumber;
                 break;
             }
-            page = pageNumber;
+            this.page = pageNumber;
             break;
 
           default:
