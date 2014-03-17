@@ -927,9 +927,9 @@
   }
 
   if ( typeof define == 'function' && typeof define.amd == 'object' && define.amd ) {
-      define( ["jquery", "hammer"], function( jquery, hammer ) {
-        return init( jquery, hammer );
-      } );
+      define(function() {
+        return init( window.jQuery || window.Zepto, window.Hammer );
+      });
   } else {
       window.Dragend = init( window.jQuery || window.Zepto, window.Hammer );
   }
