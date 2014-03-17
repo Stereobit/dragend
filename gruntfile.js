@@ -2,9 +2,12 @@ module.exports = function (grunt) {
 
     var istanbul = require('istanbul');
 
-    grunt.loadNpmTasks('grunt-mocha');
+    // grunt plugins
+    require('load-grunt-tasks')(grunt);
 
     grunt.initConfig({
+
+        // paths
 
         mocha: {
             test: {
@@ -54,6 +57,35 @@ module.exports = function (grunt) {
             report: {
                 reports: ['html', 'text-summary'],
                 dest: 'test/reports'
+            }
+        },
+
+        clean: {
+            dist: ['dist'],
+            tests: [
+                'test/src',
+                'test/reports',
+                'test/index.html'
+            ]
+        },
+
+        jshint: {
+            src: [
+                'dragend.js'
+            ],
+            tests: [
+                'test/spec'
+            ],
+            grunt: [
+                'gruntfile.js'
+            ]
+        },
+
+        uglify: {
+            main: {
+                files: {
+                    'dist/dragend.min.js': ['dist/dragend.js']
+                }
             }
         }
 
@@ -129,6 +161,17 @@ module.exports = function (grunt) {
         // write template to tests directory and run tests
         grunt.file.write(options.runner, template);
         grunt.task.run('coverage:instrument', 'mocha', 'coverage:report');
+    });
+
+    grunt.registerTask('build', 'build release versions', function () {
+        grunt.task.run([
+            'clean',
+            'jshint:grunt',
+            'jshint:src',
+            'requirejs:compile',
+            'jshint:tests',
+            'test'
+        ]);
     });
 
 };

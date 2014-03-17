@@ -338,7 +338,9 @@
       // Give the DOM some time to update ...
       setTimeout( proxy(function() {
           this.updateInstance( settings );
-          !this.settings.preventDrag && this._observe();
+          if (!this.settings.preventDrag) {
+            this._observe();
+          }
           this.settings.afterInitialize.call(this);
       }, this), 10 );
 
@@ -479,10 +481,16 @@
 
         var dataTransfer = event.dataTransfer;
 
-        this.settings.stopPropagation && event.stopPropagation();
+        if (this.settings.stopPropagation) {
+          event.stopPropagation();
+        }
 
-        dataTransfer.setDragImage && dataTransfer.setDragImage(fakeDiv, 0 , 0);
-        dataTransfer.setData && dataTransfer.setData('text/html', null);
+        if (dataTransfer.setDragImage) {
+          dataTransfer.setDragImage(fakeDiv, 0 , 0);
+        }
+        if (dataTransfer.setData) {
+          dataTransfer.setData('text/html', null);
+        }
         dataTransfer.effectAllowed = "none";
         dataTransfer.dropEffect = "none";
 
@@ -497,7 +505,9 @@
 
         event = event.originalEvent || event;
 
-        this.settings.stopPropagation && event.stopPropagation();
+        if (this.settings.stopPropagation) {
+          event.stopPropagation();
+        }
 
         this.startPageX = event.touches[0].pageX;
         this.startPageY = event.touches[0].pageY;
@@ -531,7 +541,9 @@
         if ( event.touches && event.touches.length > 1 || event.scale && event.scale !== 1) return;
 
         event.preventDefault();
-        this.settings.stopPropagation && event.stopPropagation();
+        if (this.settings.stopPropagation) {
+          event.stopPropagation();
+        }
 
         var parsedEvent = isTouch ? this._parseTouchEvent(event) : this._parseDragEvent(event),
             coordinates = this._checkOverscroll( parsedEvent.direction , - parsedEvent.distanceX, - parsedEvent.distanceY );
@@ -554,7 +566,9 @@
       _onTouchEnd: function( event ) {
         event = event.originalEvent || event;
 
-        this.settings.stopPropagation && event.stopPropagation();
+        if (this.settings.stopPropagation) {
+          event.stopPropagation();
+        }
 
         var parsedEvent = isTouch ? this._parseTouchEvent(event) : this._parseDragEvent(event);
 
@@ -859,7 +873,9 @@
 
         var container = this.container;
 
-        this.hammer && this.hammer.off("drag").off( "dragend");
+        if (this.hammer) {
+          this.hammer.off("drag").off( "dragend");
+        }
         removeEventListener(container, "touchstart");
         removeEventListener(container, "touchmove");
         removeEventListener(container, "touchend");
