@@ -1,4 +1,4 @@
-define(['dragend-0.2.0_rc3'], function () {
+define(['dragend'], function () {
 
   // var domCache = [];
 

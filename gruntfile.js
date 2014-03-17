@@ -7,7 +7,7 @@ module.exports = function (grunt) {
 
     grunt.initConfig({
 
-        // paths
+        pkg: grunt.file.readJSON("package.json"),
 
         mocha: {
             test: {
@@ -87,6 +87,18 @@ module.exports = function (grunt) {
                     'dist/dragend.min.js': ['dist/dragend.js']
                 }
             }
+        },
+
+        copy:    {
+          index:  {
+            options: {
+              processContent: function (content, srcpath) {
+                return grunt.template.process(content);
+              }
+            },
+            src:  'dragend.js',
+            dest: 'dist/dragend.js'
+          }
         }
 
     });
@@ -168,7 +180,8 @@ module.exports = function (grunt) {
             'clean',
             'jshint:grunt',
             'jshint:src',
-            'requirejs:compile',
+            'copy',
+            'uglify',
             'jshint:tests',
             'test'
         ]);

@@ -1,7 +1,7 @@
 /*!
  * ---------------------------- DRAGEND JS -------------------------------------
  *
- * Version: 0.2.0_rc3
+ * Version: <%= pkg.version %>
  * https://github.com/Stereobit/dragend
  * Copyright (c) 2012 Tobias Otte, t@stereob.it
  *
@@ -37,7 +37,7 @@
     // of touch gestures. It also can, but don't has to, used as a jQuery
     // (https://github.com/jquery/jquery/) plugin.
     //
-    // The current version is 0.2.0_rc3
+    // The current version is <%= pkg.version %>
     //
     // Usage
     // =====================
