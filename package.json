@@ -49,7 +49,8 @@
     "load-grunt-tasks": "~0.3.0",
     "grunt-contrib-jshint": "~0.9.x",
     "grunt-contrib-uglify": "~0.4.x",
-    "grunt-contrib-copy": "~0.5.x"
+    "grunt-contrib-copy": "~0.5.x",
+    "jquery": "1.11.x"
   },
   "scripts": {
     "test": "grunt test"

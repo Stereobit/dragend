@@ -45,7 +45,7 @@ module.exports = function (grunt) {
                 // files to instrument
                 files: [
                     {
-                        src: '**/*.js',
+                        src: 'dragend.js',
                         expand: true,
                         cwd: 'dist',
                         dest: 'test/src'
