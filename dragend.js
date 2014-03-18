@@ -932,7 +932,7 @@
 
           });
 
-          // jQuery functions should always return the intance
+          // jQuery functions should always return the instance
           return this;
         };
 
