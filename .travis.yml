@@ -5,10 +5,7 @@ env:
   global:
     - SAUCE_USERNAME: stereobit
     - SAUCE_ACCESS_KEY: c17048ea-eb72-41c9-9894-1c53922055b8
-before_script:
+install:
   - npm install -g grunt-cli
   - npm install
-install:
-  - git clone --recursive https://github.com/Stereobit/dragend.git
-  - cd dragend
 script: grunt build
