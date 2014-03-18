@@ -9,4 +9,4 @@ install:
   - git clone --recursive https://github.com/Stereobit/dragend.git
   - cd dragend
   - npm install
-script: node node_modules/intern/runner.js config=tests/internt
+script: grunt test
