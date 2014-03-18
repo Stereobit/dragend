@@ -76,7 +76,6 @@ define(['dragend'], function(Dragend) {
       });
 
       it.skip('should scale the width of every page reduced by the scribe distance', function() {
-        console.log(instance.container.childNodes[0].childNodes[0])
         expect(instance.container.childNodes[0].childNodes[0].offsetWidth).to.eql(90);
       });
 
