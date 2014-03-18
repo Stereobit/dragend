@@ -1,7 +1,5 @@
 define(['dragend'], function(Dragend) {
 
-  console.log(Dragend);
-
   var domCache = [];
 
   function createDom() {
