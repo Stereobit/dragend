@@ -9,7 +9,7 @@ define(['dragend'], function(Dragend) {
 
   describe('create instance', function() {
 
-    it('check if settings are inherited', function() {
+    it('should inherited settings', function() {
       var instance = new Dragend(createDom(), {
         duration: 14,
         onDrag: function() {}
@@ -19,32 +19,21 @@ define(['dragend'], function(Dragend) {
       expect(instance.settings.onDrag).to.be.a('function');
     });
 
-    it('check if jQuery creates instance', function() {
+    it('should create instance using the jQuery object', function() {
       var instance = $(createDom()).dragend();
 
       expect(instance.data('dragend')).to.be.an(Dragend);
       expect(instance).to.be.an(jQuery);
     });
 
-    it('check if content gets copied into new container', function() {
-      var instance = new Dragend(createDom());
-
-      expect(instance.container.childNodes[0].className).not.to.equal('dragend-page');
+    it('should copy the content into new container', function() {
+      expect(new Dragend(createDom()).container.childNodes[0].className).not.to.equal('dragend-page');
     });
 
-
-    it('check if pages size got set right', function() {
+    it('should set the pages size to the same size as the container', function() {
       var instance = new Dragend(createDom());
 
       expect(instance.container.childNodes[0].childNodes[0].offsetWidth).to.eql(instance.container.offsetWidth);
-    });
-
-    it.skip('scribe option', function() {
-      var instance = new Dragend(createDom(), {
-        scribe: "10px"
-      });
-
-      expect(instance.container.childNodes[0].childNodes[0].offsetWidth).to.eql(90);
     });
 
     it.skip('itemsInPage option', function() {
@@ -55,11 +44,42 @@ define(['dragend'], function(Dragend) {
       expect(instance.container.childNodes[0].childNodes[0].offsetWidth).to.eql(50);
     });
 
-    it.skip('check if pages are found', function() {
-      var instance = new Dragend(createDom());
+  });
 
-      expect(instance.pages.length).to.be(3);
-      expect(instance.pagesCount).to.be(3);
+  describe('update dom and initialize', function() {
+
+    describe('pages count', function() {
+
+      var instance;
+
+      before(function(done) {
+        instance = new Dragend(createDom(), {
+          afterInitialize: done
+        });
+      });
+
+      it('should return the count of elements with the class dragend-page', function() {
+        expect(instance.pagesCount).to.be(3);
+      });
+
+    });
+
+    describe('scribe option', function() {
+
+      var instance;
+
+      before(function(done) {
+        instance = new Dragend(createDom(), {
+          afterInitialize: done,
+          scribe: "10px"
+        });
+      });
+
+      it.skip('should scale the width of every page reduced by the scribe distance', function() {
+        console.log(instance.container.childNodes[0].childNodes[0])
+        expect(instance.container.childNodes[0].childNodes[0].offsetWidth).to.eql(90);
+      });
+
     });
 
   });
