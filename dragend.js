@@ -27,6 +27,10 @@
  ;(function( window ) {
   "use strict";
 
+  // help the minifier
+  var doc = document,
+      win = window;
+
   function init( $ ) {
 
     // Welcome To dragend JS
@@ -93,7 +97,7 @@
         preventDrag        : false
       },
 
-      isTouch = 'ontouchstart' in window,
+      isTouch = 'ontouchstart' in win,
 
       startEvent = isTouch ? 'touchstart' : 'mousedown',
       moveEvent = isTouch ? 'touchmove' : 'mousemove',
@@ -116,7 +120,7 @@
       },
 
       supports = (function() {
-         var div = document.createElement('div'),
+         var div = doc.createElement('div'),
              vendors = 'Khtml Ms O Moz Webkit'.split(' '),
              len = vendors.length;
 
@@ -219,11 +223,13 @@
      * @returns {Object}
      */
     function getCoords(event) {
-      var touches = event.touches && event.touches.length ? event.touches: event.changedTouches;
+      // touch move and touch end have different touch data
+      var touches = event.touches,
+          data = touches && touches.length ? touches : event.changedTouches;
 
       return {
-        x: isTouch ? touches[0].pageX : event.pageX,
-        y: isTouch ? touches[0].pageY : event.pageY
+        x: isTouch ? data[0].pageX : event.pageX,
+        y: isTouch ? data[0].pageY : event.pageY
       };
     }
 
@@ -352,10 +358,10 @@
         addEventListener(this.container, startEvent, this._onStart);
 
         if ( this.settings.keyboardNavigation ) {
-          addEventListener(document.body, "keydown", this._onKeydown);
+          addEventListener(doc.body, "keydown", this._onKeydown);
         }
 
-        addEventListener(window, "resize", this._sizePages);
+        addEventListener(win, "resize", this._sizePages);
 
       },
 
@@ -368,8 +374,8 @@
           event.stopPropagation();
         }
 
-        addEventListener(document.body, moveEvent, this._onMove);
-        addEventListener(document.body, endEvent, this._onEnd);
+        addEventListener(doc.body, moveEvent, this._onMove);
+        addEventListener(doc.body, endEvent, this._onEnd);
 
         this.startCoords = getCoords(event);
 
@@ -419,8 +425,8 @@
 
         this.settings.onDragEnd.call( this, this.container, this.activeElement, this.page, event );
 
-        removeEventListener(document.body, moveEvent, this._onMove);
-        removeEventListener(document.body, endEvent, this._onEnd);
+        removeEventListener(doc.body, moveEvent, this._onMove);
+        removeEventListener(doc.body, endEvent, this._onEnd);
 
       },
 
@@ -794,8 +800,8 @@
         removeEventListener(container, startEvent);
         removeEventListener(container, moveEvent);
         removeEventListener(container, endEvent);
-        removeEventListener(document.body, "keydown", this._onKeydown);
-        removeEventListener(window, "resize", this._sizePages);
+        removeEventListener(doc.body, "keydown", this._onKeydown);
+        removeEventListener(win, "resize", this._sizePages);
 
         container.removeAttribute("style");
 
@@ -852,10 +858,10 @@
 
   if ( typeof define == 'function' && typeof define.amd == 'object' && define.amd ) {
       define(function() {
-        return init( window.jQuery || window.Zepto );
+        return init( win.jQuery || win.Zepto );
       });
   } else {
-      window.Dragend = init( window.jQuery || window.Zepto );
+      win.Dragend = init( win.jQuery || win.Zepto );
   }
 
 })( window );
