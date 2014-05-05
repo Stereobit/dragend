@@ -4,7 +4,7 @@ dragend.js, Readme File:
 
 # DESCRIPTION
 
-dragend.js is a touch ready, full responsive, content swipe script. It has no dependencies but you can use [hammer.js](http://eightmedia.github.com/hammer.js/) for crossbrowser support of touch gestures. It also can, but don't has to, used as a [jQuery](https://github.com/jquery/jquery/) plugin.
+dragend.js is a touch ready, full responsive, content swipe script. It has no dependencies but it can, don't has to, used as a [jQuery](https://github.com/jquery/jquery/) plugin.
 
 The current version is 0.2.0 release candidate 3
 
