@@ -15,6 +15,10 @@
       "url": "https://github.com/stereobit/dragend/blob/master/MIT-LICENSE.txt"
     }
   ],
+  "engines": {
+    "node": "0.10.x",
+    "npm": "1.2.x"
+  },
   "author": "Tobias Otte <t@stereob.it>",
   "repository": {
     "type": "git",
@@ -31,14 +35,24 @@
     "hammerjs": "~1.0.5"
   },
   "devDependencies": {
-    "expect.js": "~0.2.0",
+    "grunt": "~0.4.4",
+    "expect.js": "~0.3.1",
     "grunt": "~0.4.1",
     "hammerjs": "~1.0.5",
-    "mocha": "~1.12.1",
-    "intern": "1.1.0"
+    "js-beautify": "~1.4.2",
+    "mocha": "~1.17.1",
+    "istanbul": "~0.2.4",
+    "sinon": "~1.8.2",
+    "grunt-mocha": "git://github.com/jonbretman/grunt-mocha",
+    "requirejs": "~2.1.11",
+    "grunt-contrib-clean": "~0.5.0",
+    "load-grunt-tasks": "~0.3.0",
+    "grunt-contrib-jshint": "~0.9.x",
+    "grunt-contrib-uglify": "~0.4.x",
+    "grunt-contrib-copy": "~0.5.x",
+    "jquery": "1.11.x"
   },
   "scripts": {
-    "test": "mocha"
-  },
-  "license": "MIT"
+    "test": "grunt test"
+  }
 }

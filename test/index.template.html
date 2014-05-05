@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Mocha</title>
+    <link rel="stylesheet" href="../node_modules/mocha/mocha.css">
+    <script src="../node_modules/jquery/dist/jquery.js"></script>
+    <script src="../node_modules/mocha/mocha.js"></script>
+    <script src="../node_modules/expect.js/index.js"></script>
+    <script src="../node_modules/sinon/pkg/sinon.js"></script>
+    <script src="../node_modules/requirejs/require.js"></script>
+</head>
+<body>
+
+<div id="mocha"></div>
+
+<script>
+
+    mocha.setup('bdd');
+
+    require.config({
+
+        baseUrl: 'src',
+
+        deps: {{ tests }},
+
+        callback: mocha.run
+
+    });
+
+</script>
+
+</body>
+</html>
