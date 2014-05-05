@@ -27,14 +27,13 @@
  ;(function( window ) {
   "use strict";
 
-  function init( $, Hammer ) {
+  function init( $ ) {
 
     // Welcome To dragend JS
     // =====================
     //
     // dragend.js is a touch ready, full responsive, content swipe script. It has no dependencies
-    // but you can use hammer.js (http://eightmedia.github.com/hammer.js/) for crossbrowser support
-    // of touch gestures. It also can, but don't has to, used as a jQuery
+    // It also can, but don't has to, used as a jQuery
     // (https://github.com/jquery/jquery/) plugin.
     //
     // The current version is <%= pkg.version %>
@@ -68,7 +67,6 @@
     // * onDragEnd: callback on dragend
     // * borderBetweenPages: if you need space between pages add a pixel value
     // * duration
-    // * hammerSettings
     // * stopPropagation
     // * afterInitialize called after the pages are size
     // * preventDrag if want to prevent user interactions and only swipe manualy
@@ -101,15 +99,14 @@
         scribe             : 0,
         borderBetweenPages : 0,
         duration           : 300,
-        preventDrag        : false,
-        hammerSettings     : {
-          drag_min_distance: 0,
-          css_hacks        : false,
-          prevent_default  : false
-        }
+        preventDrag        : false
       },
 
       isTouch = 'ontouchstart' in window,
+
+      startEvent = hasTouch ? 'touchstart' : 'mousedown',
+      moveEvent = hasTouch ? 'touchmove' : 'mousemove',
+      endEvent = hasTouch ? 'touchend' : 'mouseup',
 
       keycodes = {
         37: "left",
@@ -444,28 +441,9 @@
         documentkeydownProxy = proxy( this._onKeydown, this );
         windowResizeProxy = proxy( this._sizePages, this );
 
-        if (!Hammer) {
-          if (isTouch) {
-            addEventListener(this.container, "touchstart", proxy( this._onTouchStart, this ));
-            addEventListener(this.container, "touchmove", proxy( this._onTouchMove, this ));
-            addEventListener(this.container, "touchend", proxy( this._onTouchEnd, this ));
-          } else {
-            this.container.draggable = true;
-            addEventListener(this.container, "dragstart", proxy( this._onDragStart, this ));
-            if (typeof InstallTrigger !== 'undefined') {
-              addEventListener(document, "dragover", documentDragOverProxy);
-            } else {
-              addEventListener(this.container, "drag", proxy( this._onDrag, this ));
-            }
-
-            addEventListener(this.container, "dragend", proxy( this._onDragEnd, this ));
-          }
-        } else {
-          this.hammer = new Hammer(this.container, this.settings.hammerSettings);
-
-          hammer.on("drag", proxy( this._onDrag, this ))
-                .on( "dragend", proxy( this._onDragEnd, this ));
-        }
+        addEventListener(this.container, startEvent, proxy( this._onTouchStart, this ));
+        addEventListener(this.container, moveEvent, proxy( this._onTouchMove, this ));
+        addEventListener(this.container, endEvent, proxy( this._onTouchEnd, this ));
 
         if ( this.settings.keyboardNavigation ) {
           addEventListener(document.body, "keydown", documentkeydownProxy);
@@ -873,17 +851,9 @@
 
         var container = this.container;
 
-        if (this.hammer) {
-          this.hammer.off("drag").off( "dragend");
-        }
-        removeEventListener(container, "touchstart");
-        removeEventListener(container, "touchmove");
-        removeEventListener(container, "touchend");
-        removeEventListener(container, "dragstart");
-        removeEventListener(container, "drag");
-        removeEventListener(container, "dragend");
-
-        removeEventListener(document, "dragover", documentDragOverProxy);
+        removeEventListener(container, startEvent);
+        removeEventListener(container, moveEvent);
+        removeEventListener(container, endEvent);
 
         removeEventListener(document.body, "keydown", documentkeydownProxy);
 
@@ -944,10 +914,10 @@
 
   if ( typeof define == 'function' && typeof define.amd == 'object' && define.amd ) {
       define(function() {
-        return init( window.jQuery || window.Zepto, window.Hammer );
+        return init( window.jQuery || window.Zepto );
       });
   } else {
-      window.Dragend = init( window.jQuery || window.Zepto, window.Hammer );
+      window.Dragend = init( window.jQuery || window.Zepto );
   }
 
 })( window );
