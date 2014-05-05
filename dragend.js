@@ -3,7 +3,7 @@
  *
  * Version: <%= pkg.version %>
  * https://github.com/Stereobit/dragend
- * Copyright (c) 2012 Tobias Otte, t@stereob.it
+ * Copyright (c) 2014 Tobias Otte, t@stereob.it
  *
  * Licensed under MIT-style license:
  *
@@ -73,13 +73,6 @@
 
     var
 
-      cachedEvent,
-
-      afterScrollTransformProxy,
-      documentDragOverProxy,
-      documentkeydownProxy,
-      windowResizeProxy,
-
       // Default setting
       defaultSettings = {
         pageClass          : "dragend-page",
@@ -114,7 +107,6 @@
       },
 
       errors = {
-        handling: "Dragend JS detected some problems with the event handling. Maybe the user-drag CSS attribute on images can help",
         pages: "No pages found"
       },
 
@@ -221,6 +213,20 @@
 
     }
 
+    /**
+     * Returns an object containing the co-ordinates for the event, normalising for touch / non-touch.
+     * @param {Object} event
+     * @returns {Object}
+     */
+    function getCoords(event) {
+      var touches = event.touches && event.touches.length ? event.touches: event.changedTouches;
+
+      return {
+        x: isTouch ? touches[0].pageX : event.pageX,
+        y: isTouch ? touches[0].pageY : event.pageY
+      };
+    }
+
     function Dragend( container, settings ) {
       var defaultSettingsCopy = extend( {}, defaultSettings );
 
@@ -240,6 +246,7 @@
       this._onEnd = proxy( this._onEnd, this );
       this._onKeydown = proxy( this._onKeydown, this );
       this._sizePages = proxy( this._sizePages, this );
+      this._afterScrollTransform = proxy(this._afterScrollTransform, this);
 
       this.pageContainer.innerHTML = container.cloneNode(true).innerHTML;
       container.innerHTML = "";
@@ -361,13 +368,12 @@
           event.stopPropagation();
         }
 
-        addEventListener(this.container, moveEvent, this.onMove);
-        addEventListener(this.container, endEvent, this._onEnd);
+        addEventListener(document.body, moveEvent, this._onMove);
+        addEventListener(document.body, endEvent, this._onEnd);
 
-        // this.startPageX = event.touches[0].pageX;
-        // this.startPageY = event.touches[0].pageY;
+        this.startCoords = getCoords(event);
 
-        // this.settings.onDragStart.call( this, event );
+        this.settings.onDragStart.call( this, event );
 
       },
 
@@ -383,7 +389,7 @@
           event.stopPropagation();
         }
 
-        var parsedEvent = isTouch ? this._parseTouchEvent(event) : this._parseMouseEvent(event),
+        var parsedEvent = this._parseEvent(event),
             coordinates = this._checkOverscroll( parsedEvent.direction , - parsedEvent.distanceX, - parsedEvent.distanceY );
 
         this.settings.onDrag.call( this, this.activeElement, parsedEvent, coordinates.overscroll, event );
@@ -394,16 +400,16 @@
       },
 
       _onEnd: function( event ) {
+
         event = event.originalEvent || event;
 
         if (this.settings.stopPropagation) {
           event.stopPropagation();
         }
 
-        var parsedEvent = isTouch ? this._parseTouchEvent(event) : this._parseMouseEvent(event);
+        var parsedEvent = this._parseEvent(event);
 
-        this.startPageX = 0;
-        this.startPageY = 0;
+        this.startCoords = { x: 0, y: 0 };
 
         if ( Math.abs(parsedEvent.distanceX) > this.settings.minDragDistance || Math.abs(parsedEvent.distanceY) > this.settings.minDragDistance) {
           this.swipe( parsedEvent.direction );
@@ -412,22 +418,18 @@
         }
 
         this.settings.onDragEnd.call( this, this.container, this.activeElement, this.page, event );
+
+        removeEventListener(document.body, moveEvent, this._onMove);
+        removeEventListener(document.body, endEvent, this._onEnd);
+
       },
 
-      _parseTouchEvent: function( event ) {
-        var touches = event.touches && event.touches.length ? event.touches: event.changedTouches,
-            x = this.startPageX - touches[0].pageX,
-            y = this.startPageY - touches[0].pageY;
+      _parseEvent: function( event ) {
+        var coords = getCoords(event),
+            x = this.startCoords.x - coords.x,
+            y = this.startCoords.y - coords.y;
 
         return this._addDistanceValues( x, y );
-      },
-
-      _parseMouseEvent: function( event ) {
-        // var x = this.startPageX - touches[0].pageX,
-        //     y = this.startPageY - touches[0].pageY;
-
-        // return this._addDistanceValues( x, y );
-        return this._addDistanceValues( 0, 0 );
       },
 
       _addDistanceValues: function( x, y ) {
@@ -688,8 +690,6 @@
 
         var style = "transform " + this.settings.duration + "ms ease-out";
 
-        afterScrollTransformProxy = proxy(this.afterScrollTransform, this);
-
         setStyles( this.pageContainer, {
           "-webkit-transition": "-webkit-" + style,
           "-moz-transition": "-moz-" + style,
@@ -703,18 +703,18 @@
           y: - this.scrollBorder.y
         });
 
-        addEventListener(this.container, "webkitTransitionEnd", afterScrollTransformProxy);
-        addEventListener(this.container, "oTransitionEnd", afterScrollTransformProxy);
-        addEventListener(this.container, "transitionEnd", afterScrollTransformProxy);
+        addEventListener(this.container, "webkitTransitionEnd", this._afterScrollTransform);
+        addEventListener(this.container, "oTransitionEnd", this._afterScrollTransform);
+        addEventListener(this.container, "transitionEnd", this._afterScrollTransform);
 
       },
 
-      afterScrollTransform: function() {
+      _afterScrollTransform: function() {
         this._onSwipeEnd();
 
-        removeEventListener(this.container, "webkitTransitionEnd", afterScrollTransformProxy);
-        removeEventListener(this.container, "oTransitionEnd", afterScrollTransformProxy);
-        removeEventListener(this.container, "transitionEnd", afterScrollTransformProxy);
+        removeEventListener(this.container, "webkitTransitionEnd", this._afterScrollTransform);
+        removeEventListener(this.container, "oTransitionEnd", this._afterScrollTransform);
+        removeEventListener(this.container, "transitionEnd", this._afterScrollTransform);
 
         setStyles( this.pageContainer, {
           "-webkit-transition": "",
@@ -794,10 +794,8 @@
         removeEventListener(container, startEvent);
         removeEventListener(container, moveEvent);
         removeEventListener(container, endEvent);
-
-        removeEventListener(document.body, "keydown", documentkeydownProxy);
-
-        removeEventListener(window, "resize", windowResizeProxy);
+        removeEventListener(document.body, "keydown", this._onKeydown);
+        removeEventListener(window, "resize", this._sizePages);
 
         container.removeAttribute("style");
 

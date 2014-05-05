@@ -27,14 +27,13 @@
  ;(function( window ) {
   "use strict";
 
-  function init( $, Hammer ) {
+  function init( $ ) {
 
     // Welcome To dragend JS
     // =====================
     //
     // dragend.js is a touch ready, full responsive, content swipe script. It has no dependencies
-    // but you can use hammer.js (http://eightmedia.github.com/hammer.js/) for crossbrowser support
-    // of touch gestures. It also can, but don't has to, used as a jQuery
+    // It also can, but don't has to, used as a jQuery
     // (https://github.com/jquery/jquery/) plugin.
     //
     // The current version is 0.2.0
@@ -68,21 +67,11 @@
     // * onDragEnd: callback on dragend
     // * borderBetweenPages: if you need space between pages add a pixel value
     // * duration
-    // * hammerSettings
     // * stopPropagation
     // * afterInitialize called after the pages are size
     // * preventDrag if want to prevent user interactions and only swipe manualy
 
     var
-
-      cachedEvent,
-
-      afterScrollTransformProxy,
-      documentDragOverProxy,
-      documentkeydownProxy,
-      windowResizeProxy,
-
-      fakeDiv,
 
       // Default setting
       defaultSettings = {
@@ -101,15 +90,14 @@
         scribe             : 0,
         borderBetweenPages : 0,
         duration           : 300,
-        preventDrag        : false,
-        hammerSettings     : {
-          drag_min_distance: 0,
-          css_hacks        : false,
-          prevent_default  : false
-        }
+        preventDrag        : false
       },
 
       isTouch = 'ontouchstart' in window,
+
+      startEvent = isTouch ? 'touchstart' : 'mousedown',
+      moveEvent = isTouch ? 'touchmove' : 'mousemove',
+      endEvent = isTouch ? 'touchend' : 'mouseup',
 
       keycodes = {
         37: "left",
@@ -119,7 +107,6 @@
       },
 
       errors = {
-        handling: "Dragend JS detected some problems with the event handling. Maybe the user-drag CSS attribute on images can help",
         pages: "No pages found"
       },
 
@@ -149,95 +136,7 @@
          };
       })(),
 
-      scrollWithTransForm = {
-        // ### Scroll translate
-        //
-        // Animation when translate is supported
-        //
-        // Takes:
-        // x and y values to go with
-
-        _scroll: function ( coordinates ) {
-          var style = this.settings.direction === "horizontal" ? "translateX(" + coordinates.x + "px)" : "translateY(" + coordinates.y + "px)";
-
-          setStyles( this.pageContainer, {
-            "-webkit-transform": style,
-            "-moz-transform": style,
-            "-ms-transform": style,
-            "-o-transform": style,
-            "transform": style
-          });
-
-        },
-
-        // ### Animated scroll with translate support
-
-        _animateScroll: function() {
-
-          var style = "transform " + this.settings.duration + "ms ease-out";
-
-          afterScrollTransformProxy = proxy(this.afterScrollTransform, this);
-
-          setStyles( this.pageContainer, {
-            "-webkit-transition": "-webkit-" + style,
-            "-moz-transition": "-moz-" + style,
-            "-ms-transition": "-ms-" + style,
-            "-o-transition": "-o-" + style,
-            "transition": style
-          });
-
-          this._scroll({
-            x: - this.scrollBorder.x,
-            y: - this.scrollBorder.y
-          });
-
-          addEventListener(this.container, "webkitTransitionEnd", afterScrollTransformProxy);
-          addEventListener(this.container, "oTransitionEnd", afterScrollTransformProxy);
-          addEventListener(this.container, "transitionEnd", afterScrollTransformProxy);
-
-        },
-
-        afterScrollTransform: function() {
-          this._onSwipeEnd();
-
-          removeEventListener(this.container, "webkitTransitionEnd", afterScrollTransformProxy);
-          removeEventListener(this.container, "oTransitionEnd", afterScrollTransformProxy);
-          removeEventListener(this.container, "transitionEnd", afterScrollTransformProxy);
-
-          setStyles( this.pageContainer, {
-            "-webkit-transition": "",
-            "-moz-transition": "",
-            "-ms-transition": "",
-            "-o-transition": "",
-            "transition": ""
-          });
-
-        }
-      },
-
-      scrollWithoutTransForm = {
-        // ### Scroll fallback
-        //
-        // Animation lookup table  when translate isn't supported
-        //
-        // Takes:
-        // x and y values to go with
-
-        _scroll: function( coordinates ) {
-          var styles = this.settings.direction === "horizontal" ? { "marginLeft": coordinates.x } : { "marginTop": coordinates.y };
-
-          setStyles(this.pageContainer, styles);
-        },
-
-        // ### Animated scroll without translate support
-
-        _animateScroll: function() {
-          var property = this.settings.direction === "horizontal" ? "marginLeft" : "marginTop",
-              value = this.settings.direction === "horizontal" ? - this.scrollBorder.x : - this.scrollBorder.y;
-
-          animate( this.pageContainer, property, value, this.settings.duration, proxy( this._onSwipeEnd, this ));
-        }
-      };
+      supportTransform = supports('transform');
 
     function noop() {}
 
@@ -314,6 +213,18 @@
 
     }
 
+    /**
+     * Returns an object containing the co-ordinates for the event, normalising for touch / non-touch.
+     * @param {Object} event
+     * @returns {Object}
+     */
+    function getCoords(event) {
+      return {
+        x: hasTouch ? event.touches[0].pageX : event.pageX,
+        y: hasTouch ? event.touches[0].pageY : event.pageY
+      };
+    }
+
     function Dragend( container, settings ) {
       var defaultSettingsCopy = extend( {}, defaultSettings );
 
@@ -327,9 +238,20 @@
         margin: 0
       };
 
+      // bind events
+      this._onStart = proxy( this._onStart, this );
+      this._onMove = proxy( this._onMove, this );
+      this._onEnd = proxy( this._onEnd, this );
+      this._onKeydown = proxy( this._onKeydown, this );
+      this._sizePages = proxy( this._sizePages, this );
+      this._afterScrollTransform = proxy(this._afterScrollTransform, this);
+
       this.pageContainer.innerHTML = container.cloneNode(true).innerHTML;
       container.innerHTML = "";
       container.appendChild( this.pageContainer );
+
+      this._scroll = supportTransform ? this._scrollWithTransform : this._scrollWithoutTransform;
+      this._animateScroll = supportTransform ? this._animateScrollWithTransform : this._animateScrollWithoutTransform;
 
       // Initialisation
 
@@ -343,11 +265,6 @@
           }
           this.settings.afterInitialize.call(this);
       }, this), 10 );
-
-      fakeDiv = fakeDiv ? fakeDiv : setStyles(document.body.appendChild(document.createElement('div')), {
-        width : "1",
-        height: "1"
-      });
 
     }
 
@@ -366,16 +283,6 @@
         container.removeEventListener(event, callback, false);
       }
     }
-
-    // ### Check translate support
-    ( function() {
-
-      var support = supports('transform');
-
-      extend( Dragend.prototype, support ? scrollWithTransForm : scrollWithoutTransForm );
-
-    })();
-
 
     extend(Dragend.prototype, {
 
@@ -440,68 +347,18 @@
 
       _observe: function() {
 
-        documentDragOverProxy = proxy( this._onDrag, this );
-        documentkeydownProxy = proxy( this._onKeydown, this );
-        windowResizeProxy = proxy( this._sizePages, this );
-
-        if (!Hammer) {
-          if (isTouch) {
-            addEventListener(this.container, "touchstart", proxy( this._onTouchStart, this ));
-            addEventListener(this.container, "touchmove", proxy( this._onTouchMove, this ));
-            addEventListener(this.container, "touchend", proxy( this._onTouchEnd, this ));
-          } else {
-            this.container.draggable = true;
-            addEventListener(this.container, "dragstart", proxy( this._onDragStart, this ));
-            if (typeof InstallTrigger !== 'undefined') {
-              addEventListener(document, "dragover", documentDragOverProxy);
-            } else {
-              addEventListener(this.container, "drag", proxy( this._onDrag, this ));
-            }
-
-            addEventListener(this.container, "dragend", proxy( this._onDragEnd, this ));
-          }
-        } else {
-          this.hammer = new Hammer(this.container, this.settings.hammerSettings);
-
-          hammer.on("drag", proxy( this._onDrag, this ))
-                .on( "dragend", proxy( this._onDragEnd, this ));
-        }
+        addEventListener(this.container, startEvent, this._onStart);
 
         if ( this.settings.keyboardNavigation ) {
-          addEventListener(document.body, "keydown", documentkeydownProxy);
+          addEventListener(document.body, "keydown", this._onKeydown);
         }
 
-        addEventListener(window, "resize", windowResizeProxy);
+        addEventListener(window, "resize", this._sizePages);
 
       },
 
-      _onDragStart: function(event) {
 
-        event = event.originalEvent || event;
-
-        var dataTransfer = event.dataTransfer;
-
-        if (this.settings.stopPropagation) {
-          event.stopPropagation();
-        }
-
-        if (dataTransfer.setDragImage) {
-          dataTransfer.setDragImage(fakeDiv, 0 , 0);
-        }
-        if (dataTransfer.setData) {
-          dataTransfer.setData('text/html', null);
-        }
-        dataTransfer.effectAllowed = "none";
-        dataTransfer.dropEffect = "none";
-
-        this.startPageX = event.screenX;
-        this.startPageY = event.screenY;
-
-        this.settings.onDragStart.call( this, event );
-
-      },
-
-      _onTouchStart: function(event) {
+      _onStart: function(event) {
 
         event = event.originalEvent || event;
 
@@ -509,31 +366,17 @@
           event.stopPropagation();
         }
 
-        this.startPageX = event.touches[0].pageX;
-        this.startPageY = event.touches[0].pageY;
+        addEventListener(document.body, moveEvent, this._onMove);
+        addEventListener(document.body, endEvent, this._onEnd);
 
-        this.settings.onDragStart.call( this, event );
+        // this.startPageX = event.touches[0].pageX;
+        // this.startPageY = event.touches[0].pageY;
 
-      },
-
-      _onDrag: function( event ) {
-
-        event = event.originalEvent || event;
-
-        // filter out the last drag event
-        if (cachedEvent && event.type === 'drag' && event.x === 0 && event.y  === 0) {
-          this._onDragEnd(cachedEvent);
-          cachedEvent = null;
-          return;
-        }
-
-        cachedEvent = event;
-
-        this._onTouchMove( event );
+        // this.settings.onDragStart.call( this, event );
 
       },
 
-      _onTouchMove: function( event ) {
+      _onMove: function( event ) {
 
         event = event.originalEvent || event;
 
@@ -545,7 +388,7 @@
           event.stopPropagation();
         }
 
-        var parsedEvent = isTouch ? this._parseTouchEvent(event) : this._parseDragEvent(event),
+        var parsedEvent = isTouch ? this._parseTouchEvent(event) : this._parseMouseEvent(event),
             coordinates = this._checkOverscroll( parsedEvent.direction , - parsedEvent.distanceX, - parsedEvent.distanceY );
 
         this.settings.onDrag.call( this, this.activeElement, parsedEvent, coordinates.overscroll, event );
@@ -555,22 +398,14 @@
         }
       },
 
-      _onDragEnd: function( event ) {
-
-        if (!cachedEvent) return;
-
-        this._onTouchEnd( event );
-
-      },
-
-      _onTouchEnd: function( event ) {
+      _onEnd: function( event ) {
         event = event.originalEvent || event;
 
         if (this.settings.stopPropagation) {
           event.stopPropagation();
         }
 
-        var parsedEvent = isTouch ? this._parseTouchEvent(event) : this._parseDragEvent(event);
+        var parsedEvent = isTouch ? this._parseTouchEvent(event) : this._parseMouseEvent(event);
 
         this.startPageX = 0;
         this.startPageY = 0;
@@ -586,17 +421,18 @@
 
       _parseTouchEvent: function( event ) {
         var touches = event.touches && event.touches.length ? event.touches: event.changedTouches,
-        x = this.startPageX - touches[0].pageX,
-        y = this.startPageY - touches[0].pageY;
+            x = this.startPageX - touches[0].pageX,
+            y = this.startPageY - touches[0].pageY;
 
         return this._addDistanceValues( x, y );
       },
 
-      _parseDragEvent: function( event ) {
-        var x = event.gesture ? event.gesture.deltaX : this.startPageX - event.screenX,
-            y = event.gesture ? event.gesture.deltaY : this.startPageY - event.screenY;
+      _parseMouseEvent: function( event ) {
+        // var x = this.startPageX - touches[0].pageX,
+        //     y = this.startPageY - touches[0].pageY;
 
-        return this._addDistanceValues( x, y );
+        // return this._addDistanceValues( x, y );
+        return this._addDistanceValues( 0, 0 );
       },
 
       _addDistanceValues: function( x, y ) {
@@ -831,6 +667,91 @@
         this._animateScroll();
       },
 
+      // ### Scroll translate
+      //
+      // Animation when translate is supported
+      //
+      // Takes:
+      // x and y values to go with
+
+      _scrollWithTransform: function ( coordinates ) {
+        var style = this.settings.direction === "horizontal" ? "translateX(" + coordinates.x + "px)" : "translateY(" + coordinates.y + "px)";
+
+        setStyles( this.pageContainer, {
+          "-webkit-transform": style,
+          "-moz-transform": style,
+          "-ms-transform": style,
+          "-o-transform": style,
+          "transform": style
+        });
+
+      },
+
+      // ### Animated scroll with translate support
+
+      _animateScrollWithTransform: function() {
+
+        var style = "transform " + this.settings.duration + "ms ease-out";
+
+        setStyles( this.pageContainer, {
+          "-webkit-transition": "-webkit-" + style,
+          "-moz-transition": "-moz-" + style,
+          "-ms-transition": "-ms-" + style,
+          "-o-transition": "-o-" + style,
+          "transition": style
+        });
+
+        this._scroll({
+          x: - this.scrollBorder.x,
+          y: - this.scrollBorder.y
+        });
+
+        addEventListener(this.container, "webkitTransitionEnd", this._afterScrollTransform);
+        addEventListener(this.container, "oTransitionEnd", this._afterScrollTransform);
+        addEventListener(this.container, "transitionEnd", this._afterScrollTransform);
+
+      },
+
+      afterScrollTransform: function() {
+        this._onSwipeEnd();
+
+        removeEventListener(this.container, "webkitTransitionEnd", this._afterScrollTransform);
+        removeEventListener(this.container, "oTransitionEnd", this._afterScrollTransform);
+        removeEventListener(this.container, "transitionEnd", this._afterScrollTransform);
+
+        setStyles( this.pageContainer, {
+          "-webkit-transition": "",
+          "-moz-transition": "",
+          "-ms-transition": "",
+          "-o-transition": "",
+          "transition": ""
+        });
+
+      },
+
+      // ### Scroll fallback
+      //
+      // Animation lookup table  when translate isn't supported
+      //
+      // Takes:
+      // x and y values to go with
+
+      _scrollWithoutTransform: function( coordinates ) {
+        var styles = this.settings.direction === "horizontal" ? { "marginLeft": coordinates.x } : { "marginTop": coordinates.y };
+
+        setStyles(this.pageContainer, styles);
+      },
+
+      // ### Animated scroll without translate support
+
+      _animateScrollWithoutTransform: function() {
+        var property = this.settings.direction === "horizontal" ? "marginLeft" : "marginTop",
+            value = this.settings.direction === "horizontal" ? - this.scrollBorder.x : - this.scrollBorder.y;
+
+        animate( this.pageContainer, property, value, this.settings.duration, proxy( this._onSwipeEnd, this ));
+
+      },
+
       // Public functions
       // ================
 
@@ -873,21 +794,11 @@
 
         var container = this.container;
 
-        if (this.hammer) {
-          this.hammer.off("drag").off( "dragend");
-        }
-        removeEventListener(container, "touchstart");
-        removeEventListener(container, "touchmove");
-        removeEventListener(container, "touchend");
-        removeEventListener(container, "dragstart");
-        removeEventListener(container, "drag");
-        removeEventListener(container, "dragend");
-
-        removeEventListener(document, "dragover", documentDragOverProxy);
-
-        removeEventListener(document.body, "keydown", documentkeydownProxy);
-
-        removeEventListener(window, "resize", windowResizeProxy);
+        removeEventListener(container, startEvent);
+        removeEventListener(container, moveEvent);
+        removeEventListener(container, endEvent);
+        removeEventListener(document.body, "keydown", this._onKeydown);
+        removeEventListener(window, "resize", this._sizePages);
 
         container.removeAttribute("style");
 
@@ -944,10 +855,10 @@
 
   if ( typeof define == 'function' && typeof define.amd == 'object' && define.amd ) {
       define(function() {
-        return init( window.jQuery || window.Zepto, window.Hammer );
+        return init( window.jQuery || window.Zepto );
       });
   } else {
-      window.Dragend = init( window.jQuery || window.Zepto, window.Hammer );
+      window.Dragend = init( window.jQuery || window.Zepto );
   }
 
 })( window );
