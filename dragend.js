@@ -104,9 +104,9 @@
 
       isTouch = 'ontouchstart' in window,
 
-      startEvent = hasTouch ? 'touchstart' : 'mousedown',
-      moveEvent = hasTouch ? 'touchmove' : 'mousemove',
-      endEvent = hasTouch ? 'touchend' : 'mouseup',
+      startEvent = isTouch ? 'touchstart' : 'mousedown',
+      moveEvent = isTouch ? 'touchmove' : 'mousemove',
+      endEvent = isTouch ? 'touchend' : 'mouseup',
 
       keycodes = {
         37: "left",
@@ -324,6 +324,13 @@
         margin: 0
       };
 
+      // bind events
+      this._onStart = proxy( this._onStart, this );
+      this._onMove = proxy( this._onMove, this );
+      this._onEnd = proxy( this._onEnd, this );
+      this._onKeydown = proxy( this._onKeydown, this );
+      this._sizePages = proxy( this._sizePages, this );
+
       this.pageContainer.innerHTML = container.cloneNode(true).innerHTML;
       container.innerHTML = "";
       container.appendChild( this.pageContainer );
@@ -437,49 +444,18 @@
 
       _observe: function() {
 
-        documentDragOverProxy = proxy( this._onDrag, this );
-        documentkeydownProxy = proxy( this._onKeydown, this );
-        windowResizeProxy = proxy( this._sizePages, this );
-
-        addEventListener(this.container, startEvent, proxy( this._onTouchStart, this ));
-        addEventListener(this.container, moveEvent, proxy( this._onTouchMove, this ));
-        addEventListener(this.container, endEvent, proxy( this._onTouchEnd, this ));
+        addEventListener(this.container, startEvent, this._onStart);
 
         if ( this.settings.keyboardNavigation ) {
-          addEventListener(document.body, "keydown", documentkeydownProxy);
+          addEventListener(document.body, "keydown", this._onKeydown);
         }
 
-        addEventListener(window, "resize", windowResizeProxy);
+        addEventListener(window, "resize", this._sizePages);
 
       },
 
-      _onDragStart: function(event) {
 
-        event = event.originalEvent || event;
-
-        var dataTransfer = event.dataTransfer;
-
-        if (this.settings.stopPropagation) {
-          event.stopPropagation();
-        }
-
-        if (dataTransfer.setDragImage) {
-          dataTransfer.setDragImage(fakeDiv, 0 , 0);
-        }
-        if (dataTransfer.setData) {
-          dataTransfer.setData('text/html', null);
-        }
-        dataTransfer.effectAllowed = "none";
-        dataTransfer.dropEffect = "none";
-
-        this.startPageX = event.screenX;
-        this.startPageY = event.screenY;
-
-        this.settings.onDragStart.call( this, event );
-
-      },
-
-      _onTouchStart: function(event) {
+      _onStart: function(event) {
 
         event = event.originalEvent || event;
 
@@ -487,31 +463,17 @@
           event.stopPropagation();
         }
 
-        this.startPageX = event.touches[0].pageX;
-        this.startPageY = event.touches[0].pageY;
+        addEventListener(this.container, moveEvent, this.onMove);
+        addEventListener(this.container, endEvent, this._onEnd);
 
-        this.settings.onDragStart.call( this, event );
+        // this.startPageX = event.touches[0].pageX;
+        // this.startPageY = event.touches[0].pageY;
 
-      },
-
-      _onDrag: function( event ) {
-
-        event = event.originalEvent || event;
-
-        // filter out the last drag event
-        if (cachedEvent && event.type === 'drag' && event.x === 0 && event.y  === 0) {
-          this._onDragEnd(cachedEvent);
-          cachedEvent = null;
-          return;
-        }
-
-        cachedEvent = event;
-
-        this._onTouchMove( event );
+        // this.settings.onDragStart.call( this, event );
 
       },
 
-      _onTouchMove: function( event ) {
+      _onMove: function( event ) {
 
         event = event.originalEvent || event;
 
@@ -523,7 +485,7 @@
           event.stopPropagation();
         }
 
-        var parsedEvent = isTouch ? this._parseTouchEvent(event) : this._parseDragEvent(event),
+        var parsedEvent = isTouch ? this._parseTouchEvent(event) : this._parseMouseEvent(event),
             coordinates = this._checkOverscroll( parsedEvent.direction , - parsedEvent.distanceX, - parsedEvent.distanceY );
 
         this.settings.onDrag.call( this, this.activeElement, parsedEvent, coordinates.overscroll, event );
@@ -533,22 +495,14 @@
         }
       },
 
-      _onDragEnd: function( event ) {
-
-        if (!cachedEvent) return;
-
-        this._onTouchEnd( event );
-
-      },
-
-      _onTouchEnd: function( event ) {
+      _onEnd: function( event ) {
         event = event.originalEvent || event;
 
         if (this.settings.stopPropagation) {
           event.stopPropagation();
         }
 
-        var parsedEvent = isTouch ? this._parseTouchEvent(event) : this._parseDragEvent(event);
+        var parsedEvent = isTouch ? this._parseTouchEvent(event) : this._parseMouseEvent(event);
 
         this.startPageX = 0;
         this.startPageY = 0;
@@ -564,17 +518,18 @@
 
       _parseTouchEvent: function( event ) {
         var touches = event.touches && event.touches.length ? event.touches: event.changedTouches,
-        x = this.startPageX - touches[0].pageX,
-        y = this.startPageY - touches[0].pageY;
+            x = this.startPageX - touches[0].pageX,
+            y = this.startPageY - touches[0].pageY;
 
         return this._addDistanceValues( x, y );
       },
 
-      _parseDragEvent: function( event ) {
-        var x = event.gesture ? event.gesture.deltaX : this.startPageX - event.screenX,
-            y = event.gesture ? event.gesture.deltaY : this.startPageY - event.screenY;
+      _parseMouseEvent: function( event ) {
+        // var x = this.startPageX - touches[0].pageX,
+        //     y = this.startPageY - touches[0].pageY;
 
-        return this._addDistanceValues( x, y );
+        // return this._addDistanceValues( x, y );
+        return this._addDistanceValues( 0, 0 );
       },
 
       _addDistanceValues: function( x, y ) {
