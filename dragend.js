@@ -238,7 +238,7 @@
 
       this.settings      = extend( defaultSettingsCopy, settings );
       this.container     = container;
-      this.pageContainer = document.createElement( "div" );
+      this.pageContainer = doc.createElement( "div" );
       this.scrollBorder  = { x: 0, y: 0 };
       this.page          = 0;
       this.preventScroll = false;
@@ -694,7 +694,9 @@
 
       _animateScrollWithTransform: function() {
 
-        var style = "transform " + this.settings.duration + "ms ease-out";
+        var style = "transform " + this.settings.duration + "ms ease-out",
+            container = this.container,
+            afterScrollTransform = this._afterScrollTransform;
 
         setStyles( this.pageContainer, {
           "-webkit-transition": "-webkit-" + style,
@@ -709,18 +711,24 @@
           y: - this.scrollBorder.y
         });
 
-        addEventListener(this.container, "webkitTransitionEnd", this._afterScrollTransform);
-        addEventListener(this.container, "oTransitionEnd", this._afterScrollTransform);
-        addEventListener(this.container, "transitionEnd", this._afterScrollTransform);
+        addEventListener(this.container, "webkitTransitionEnd", afterScrollTransform);
+        addEventListener(this.container, "oTransitionEnd", afterScrollTransform);
+        addEventListener(this.container, "transitionend", afterScrollTransform);
+        addEventListener(this.container, "transitionEnd", afterScrollTransform);
 
       },
 
       _afterScrollTransform: function() {
+
+        var container = this.container,
+            afterScrollTransform = this._afterScrollTransform;
+
         this._onSwipeEnd();
 
-        removeEventListener(this.container, "webkitTransitionEnd", this._afterScrollTransform);
-        removeEventListener(this.container, "oTransitionEnd", this._afterScrollTransform);
-        removeEventListener(this.container, "transitionEnd", this._afterScrollTransform);
+        removeEventListener(container, "webkitTransitionEnd", afterScrollTransform);
+        removeEventListener(container, "oTransitionEnd", afterScrollTransform);
+        removeEventListener(container, "transitionend", afterScrollTransform);
+        removeEventListener(container, "transitionEnd", afterScrollTransform);
 
         setStyles( this.pageContainer, {
           "-webkit-transition": "",
