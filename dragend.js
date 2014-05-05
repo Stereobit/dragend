@@ -144,95 +144,7 @@
          };
       })(),
 
-      scrollWithTransForm = {
-        // ### Scroll translate
-        //
-        // Animation when translate is supported
-        //
-        // Takes:
-        // x and y values to go with
-
-        _scroll: function ( coordinates ) {
-          var style = this.settings.direction === "horizontal" ? "translateX(" + coordinates.x + "px)" : "translateY(" + coordinates.y + "px)";
-
-          setStyles( this.pageContainer, {
-            "-webkit-transform": style,
-            "-moz-transform": style,
-            "-ms-transform": style,
-            "-o-transform": style,
-            "transform": style
-          });
-
-        },
-
-        // ### Animated scroll with translate support
-
-        _animateScroll: function() {
-
-          var style = "transform " + this.settings.duration + "ms ease-out";
-
-          afterScrollTransformProxy = proxy(this.afterScrollTransform, this);
-
-          setStyles( this.pageContainer, {
-            "-webkit-transition": "-webkit-" + style,
-            "-moz-transition": "-moz-" + style,
-            "-ms-transition": "-ms-" + style,
-            "-o-transition": "-o-" + style,
-            "transition": style
-          });
-
-          this._scroll({
-            x: - this.scrollBorder.x,
-            y: - this.scrollBorder.y
-          });
-
-          addEventListener(this.container, "webkitTransitionEnd", afterScrollTransformProxy);
-          addEventListener(this.container, "oTransitionEnd", afterScrollTransformProxy);
-          addEventListener(this.container, "transitionEnd", afterScrollTransformProxy);
-
-        },
-
-        afterScrollTransform: function() {
-          this._onSwipeEnd();
-
-          removeEventListener(this.container, "webkitTransitionEnd", afterScrollTransformProxy);
-          removeEventListener(this.container, "oTransitionEnd", afterScrollTransformProxy);
-          removeEventListener(this.container, "transitionEnd", afterScrollTransformProxy);
-
-          setStyles( this.pageContainer, {
-            "-webkit-transition": "",
-            "-moz-transition": "",
-            "-ms-transition": "",
-            "-o-transition": "",
-            "transition": ""
-          });
-
-        }
-      },
-
-      scrollWithoutTransForm = {
-        // ### Scroll fallback
-        //
-        // Animation lookup table  when translate isn't supported
-        //
-        // Takes:
-        // x and y values to go with
-
-        _scroll: function( coordinates ) {
-          var styles = this.settings.direction === "horizontal" ? { "marginLeft": coordinates.x } : { "marginTop": coordinates.y };
-
-          setStyles(this.pageContainer, styles);
-        },
-
-        // ### Animated scroll without translate support
-
-        _animateScroll: function() {
-          var property = this.settings.direction === "horizontal" ? "marginLeft" : "marginTop",
-              value = this.settings.direction === "horizontal" ? - this.scrollBorder.x : - this.scrollBorder.y;
-
-          animate( this.pageContainer, property, value, this.settings.duration, proxy( this._onSwipeEnd, this ));
-        }
-      };
+      supportTransform = supports('transform');
 
     function noop() {}
 
@@ -333,6 +245,9 @@
       container.innerHTML = "";
       container.appendChild( this.pageContainer );
 
+      this._scroll = supportTransform ? this._scrollWithTransform : this._scrollWithoutTransform;
+      this._animateScroll = supportTransform ? this._animateScrollWithTransform : this._animateScrollWithoutTransform;
+
       // Initialisation
 
       setStyles(container, containerStyles);
@@ -363,16 +278,6 @@
         container.removeEventListener(event, callback, false);
       }
     }
-
-    // ### Check translate support
-    ( function() {
-
-      var support = supports('transform');
-
-      extend( Dragend.prototype, support ? scrollWithTransForm : scrollWithoutTransForm );
-
-    })();
-
 
     extend(Dragend.prototype, {
 
@@ -755,6 +660,93 @@
         if ( options ) this._calcNewPage( options, pageNumber );
 
         this._animateScroll();
+      },
+
+      // ### Scroll translate
+      //
+      // Animation when translate is supported
+      //
+      // Takes:
+      // x and y values to go with
+
+      _scrollWithTransform: function ( coordinates ) {
+        var style = this.settings.direction === "horizontal" ? "translateX(" + coordinates.x + "px)" : "translateY(" + coordinates.y + "px)";
+
+        setStyles( this.pageContainer, {
+          "-webkit-transform": style,
+          "-moz-transform": style,
+          "-ms-transform": style,
+          "-o-transform": style,
+          "transform": style
+        });
+
+      },
+
+      // ### Animated scroll with translate support
+
+      _animateScrollWithTransform: function() {
+
+        var style = "transform " + this.settings.duration + "ms ease-out";
+
+        afterScrollTransformProxy = proxy(this.afterScrollTransform, this);
+
+        setStyles( this.pageContainer, {
+          "-webkit-transition": "-webkit-" + style,
+          "-moz-transition": "-moz-" + style,
+          "-ms-transition": "-ms-" + style,
+          "-o-transition": "-o-" + style,
+          "transition": style
+        });
+
+        this._scroll({
+          x: - this.scrollBorder.x,
+          y: - this.scrollBorder.y
+        });
+
+        addEventListener(this.container, "webkitTransitionEnd", afterScrollTransformProxy);
+        addEventListener(this.container, "oTransitionEnd", afterScrollTransformProxy);
+        addEventListener(this.container, "transitionEnd", afterScrollTransformProxy);
+
+      },
+
+      afterScrollTransform: function() {
+        this._onSwipeEnd();
+
+        removeEventListener(this.container, "webkitTransitionEnd", afterScrollTransformProxy);
+        removeEventListener(this.container, "oTransitionEnd", afterScrollTransformProxy);
+        removeEventListener(this.container, "transitionEnd", afterScrollTransformProxy);
+
+        setStyles( this.pageContainer, {
+          "-webkit-transition": "",
+          "-moz-transition": "",
+          "-ms-transition": "",
+          "-o-transition": "",
+          "transition": ""
+        });
+
+      },
+
+      // ### Scroll fallback
+      //
+      // Animation lookup table  when translate isn't supported
+      //
+      // Takes:
+      // x and y values to go with
+
+      _scrollWithoutTransform: function( coordinates ) {
+        var styles = this.settings.direction === "horizontal" ? { "marginLeft": coordinates.x } : { "marginTop": coordinates.y };
+
+        setStyles(this.pageContainer, styles);
+      },
+
+      // ### Animated scroll without translate support
+
+      _animateScrollWithoutTransform: function() {
+        var property = this.settings.direction === "horizontal" ? "marginLeft" : "marginTop",
+            value = this.settings.direction === "horizontal" ? - this.scrollBorder.x : - this.scrollBorder.y;
+
+        animate( this.pageContainer, property, value, this.settings.duration, proxy( this._onSwipeEnd, this ));
+
       },
 
       // Public functions
