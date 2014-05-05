@@ -80,8 +80,6 @@
       documentkeydownProxy,
       windowResizeProxy,
 
-      fakeDiv,
-
       // Default setting
       defaultSettings = {
         pageClass          : "dragend-page",
@@ -347,11 +345,6 @@
           }
           this.settings.afterInitialize.call(this);
       }, this), 10 );
-
-      fakeDiv = fakeDiv ? fakeDiv : setStyles(document.body.appendChild(document.createElement('div')), {
-        width : "1",
-        height: "1"
-      });
 
     }
 
