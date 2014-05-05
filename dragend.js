@@ -144,6 +144,10 @@
 
     function noop() {}
 
+    function falseFn() {
+      return false;
+    }
+
     function setStyles( element, styles ) {
 
       var property,
@@ -261,7 +265,7 @@
       this._scroll = supportTransform ? this._scrollWithTransform : this._scrollWithoutTransform;
       this._animateScroll = supportTransform ? this._animateScrollWithTransform : this._animateScrollWithoutTransform;
 
-      // Initialisation
+      // Initialization
 
       setStyles(container, containerStyles);
 
@@ -356,6 +360,8 @@
       _observe: function() {
 
         addEventListener(this.container, startEvent, this._onStart);
+        this.container.onselectstart = falseFn;
+        this.container.ondragstart = falseFn;
 
         if ( this.settings.keyboardNavigation ) {
           addEventListener(doc.body, "keydown", this._onKeydown);
