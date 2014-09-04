@@ -24,13 +24,13 @@
  *
  */
 
-!function (name, definition) {
+(function (name, context, definition) {
 
-    if (typeof define == 'function') define(definition());
-    else if (typeof module != 'undefined') module.exports = definition();
-    else this[name] = definition();
+    if (typeof module != 'undefined') module.exports = definition()
+    else if (typeof define == 'function') define(definition)
+    else context[name] = context['v'] = definition()
 
-}('Dragend', function( ) {
+}('Dragend', this, function( ) {
 
   "use strict";
 
@@ -935,6 +935,4 @@
 
   return Dragend;
 
-
-
-});
+}));
