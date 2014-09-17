@@ -28,7 +28,7 @@
 
     if (typeof module != 'undefined') module.exports = definition()
     else if (typeof define == 'function') define(definition)
-    else context[name] = context['v'] = definition()
+    else context[name] =  definition()
 
 }('Dragend', this, function( ) {
 
