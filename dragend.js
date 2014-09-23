@@ -425,7 +425,7 @@
 
         if ( Math.abs(parsedEvent.distanceX) > this.settings.minDragDistance || Math.abs(parsedEvent.distanceY) > this.settings.minDragDistance) {
           this.swipe( parsedEvent.direction );
-        } else if (parsedEvent.distanceX > 0 || parsedEvent.distanceX > 0) {
+        } else if (Math.abs(parsedEvent.distanceX) > 0 || Math.abs(parsedEvent.distanceY) > 0) {
           this._scrollToPage();
         }
 
