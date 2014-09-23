@@ -804,6 +804,11 @@
           this.scrollToPage( this.settings.scrollToPage );
           delete this.settings.scrollToPage;
         }
+		
+        if (this.settings.destroy) {
+          this.destroy();
+          delete this.settings.destroy;
+        }
 
       },
 
