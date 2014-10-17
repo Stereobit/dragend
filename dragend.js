@@ -429,7 +429,7 @@
           this._scrollToPage();
         }
 
-        this.settings.onDragEnd.call( this, this.container, this.activeElement, this.page, event );
+        this.settings.onDragEnd.call( this, this.container, this.activeElement, this.page + 1, event );
 
         removeEventListener(doc.body, moveEvent, this._onMove);
         removeEventListener(doc.body, endEvent, this._onEnd);
@@ -637,7 +637,7 @@
         this.activeElement = this.pages[this.page * this.settings.itemsInPage];
 
         // Call onSwipeEnd callback function
-        this.settings.onSwipeEnd.call( this, this.container, this.activeElement, this.page);
+        this.settings.onSwipeEnd.call( this, this.container, this.activeElement, this.page + 1);
       },
 
       // Jump to page
@@ -774,7 +774,7 @@
 
       swipe: function( direction ) {
         // Call onSwipeStart callback function
-        this.settings.onSwipeStart.call( this, this.container, this.activeElement, this.page );
+        this.settings.onSwipeStart.call( this, this.container, this.activeElement, this.page + 1 );
         this._scrollToPage( direction );
       },
 
