@@ -1,0 +1,220 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+
+  <title>Dragend JS demo with control elements</title>
+
+  <style type="text/css">
+    * {
+      padding: 0;
+      margin: 0;
+      border: 0;
+    }
+
+    body {
+      background: #eee;
+      padding: 15px;
+      font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+
+    #demo {
+      width: 500px;
+      height: 350px;
+      visibility: hidden;
+      margin: 100px auto 0;
+      background: #457;
+      cursor: hand;
+      cursor: -moz-grab;
+      cursor: -webkit-grab;
+      cursor: grab;
+    }
+
+    #demo li.first {
+      background: #577;
+    }
+
+    #demo li.middle {
+      background: #1e8;
+    }
+
+    #demo li.last {
+      background: #e8b;
+    }
+
+    #dragend {
+      position: absolute;
+      bottom: 50px;
+      right: 50px;
+      background: #345;
+      padding: 18px;
+      color: #fff;
+      border-radius: 3px;
+      width: 150px;
+      font-size: 15px;
+    }
+
+    #dragend h1 {
+      font-size: 15px;
+      font-weight: normal;
+      margin-bottom: 12px;
+    }
+
+    #dragend a {
+      text-decoration: underline;
+      color: #fff
+    }
+
+    .button {
+      height: 0;
+      width: 0;
+      position: absolute;
+      top: 250px;
+      left: 50%;
+      cursor: pointer;
+      border-style: solid;
+    }
+
+    .button.deactivated {
+      opacity: 0.2;
+      cursor: default;
+    }
+
+    .prev {
+      margin-left: -320px;
+      border-width: 50px 50px 50px 0;
+      border-color: transparent #333 transparent transparent;
+    }
+
+    .next {
+      margin-left: 270px;
+      border-width: 50px 0 50px 50px;
+      border-color: transparent transparent transparent #333;
+    }
+
+    .nav {
+      margin: 40px auto;
+      width: 500px;
+      list-style: none;
+    }
+
+    .nav li.active {
+      background: #215;
+      color: #fff;
+    }
+
+    .nav li {
+      width: 20%;
+      height: 100px;
+      float: left;
+      text-align: center;
+      background: #abc;
+      line-height: 100px;
+      border-right: 10px solid #eee;
+      box-sizing: border-box;
+      cursor: pointer;
+    }
+
+    .nav li:last-child {
+      border: 0;
+    }
+
+  </style>
+
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Arvo:400,700' rel='stylesheet' type='text/css'>
+
+</head>
+<body>
+
+  <div class="button prev deactivated"></div>
+  <div id="demo">
+    <ul>
+      <li class="first dragend-page"></li>
+      <li class="dragend-page"></li>
+      <li class="middle dragend-page"></li>
+      <li class="dragend-page"></li>
+      <li class="last dragend-page"></li>
+    </ul>
+  </div>
+  <div class="button next"></div>
+
+  <ul class="nav">
+    <li data-page="1" class="active">1</li>
+    <li data-page="2">2</li>
+    <li data-page="3">3</li>
+    <li data-page="4">4</li>
+    <li data-page="5">5</li>
+  </ul>
+
+  <div id="dragend">
+    <h1>A <a href="http://stereobit.github.io/dragend/">dragend JS</a> demo with control elements</h1>
+    <iframe src="http://ghbtns.com/github-btn.html?user=stereobit&amp;repo=dragend&amp;type=watch&amp;count=true"
+  allowtransparency="true" frameborder="0" scrolling="0" width="110" height="20"></iframe>
+  </div>
+
+  <script type="text/javascript" src="../lib/jquery.min.js"></script>
+  <script type="text/javascript" src="../../dragend.js"></script>
+
+  <script>
+
+    $(function() {
+      $("#demo").dragend({
+        afterInitialize: function() {
+          this.container.style.visibility = "visible";
+        },
+        onSwipeEnd: function() {
+          var first = this.pages[0],
+              last = this.pages[this.pages.length - 1];
+
+          $(".prev, .next").removeClass("deactivated");
+          $(".nav li").removeClass("active");
+
+          if (first === this.activeElement) {
+            $(".prev").addClass("deactivated")
+          };
+
+          if (last === this.activeElement) {
+            $(".next").addClass("deactivated")
+          }
+
+          $(".nav li").eq(this.page).addClass("active");
+
+        }
+      });
+
+      $(".prev").click(function() {
+        $("#demo").dragend("right");
+      });
+
+      $(".next").click(function() {
+        $("#demo").dragend("left");
+      });
+
+      $(".nav").click(function() {
+        var page = $(event.target).data("page");
+
+        $("#demo").dragend({
+          scrollToPage: page
+        });
+
+        $(event.target).addClass("active");
+
+      })
+
+    });
+
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-219062-10']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,139 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+
+  <title>Dragend JS responsive demo</title>
+
+  <style type="text/css">
+    * {
+      padding: 0;
+      margin: 0;
+      border: 0;
+    }
+
+    body {
+      background: #eee;
+      padding: 15px;
+      font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+
+    #demo {
+      width: 100%;
+      height: 500px;
+      visibility: hidden;
+      margin: 100px auto;
+      background: #457;
+      cursor: hand;
+      cursor: -moz-grab;
+      cursor: -webkit-grab;
+      cursor: grab;
+    }
+
+    #demo .item {
+      background: #354;
+    }
+
+    #demo .item:nth-child(2n+0) {
+      background: #333;
+    }
+
+    #dragend {
+      position: absolute;
+      bottom: 50px;
+      right: 50px;
+      background: #345;
+      padding: 18px;
+      color: #fff;
+      border-radius: 3px;
+      width: 150px;
+      font-size: 15px;
+    }
+
+    #dragend h1 {
+      font-size: 15px;
+      font-weight: normal;
+      margin-bottom: 12px;
+    }
+
+    #dragend a {
+      text-decoration: underline;
+      color: #fff
+    }
+
+  </style>
+
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Arvo:400,700' rel='stylesheet' type='text/css'>
+
+</head>
+<body id="desktop">
+
+  <div id="demo">
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+  </div>
+
+  <div id="dragend">
+    <h1>A responsive <a href="http://stereobit.github.io/dragend/">dragend JS</a> demo</h1>
+    <iframe src="http://ghbtns.com/github-btn.html?user=stereobit&amp;repo=dragend&amp;type=watch&amp;count=true"
+  allowtransparency="true" frameborder="0" scrolling="0" width="110" height="20"></iframe>
+  </div>
+
+  <script type="text/javascript" src="../lib/jquery.min.js"></script>
+  <script type="text/javascript" src="../../dragend.js"></script>
+
+  <script>
+
+    $(function() {
+      var BODY = $("body"),
+          container = $("#demo"),
+          pageElements;
+
+      $(window).on("ready resize", function(event) {
+
+        var width = $(this).width(),
+            itemsInPage = 1;
+
+        if (width > 1000) {
+          itemsInPage = 4
+        } else if (width > 600) {
+          itemsInPage = 3;
+        } else if (width > 400) {
+          itemsInPage = 2;
+        }
+
+        container.dragend({
+          pageContainer: "#container",
+          itemsInPage: itemsInPage,
+          pageClass: "item",
+          afterInitialize: function() {
+            this.container.style.visibility = "visible";
+          }
+        });
+
+      });
+
+    });
+
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-219062-10']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+
+  </script>
+
+</body>
+</html>

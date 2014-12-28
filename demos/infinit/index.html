@@ -1,0 +1,142 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+
+  <title>Dragend JS infinit demo</title>
+
+  <style type="text/css">
+    * {
+      padding: 0;
+      margin: 0;
+      border: 0;
+    }
+
+    body {
+      background: #eee;
+      padding: 15px;
+      font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+
+    #demo {
+      width: 500px;
+      height: 500px;
+      visibility: hidden;
+      margin: 100px auto;
+      background: #457;
+      cursor: hand;
+      cursor: -moz-grab;
+      cursor: -webkit-grab;
+      cursor: grab;
+      text-align: center;
+      line-height: 500px;
+    }
+
+    #demo li.first {
+      background: #577;
+    }
+
+    #demo li.middle {
+      background: #1e8;
+    }
+
+    #demo li.last {
+      background: #e8b;
+    }
+
+    #dragend {
+      position: absolute;
+      bottom: 50px;
+      right: 50px;
+      background: #345;
+      padding: 18px;
+      color: #fff;
+      border-radius: 3px;
+      width: 150px;
+      font-size: 15px;
+    }
+
+    #dragend h1 {
+      font-size: 15px;
+      font-weight: normal;
+      margin-bottom: 12px;
+    }
+
+    #dragend a {
+      text-decoration: underline;
+      color: #fff
+    }
+
+  </style>
+
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Arvo:400,700' rel='stylesheet' type='text/css'>
+
+</head>
+<body>
+
+  <div id="demo">
+    <ul>
+      <li class="first dragend-page">One</li>
+      <li class="dragend-page">Two</li>
+      <li class="middle dragend-page">Three</li>
+      <li class="dragend-page">Four</li>
+      <li class="last dragend-page">Five</li>
+    </ul>
+  </div>
+
+  <div id="dragend">
+    <h1>A infinit <a href="http://stereobit.github.io/dragend/">dragend JS</a> demo</h1>
+    <iframe src="http://ghbtns.com/github-btn.html?user=stereobit&amp;repo=dragend&amp;type=watch&amp;count=true"
+  allowtransparency="true" frameborder="0" scrolling="0" width="110" height="20"></iframe>
+  </div>
+
+  <script type="text/javascript" src="../lib/jquery.min.js"></script>
+  <script type="text/javascript" src="../../dragend.js"></script>
+
+  <script>
+
+    $(function() {
+
+      var firstChild = $("#demo li:first-child").clone(),
+          lastChild  = $("#demo li:last-child").clone(),
+          container  = $("#demo ul");
+
+      firstChild.appendTo(container);
+      lastChild.prependTo(container);
+
+      $("#demo").dragend({
+        jumpToPage: 2,
+        onSwipeEnd: function() {
+          var first = this.pages[0],
+              last = this.pages[this.pages.length - 1];
+
+          if (first === this.activeElement) {
+            this.jumpToPage(this.pages.length - 1 );
+          }
+
+          if (last === this.activeElement) {
+            this.jumpToPage(2);
+          }
+
+        },
+        afterInitialize: function() {
+          this.container.style.visibility = "visible";
+        }
+      });
+    });
+
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-219062-10']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+
+  </script>
+
+</body>
+</html>
