@@ -99,6 +99,21 @@
 
       isTouch = 'ontouchstart' in win,
 
+      isTouchEvent = false,
+      touches = {
+          start: 0,
+          startX: 0,
+          startY: 0,
+          current: 0,
+          currentX: 0,
+          currentY: 0,
+          diff: 0,
+          abs: 0
+      },
+
+      isScrolling = false,
+
+
       startEvent = isTouch ? 'touchstart' : 'mousedown',
       moveEvent = isTouch ? 'touchmove' : 'mousemove',
       endEvent = isTouch ? 'touchend' : 'mouseup',
@@ -380,12 +395,30 @@
           event.stopPropagation();
         }
 
-        addEventListener(doc.body, moveEvent, this._onMove);
-        addEventListener(doc.body, endEvent, this._onEnd);
+          if(this.isTouched) return;
 
-        this.startCoords = getCoords(event);
+          this.isTouched = true;
+          isTouchEvent = (event.type === 'touchstart');
 
-        this.settings.onDragStart.call( this, event );
+          if (!isTouchEvent || event.targetTouches.length === 1) {
+              var pageX = isTouchEvent ? event.targetTouches[0].pageX : (event.pageX || event.clientX);
+              var pageY = isTouchEvent ? event.targetTouches[0].pageY : (event.pageY || event.clientY);
+
+              //Start Touches to check the scrolling
+              touches.startX = touches.currentX = pageX;
+              touches.startY = touches.currentY = pageY;
+              touches.start = touches.current = (this.settings.direction=='horizontal') ? pageX : pageY;
+
+              isScrolling = undefined;
+
+              addEventListener(doc.body, moveEvent, this._onMove);
+              addEventListener(doc.body, endEvent, this._onEnd);
+
+              this.startCoords = getCoords(event);
+
+              this.settings.onDragStart.call(this, event);
+
+          }
 
       },
 
@@ -393,27 +426,55 @@
 
         event = event.originalEvent || event;
 
-        // ensure swiping with one touch and not pinching
-        if ( event.touches && event.touches.length > 1 || event.scale && event.scale !== 1) return;
+          // ensure swiping with one touch and not pinching
+          if (event.touches && event.touches.length > 1 || event.scale && event.scale !== 1) return;
 
-        event.preventDefault();
-        if (this.settings.stopPropagation) {
-          event.stopPropagation();
-        }
+          // ensure element is touched
+          if (!this.isTouched) return;
 
-        var parsedEvent = this._parseEvent(event),
-            coordinates = this._checkOverscroll( parsedEvent.direction , - parsedEvent.distanceX, - parsedEvent.distanceY );
 
-        this.settings.onDrag.call( this, this.activeElement, parsedEvent, coordinates.overscroll, event );
+          var pageX = isTouchEvent ? event.targetTouches[0].pageX : (event.pageX || event.clientX);
+          var pageY = isTouchEvent ? event.targetTouches[0].pageY : (event.pageY || event.clientY);
 
-        if ( !this.preventScroll ) {
-          this._scroll( coordinates );
-        }
+
+          //check for scrolling
+          if (typeof isScrolling === 'undefined' && this.settings.direction=='horizontal') {
+              isScrolling = !!(isScrolling || Math.abs(pageY - touches.startY) > Math.abs(pageX - touches.startX));
+          }
+          if (typeof isScrolling === 'undefined' && this.settings.direction!='horizontal') {
+              isScrolling = !!(isScrolling || Math.abs(pageY - touches.startY) < Math.abs(pageX - touches.startX));
+          }
+          if (isScrolling) {
+              this.isTouched = false;
+              return;
+          }
+
+          if (!isTouchEvent || event.touches.length === 1) {
+
+              event.preventDefault();
+              if (this.settings.stopPropagation) {
+                  event.stopPropagation();
+              }
+
+              var parsedEvent = this._parseEvent(event),
+                  coordinates = this._checkOverscroll(parsedEvent.direction, -parsedEvent.distanceX, -parsedEvent.distanceY);
+
+              this.settings.onDrag.call(this, this.activeElement, parsedEvent, coordinates.overscroll, event);
+
+              if (!this.preventScroll) {
+                  this._scroll(coordinates);
+              }
+
+          }
       },
 
       _onEnd: function( event ) {
 
         event = event.originalEvent || event;
+
+        // ensure element is touched
+        if (!this.isTouched) return;
+        this.isTouched = false;
 
         if (this.settings.stopPropagation) {
           event.stopPropagation();
@@ -423,10 +484,10 @@
 
         this.startCoords = { x: 0, y: 0 };
 
-        if ( Math.abs(parsedEvent.distanceX) > this.settings.minDragDistance || Math.abs(parsedEvent.distanceY) > this.settings.minDragDistance) {
-          this.swipe( parsedEvent.direction );
-        } else if (Math.abs(parsedEvent.distanceX) > 0 || Math.abs(parsedEvent.distanceY) > 0) {
-          this._scrollToPage();
+        if (Math.abs(parsedEvent.distanceX) > this.settings.minDragDistance || Math.abs(parsedEvent.distanceY) > this.settings.minDragDistance) {
+            this.swipe(parsedEvent.direction);
+        } else  {
+            this._scrollToPage();
         }
 
         this.settings.onDragEnd.call( this, this.container, this.activeElement, this.page + 1, event );
