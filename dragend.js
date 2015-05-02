@@ -774,7 +774,7 @@
 
       swipe: function( direction ) {
         // Call onSwipeStart callback function
-        this.settings.onSwipeStart.call( this, this.container, this.activeElement, this.page + 1 );
+        this.settings.onSwipeStart.call( this, this.container, this.activeElement, this.page + 1, direction );
         this._scrollToPage( direction );
       },
 
