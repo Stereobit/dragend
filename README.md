@@ -92,6 +92,7 @@ instance.destroy();
   * pageClass: classname selector for all elments that should provide a page
   * direction: "horizontal" or "vertical"
   * minDragDistance: minuimum distance (in pixel) the user has to drag to trigger swip
+  * page: Number of page to load on start
   * scribe: pixel value for a possible scribe
   * onSwipeStart: callback function before the animation
   * onSwipeEnd: callback function after the animation

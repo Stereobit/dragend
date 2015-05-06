@@ -63,6 +63,7 @@
     // * direction: "horizontal" or "vertical"
     // * minDragDistance: minuimum distance (in pixel) the user has to drag
     //   to trigger swip
+    // * page: Number of page to load on start
     // * scribe: pixel value for a possible scribe
     // * onSwipeStart: callback function before the animation
     // * onSwipeEnd: callback function after the animation
@@ -92,6 +93,7 @@
         stopPropagation    : false,
         itemsInPage        : 1,
         scribe             : 0,
+        page               : 1,
         borderBetweenPages : 0,
         duration           : 300,
         preventDrag        : false
@@ -791,6 +793,8 @@
         } else {
           throw new Error(errors.pages);
         }
+
+        this.page = this.settings.page - 1;
 
         this.activeElement = this.pages[this.page * this.settings.itemsInPage];
         this._sizePages();
