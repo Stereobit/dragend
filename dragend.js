@@ -280,6 +280,9 @@
           this.settings.afterInitialize.call(this);
       }, this), 10 );
 
+      // Size Pages on every resize
+      addEventListener(window, 'resize', this._sizePages());
+
     }
 
     function addEventListener(container, event, callback) {
