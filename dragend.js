@@ -88,6 +88,7 @@
         onDragStart        : noop,
         onDrag             : noop,
         onDragEnd          : noop,
+		onPageWillChange   : noop,
         afterInitialize    : noop,
         keyboardNavigation : false,
         stopPropagation    : false,
@@ -633,6 +634,8 @@
             this.page           = 0;
             break;
         }
+
+		this.settings.onPageWillChange.call( this, this.page + 1, event );
       },
 
       // ### On swipe end
