@@ -837,7 +837,13 @@
 
         container.removeAttribute("style");
 
-        for (var i = 0; i < this.pages.length; i++) {
+		var pagesLength = 0;
+
+		if (this.pages != undefined) {
+			pagesLength = this.pages.length
+		}
+
+        for (var i = 0; i < pagesLength; i++) {
           this.pages[i].removeAttribute("style");
         }
 
