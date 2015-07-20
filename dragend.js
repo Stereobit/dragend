@@ -96,7 +96,8 @@
         page               : 1,
         borderBetweenPages : 0,
         duration           : 300,
-        preventDrag        : false
+        preventDrag        : false,
+        disableScroll      : false
       },
 
       isTouch = 'ontouchstart' in win,
@@ -394,8 +395,8 @@
       _onMove: function( event ) {
 
         event = event.originalEvent || event;
-        
-        // Fix mobile vertical scrolling, credits go to ptisdel 
+
+        // Fix mobile vertical scrolling, credits go to ptisdel
         var coords = getCoords(event),
         x = this.startCoords.x - coords.x,
         y = this.startCoords.y - coords.y;
@@ -404,7 +405,8 @@
         // ensure swiping with one touch and not pinching
         if ( event.touches && event.touches.length > 1 || event.scale && event.scale !== 1) return;
 
-        event.preventDefault();
+        if (this.settings.disableScroll) event.preventDefault();
+
         if (this.settings.stopPropagation) {
           event.stopPropagation();
         }
@@ -814,7 +816,7 @@
           this.scrollToPage( this.settings.scrollToPage );
           delete this.settings.scrollToPage;
         }
-		
+
         if (this.settings.destroy) {
           this.destroy();
           delete this.settings.destroy;
