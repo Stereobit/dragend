@@ -103,6 +103,7 @@ instance.destroy();
   * duration
   * hammerSettings
   * preventDrag: if want to prevent user interactions and only swipe manualy
+  * disableScroll: prevent scroll on mobile version
 
 # CHANGELOG
 
