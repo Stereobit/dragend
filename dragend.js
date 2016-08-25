@@ -247,7 +247,7 @@
       this.container     = container;
       this.pageContainer = doc.createElement( "div" );
       this.scrollBorder  = { x: 0, y: 0 };
-      this.page          = 0;
+      this.page          = this.settings.page;
       this.preventScroll = false;
       this.pageCssProperties = {
         margin: 0
