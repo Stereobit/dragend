@@ -18,7 +18,7 @@ The current version is 0.2.0 release candidate 3
 * [Demo with infinit swiping through pages](http://stereobit.github.io/dragend/demos/infinit/)
 * [Mobile demo](http://stereobit.github.io/dragend/demos/mobile/)
 
-# Featues
+# Features
 
 * horizontal and vertical swiping
 * mobile and desktop ready
