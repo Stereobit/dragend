@@ -63,6 +63,7 @@
     // * direction: "horizontal" or "vertical"
     // * minDragDistance: minuimum distance (in pixel) the user has to drag
     //   to trigger swip
+    // * page: Number of page to load on start
     // * scribe: pixel value for a possible scribe
     // * onSwipeStart: callback function before the animation
     // * onSwipeEnd: callback function after the animation
@@ -80,6 +81,7 @@
       // Default setting
       defaultSettings = {
         pageClass          : "dragend-page",
+        pageWrapperClass   : undefined,
         direction          : "horizontal",
         minDragDistance    : "40",
         onSwipeStart       : noop,
@@ -92,9 +94,11 @@
         stopPropagation    : false,
         itemsInPage        : 1,
         scribe             : 0,
+        page               : 1,
         borderBetweenPages : 0,
         duration           : 300,
-        preventDrag        : false
+        preventDrag        : false,
+        disableScroll      : false
       },
 
       isTouch = 'ontouchstart' in win,
@@ -250,6 +254,14 @@
         margin: 0
       };
 
+      if(this.settings.pageWrapperClass){
+        var wrapper = this.container.querySelector("."+this.settings.pageWrapperClass);
+        if(wrapper){
+          this.pageContainer = wrapper;
+          this.wrapperExist = true;
+        }
+      }
+
       // bind events
       this._onStart = proxy( this._onStart, this );
       this._onMove = proxy( this._onMove, this );
@@ -258,9 +270,11 @@
       this._sizePages = proxy( this._sizePages, this );
       this._afterScrollTransform = proxy(this._afterScrollTransform, this);
 
-      this.pageContainer.innerHTML = container.cloneNode(true).innerHTML;
-      container.innerHTML = "";
-      container.appendChild( this.pageContainer );
+      if(!this.wrapperExist){
+        this.pageContainer.innerHTML = container.cloneNode(true).innerHTML;
+        container.innerHTML = "";
+        container.appendChild( this.pageContainer );
+      }
 
       this._scroll = supportTransform ? this._scrollWithTransform : this._scrollWithoutTransform;
       this._animateScroll = supportTransform ? this._animateScrollWithTransform : this._animateScrollWithoutTransform;
@@ -393,10 +407,17 @@
 
         event = event.originalEvent || event;
 
+        // Fix mobile vertical scrolling, credits go to ptisdel
+        var coords = getCoords(event),
+        x = this.startCoords.x - coords.x,
+        y = this.startCoords.y - coords.y;
+        if (Math.abs(y) > Math.abs(x)) return;
+
         // ensure swiping with one touch and not pinching
         if ( event.touches && event.touches.length > 1 || event.scale && event.scale !== 1) return;
 
-        event.preventDefault();
+        if (this.settings.disableScroll) event.preventDefault();
+
         if (this.settings.stopPropagation) {
           event.stopPropagation();
         }
@@ -425,11 +446,11 @@
 
         if ( Math.abs(parsedEvent.distanceX) > this.settings.minDragDistance || Math.abs(parsedEvent.distanceY) > this.settings.minDragDistance) {
           this.swipe( parsedEvent.direction );
-        } else if (parsedEvent.distanceX > 0 || parsedEvent.distanceX > 0) {
+        } else if (Math.abs(parsedEvent.distanceX) > 0 || Math.abs(parsedEvent.distanceY) > 0) {
           this._scrollToPage();
         }
 
-        this.settings.onDragEnd.call( this, this.container, this.activeElement, this.page, event );
+        this.settings.onDragEnd.call( this, this.container, this.activeElement, this.page + 1, event );
 
         removeEventListener(doc.body, moveEvent, this._onMove);
         removeEventListener(doc.body, endEvent, this._onEnd);
@@ -637,7 +658,7 @@
         this.activeElement = this.pages[this.page * this.settings.itemsInPage];
 
         // Call onSwipeEnd callback function
-        this.settings.onSwipeEnd.call( this, this.container, this.activeElement, this.page);
+        this.settings.onSwipeEnd.call( this, this.container, this.activeElement, this.page + 1);
       },
 
       // Jump to page
@@ -774,7 +795,7 @@
 
       swipe: function( direction ) {
         // Call onSwipeStart callback function
-        this.settings.onSwipeStart.call( this, this.container, this.activeElement, this.page );
+        this.settings.onSwipeStart.call( this, this.container, this.activeElement, this.page + 1, direction );
         this._scrollToPage( direction );
       },
 
@@ -792,6 +813,8 @@
           throw new Error(errors.pages);
         }
 
+        this.page = this.settings.page - 1;
+
         this.activeElement = this.pages[this.page * this.settings.itemsInPage];
         this._sizePages();
 
@@ -804,7 +827,7 @@
           this.scrollToPage( this.settings.scrollToPage );
           delete this.settings.scrollToPage;
         }
-		
+
         if (this.settings.destroy) {
           this.destroy();
           delete this.settings.destroy;
