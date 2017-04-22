@@ -4,7 +4,7 @@ dragend.js, Readme File:
 
 # DESCRIPTION
 
-dragend.js is a touch ready, full responsive, content swipe script. It has no dependencies but it can, don't has to, used as a [jQuery](https://github.com/jquery/jquery/) plugin.
+dragend.js is a touch ready, fully responsive, content swipe script. It has no dependencies but it can, doesn't have to, be used as a [jQuery](https://github.com/jquery/jquery/) plugin.
 
 The current version is 0.2.0 release candidate 3
 
@@ -28,7 +28,7 @@ The current version is 0.2.0 release candidate 3
 * contend scribe (Sometimes you need to indicate to the user that there is more content to see. Especially on mobile devices. One easy approach to this problem is to show a bit of the next page)
 * resize adjustment
 * overscroll
-* full responsive
+* fully responsive
 
 # Browser support
 * Firefox 3.5+
