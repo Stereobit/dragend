@@ -279,6 +279,9 @@
             this._observe();
           }
           this.settings.afterInitialize.call(this);
+
+          // Size Pages on every resize
+          this.addEventListener(window, 'resize', this._sizePages());
       }, this), 10 );
 
     }
