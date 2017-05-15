@@ -438,6 +438,9 @@
         } else if (Math.abs(parsedEvent.distanceX) > 0 || Math.abs(parsedEvent.distanceY) > 0) {
           this._scrollToPage();
         }
+        else {
+          this._scrollToPage();
+        }
 
         this.settings.onDragEnd.call( this, this.container, this.activeElement, this.page + 1, event );
 
