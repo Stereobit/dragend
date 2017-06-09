@@ -81,6 +81,7 @@
       // Default setting
       defaultSettings = {
         pageClass          : "dragend-page",
+        pageWrapperClass   : undefined,
         direction          : "horizontal",
         minDragDistance    : "40",
         onSwipeStart       : noop,
@@ -253,6 +254,14 @@
         margin: 0
       };
 
+      if(this.settings.pageWrapperClass){
+        var wrapper = this.container.querySelector("."+this.settings.pageWrapperClass);
+        if(wrapper){
+          this.pageContainer = wrapper;
+          this.wrapperExist = true;
+        }
+      }
+
       // bind events
       this._onStart = proxy( this._onStart, this );
       this._onMove = proxy( this._onMove, this );
@@ -261,9 +270,11 @@
       this._sizePages = proxy( this._sizePages, this );
       this._afterScrollTransform = proxy(this._afterScrollTransform, this);
 
-      this.pageContainer.innerHTML = container.cloneNode(true).innerHTML;
-      container.innerHTML = "";
-      container.appendChild( this.pageContainer );
+      if(!this.wrapperExist){
+        this.pageContainer.innerHTML = container.cloneNode(true).innerHTML;
+        container.innerHTML = "";
+        container.appendChild( this.pageContainer );
+      }
 
       this._scroll = supportTransform ? this._scrollWithTransform : this._scrollWithoutTransform;
       this._animateScroll = supportTransform ? this._animateScrollWithTransform : this._animateScrollWithoutTransform;

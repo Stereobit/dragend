@@ -89,7 +89,7 @@ instance.destroy();
 ```
 
 # Options
-  * pageClass: classname selector for all elments that should provide a page
+  * pageClass: classname selector for all elments that should provide a page  
   * direction: "horizontal" or "vertical"
   * minDragDistance: minuimum distance (in pixel) the user has to drag to trigger swip
   * page: Number of page to load on start
@@ -104,6 +104,7 @@ instance.destroy();
   * hammerSettings
   * preventDrag: if want to prevent user interactions and only swipe manualy
   * disableScroll: prevent scroll on mobile version
+  * pageWrapperClass: classname selector for element that wrap pages, it will be created automatically it option not provided
 
 # CHANGELOG
 
