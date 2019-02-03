@@ -26,35 +26,6 @@ module.exports = function (grunt) {
             }
         },
 
-        clean: {
-            dist: ['dist'],
-            tests: [
-                'test/src',
-                'test/reports',
-                'test/index.html'
-            ]
-        },
-
-        uglify: {
-            main: {
-                files: {
-                    'dist/dragend.min.js': ['dist/dragend.js']
-                }
-            }
-        },
-
-        copy:    {
-          index:  {
-            options: {
-              processContent: function (content, srcpath) {
-                return grunt.template.process(content);
-              }
-            },
-            src:  'dragend.js',
-            dest: 'dist/dragend.js'
-          }
-        }
-
     });
 
     grunt.registerTask('test', 'Run JS Unit tests', function () {
@@ -73,15 +44,6 @@ module.exports = function (grunt) {
         grunt.file.write(options.runner, template);
 
         grunt.task.run('mocha');
-    });
-
-    grunt.registerTask('build', 'build release versions', function () {
-        grunt.task.run([
-            'clean',
-            'copy',
-            'uglify',
-            'test'
-        ]);
     });
 
 };
