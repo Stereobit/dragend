@@ -57,6 +57,6 @@
   },
   "scripts": {
     "test": "grunt test",
-    "lint": "eslint src/"
+    "lint": "eslint src/ --fix"
   }
 }
