@@ -35,18 +35,6 @@ module.exports = function (grunt) {
             ]
         },
 
-        jshint: {
-            src: [
-                'dragend.js'
-            ],
-            tests: [
-                'test/spec'
-            ],
-            grunt: [
-                'gruntfile.js'
-            ]
-        },
-
         uglify: {
             main: {
                 files: {
@@ -90,11 +78,8 @@ module.exports = function (grunt) {
     grunt.registerTask('build', 'build release versions', function () {
         grunt.task.run([
             'clean',
-            'jshint:grunt',
-            'jshint:src',
             'copy',
             'uglify',
-            'jshint:tests',
             'test'
         ]);
     });

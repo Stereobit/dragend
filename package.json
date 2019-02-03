@@ -35,11 +35,16 @@
     "hammerjs": "~1.0.5"
   },
   "devDependencies": {
+    "eslint": "^5.13.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-node": "^8.0.1",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0",
     "expect.js": "~0.3.1",
     "grunt": "~1.0.3",
     "grunt-contrib-clean": "~0.5.0",
     "grunt-contrib-copy": "~0.5.x",
-    "grunt-contrib-jshint": "~0.9.x",
     "grunt-contrib-uglify": "~0.4.x",
     "grunt-mocha": "~1.2.0",
     "hammerjs": "~1.0.5",
@@ -51,6 +56,7 @@
     "sinon": "~7.2.3"
   },
   "scripts": {
-    "test": "grunt test"
+    "test": "grunt test",
+    "lint": "eslint src/"
   }
 }
