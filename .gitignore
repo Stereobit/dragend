@@ -3,3 +3,4 @@ node_modules
 test/index.html
 test/reports/
 test/src/
+dist/
