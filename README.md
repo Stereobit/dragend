@@ -89,21 +89,25 @@ instance.destroy();
 ```
 
 # Options
-  * pageClass: classname selector for all elments that should provide a page
-  * direction: "horizontal" or "vertical"
-  * minDragDistance: minuimum distance (in pixel) the user has to drag to trigger swip
-  * page: Number of page to load on start
-  * scribe: pixel value for a possible scribe
-  * onSwipeStart: callback function before the animation
-  * onSwipeEnd: callback function after the animation
-  * onDrag: callback on drag
-  * onDragEnd: callback on dragend
-  * afterInitialize:
-  * borderBetweenPages: if you need space between pages add a pixel value
-  * duration
-  * hammerSettings
-  * preventDrag: if want to prevent user interactions and only swipe manualy
-  * disableScroll: prevent scroll on mobile version
+  Default value in parenthesize.
+  * `pageClass`: classname of page elements. (`"dragend-page"`)
+  * `direction` : "horizontal" or "vertical" direction of transitions. (`"horizontal"`)
+  * `minDragDistance` : minimum distance (in pixels) the user has to drag to trigger swipe. (`"40"`)
+  * `onSwipeStart`: callback before page transition
+  * `onSwipeEnd`: callback after page transition
+  * `onDragStart`: callback on drag start
+  * `onDrag`: callback on drag
+  * `onDragEnd`: callback on drag end
+  * `afterInitialize`: called after the pages are sized
+  * `keyboardNavigation`: if you want to enable keyboard navigation. (`false`)
+  * `stopPropagation`: prevent event propagation. (`false`)
+  * `itemsInPage`: number of items in a page . (`1`)
+  * `scribe`: pixel value for a possible scribe . (`0`)
+  * `page`: number of the page to load on start. (`1`)
+  * `borderBetweenPages`: space (in pixels) between pages. (`0`)
+  * `duration`: transition duration. (`300`)
+  * `preventDrag`: prevent user interactions and only swipe manually. (`false`)
+  * `disableScroll`: prevent touch scroll. (`false`)
 
 # CHANGELOG
 

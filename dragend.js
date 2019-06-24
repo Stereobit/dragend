@@ -59,22 +59,23 @@
     //
     // You can use the following options:
     //
-    // * pageClass: classname selector for all elments that should provide a page
+    // * pageClass: classname of page elements
     // * direction: "horizontal" or "vertical"
-    // * minDragDistance: minuimum distance (in pixel) the user has to drag
-    //   to trigger swip
-    // * page: Number of page to load on start
-    // * scribe: pixel value for a possible scribe
-    // * onSwipeStart: callback function before the animation
-    // * onSwipeEnd: callback function after the animation
+    // * minDragDistance: minimum distance (in pixels) the user has to drag to trigger swipe
+    // * onSwipeStart: callback before page transition
+    // * onSwipeEnd: callback after page transition
     // * onDragStart: called on drag start
     // * onDrag: callback on drag
-    // * onDragEnd: callback on dragend
-    // * borderBetweenPages: if you need space between pages add a pixel value
-    // * duration
-    // * stopPropagation
-    // * afterInitialize called after the pages are size
-    // * preventDrag if want to prevent user interactions and only swipe manualy
+    // * onDragEnd: callback on drag end
+    // * afterInitialize: called after the pages are sized
+    // * keyboardNavigation: if you want to enable keyboard navigation
+    // * stopPropagation: prevent event propagation
+    // * itemsInPage: number of items in a page
+    // * scribe: pixel value for a possible scribe
+    // * page: number of the page to load on start
+    // * borderBetweenPages: space (in pixels) between pages
+    // * preventDrag: prevent user interactions and only swipe manually
+    // * disableScroll: prevent touch scroll
 
     var
 
