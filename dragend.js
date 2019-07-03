@@ -88,6 +88,7 @@
         onDragStart        : noop,
         onDrag             : noop,
         onDragEnd          : noop,
+		onPageWillChange   : noop,
         afterInitialize    : noop,
         keyboardNavigation : false,
         stopPropagation    : false,
@@ -635,6 +636,8 @@
             this.page           = 0;
             break;
         }
+
+		this.settings.onPageWillChange.call( this, this.page + 1, event );
       },
 
       // ### On swipe end
@@ -836,7 +839,13 @@
 
         container.removeAttribute("style");
 
-        for (var i = 0; i < this.pages.length; i++) {
+		var pagesLength = 0;
+
+		if (this.pages != undefined) {
+			pagesLength = this.pages.length
+		}
+
+        for (var i = 0; i < pagesLength; i++) {
           this.pages[i].removeAttribute("style");
         }
 
